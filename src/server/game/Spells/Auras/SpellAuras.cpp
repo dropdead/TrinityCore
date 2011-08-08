@@ -1385,9 +1385,10 @@ void Aura::HandleAuraSpecificMods(AuraApplication const* aurApp, Unit* caster, b
                         if (caster->GetTypeId() == TYPEID_PLAYER && caster->ToPlayer()->isHonorOrXPTarget(target))
                             caster->CastSpell(target, 18662, true, NULL, GetEffect(0));
                     }
+                    break;
                 }
                 // Improved Fear
-                else if (GetSpellInfo()->SpellFamilyFlags[1] & 0x00000400)
+                if (GetSpellInfo()->SpellFamilyFlags[1] & 0x00000400)
                 {
                     if (AuraEffect* aurEff = caster->GetAuraEffect(SPELL_AURA_DUMMY, SPELLFAMILY_WARLOCK, 98, 0))
                     {
@@ -1402,6 +1403,7 @@ void Aura::HandleAuraSpecificMods(AuraApplication const* aurApp, Unit* caster, b
                         if (spellId)
                             caster->CastSpell(target, spellId, true);
                     }
+                    break;
                 }
                 switch(GetId())
                 {
@@ -1412,7 +1414,9 @@ void Aura::HandleAuraSpecificMods(AuraApplication const* aurApp, Unit* caster, b
                         if (!onReapply)
                             target->RemoveGameObject(GetId(), true);
                         target->RemoveAura(62388);
-                    break;
+                        break;
+                   default:
+                       break;
                 }
                 break;
             case SPELLFAMILY_PRIEST:
@@ -1514,9 +1518,25 @@ void Aura::HandleAuraSpecificMods(AuraApplication const* aurApp, Unit* caster, b
                     target->RemoveAurasWithFamily(SPELLFAMILY_ROGUE, 0x0000800, 0, 0, target->GetGUID());
                 break;
             case SPELLFAMILY_PALADIN:
-                // Remove the immunity shield marker on Forbearance removal if AW marker is not present
-                if (GetId() == 25771 && target->HasAura(61988) && !target->HasAura(61987))
-                    target->RemoveAura(61988);
+                switch (GetId())
+                {
+                    case 25771: // Remove the immunity shield marker on Forbearance removal if AW marker is not present
+                        if (target->HasAura(61988) && !target->HasAura(61987))
+                            target->RemoveAura(61988);
+                        break;
+                    case 199997: // Divine Storm Helper (SERVERSIDE)
+                        {
+                            int32 damage = aurApp->GetBase()->GetEffect(EFFECT_0)->GetAmount();
+
+                            if (!damage)
+                                break;
+
+                            caster->CastCustomSpell(target, 54171, &damage, NULL, NULL, true);
+                            break;
+                        }
+                    default:
+                        break;
+                }
                 break;
             case SPELLFAMILY_DEATHKNIGHT:
                 // Blood of the North
@@ -1633,6 +1653,33 @@ void Aura::HandleAuraSpecificMods(AuraApplication const* aurApp, Unit* caster, b
                             target->RemoveAurasDueToSpell(71166);
                     }
                     break;
+            }
+            if (GetSpellInfo()->GetSpellSpecific() == SPELL_SPECIFIC_AURA)
+            {
+                if (GetCasterGUID() == target->GetGUID())
+                {
+                    // Sanctified Retribution
+                    if (target->HasAura(31869))
+                    {
+                        target->RemoveAurasDueToSpell(63531);
+                        if (apply)
+                            target->CastSpell(target, 63531, true);
+                    }
+                    // Improved Devotion Aura
+                    if (target->GetAuraEffect(SPELL_AURA_ADD_FLAT_MODIFIER, SPELLFAMILY_PALADIN, 291, 1))
+                    {
+                        target->RemoveAurasDueToSpell(63514);
+                        if (apply)
+                            target->CastSpell(target, 63514, true);
+                    }
+                    // Improved Concentration Aura
+                    if (target->GetAuraEffect(SPELL_AURA_ADD_FLAT_MODIFIER, SPELLFAMILY_PALADIN, 1487, 0))
+                    {
+                        target->RemoveAurasDueToSpell(63510);
+                        if (apply)
+                            target->CastSpell(target, 63510, true);
+                    }
+                }
             }
             break;
         case SPELLFAMILY_DEATHKNIGHT:
