@@ -706,10 +706,10 @@ public:
 
                         // Achievement criteria is with spell 59046 which does not exist.
                         // There is thus no way it can be given by casting the spell on the players.
-                       /* pInstance->DoUpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_BE_SPELL_TARGET, 59046);
+                        pInstance->DoUpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_BE_SPELL_TARGET, 59046);
 
                         if (!bHasBeenDamaged && IsHeroic())
-                            pInstance->DoCompleteAchievement(ACHIEV_BRANN_SPANKIN_NEW);*/
+                            pInstance->DoCompleteAchievement(ACHIEV_BRANN_SPANKIN_NEW);
 
                         JumpToNextStep(5500);
                         break;

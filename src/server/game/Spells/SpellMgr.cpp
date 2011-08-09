@@ -2789,6 +2789,16 @@ void SpellMgr::LoadSpellCustomAttr()
             case 71390: // Pact of the Darkfallen
                 spellInfo->AttributesCu |= SPELL_ATTR0_CU_EXCLUDE_SELF;
                 break;
+            case 57581: //Shadow Fissure - Sartharion Drakes
+            case 59128: //Shadow Fissure - Sartharion Drakes
+            case 57570: //Shadow Breath - Sartharion Drakes
+            case 59126: //Shadow Breath - Sartharion Drakes
+            case 56908: //Fire Breath - Sartharion
+            case 58956: //Fire Breath - Sartharion
+            case 57874: //Twilight Shift Damage - Sartharion
+                spellInfo->AttributesCu |= SPELL_ATTR0_CU_DIRECT_DAMAGE; // spellInfo->AttributesEx4 |= SPELL_ATTR4_FIXED_DAMAGE;
+                spellInfo->AttributesCu |= SPELL_ATTR0_CU_IGNORE_ARMOR;
+                break;
             case 18500: // Wing Buffet
             case 33086: // Wild Bite
             case 49749: // Piercing Blow
@@ -2978,6 +2988,11 @@ void SpellMgr::LoadDbcDataCorrections()
             spellInfo->EffectImplicitTargetA[0] = TARGET_DST_CASTER;
             spellInfo->EffectImplicitTargetA[1] = TARGET_DST_CASTER;
             break;
+         case 57697: //Lavastrike Hack - Sartharion
+            spellInfo->EffectImplicitTargetA[0] = TARGET_DST_TARGET_ENEMY;
+            //spellInfo->EffectImplicitTargetB[0] = TARGET_DEST_TARGET_RANDOM;
+            spellInfo->EffectImplicitTargetB[0] = TARGET_DST_TARGET_ENEMY; //This would be more funny
+            break;        
         case 41376: // Spite
         case 39992: // Needle Spine
         case 29576: // Multi-Shot

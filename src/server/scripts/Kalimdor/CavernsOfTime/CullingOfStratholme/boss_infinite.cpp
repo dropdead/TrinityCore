@@ -131,8 +131,8 @@ public:
                 pInstance->SetData(DATA_INFINITE_EVENT, DONE);
                 pInstance->DoRemoveAurasDueToSpellOnPlayers(SPELL_CORRUPTING_BLIGHT);
 
-                //if (!bEscaped)
-                    //pInstance->DoCompleteAchievement(ACHIEV_CULLING_OF_TIME);
+                if (!bEscaped)
+                    pInstance->DoCompleteAchievement(ACHIEV_CULLING_OF_TIME);
             }
         }
     };

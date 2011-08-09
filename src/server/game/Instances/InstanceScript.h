@@ -208,6 +208,9 @@ class InstanceScript : public ZoneScript
         void SendEncounterUnit(uint32 type, Unit* unit = NULL, uint8 param1 = 0, uint8 param2 = 0);
 
         virtual void FillInitialWorldStates(WorldPacket& /*data*/) {}
+        
+        // Complete Achievement for all players in instance
+        DECLSPEC_DEPRECATED void DoCompleteAchievement(uint32 achievement) ATTR_DEPRECATED;
 
     protected:
         void SetBossNumber(uint32 number) { bosses.resize(number); }
