@@ -5119,6 +5119,8 @@ bool Unit::HandleDummyAuraProc(Unit* victim, uint32 damage, AuraEffect* triggere
                 case 18765:
                 case 35429:
                 {
+                    if (HasAura(46924))// Hack Fix Autoattack Macro
+                        return false;
                     target = SelectNearbyTarget();
                     if (!target)
                         return false;
@@ -5840,6 +5842,8 @@ bool Unit::HandleDummyAuraProc(Unit* victim, uint32 damage, AuraEffect* triggere
                 // Sweeping Strikes
                 case 12328:
                 {
+                    if (HasAura(46924))// Hack Fix Autoattack Macro
+                        return false;
                     target = SelectNearbyTarget();
                     if (!target)
                         return false;
