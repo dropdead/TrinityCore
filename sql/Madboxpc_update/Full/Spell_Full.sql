@@ -25,3 +25,8 @@ UPDATE `spell_group` SET `spell_id` = 63514 WHERE `id` = 1095;
 DELETE FROM `creature_ai_scripts` WHERE `creature_id` = 28017;
 INSERT INTO `creature_ai_scripts` VALUES 
 (2801700, 28017, 4, 0, 100, 0, 0, 0, 0, 0, 11, 50453, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 'Bloodworm - Health Leech');
+-- 04[Paladin]Sacred_Shield.sql
+-- Add cooldown for Sacred Shield after remove effect as expected
+DELETE FROM `spell_script_names` WHERE `spell_id` = 58597;
+INSERT INTO `spell_script_names` VALUES
+(58597, 'spell_pal_sacred_shield');
