@@ -294,11 +294,13 @@ DELETE FROM `spell_scripts` WHERE `id`=56458;
 INSERT INTO `spell_scripts` (`id`,`effIndex`,`delay`,`command`,`datalong`,`datalong2`,`dataint`,`x`,`y`,`z`,`o`) VALUES
 (56458,0,0,15,52092,2,0,0,0,0,0);
 -- bjarngrim's stance auras
-DELETE FROM `spell_linked_spell` WHERE `spell_trigger` IN (53790,53791,53792);
+DELETE FROM `spell_linked_spell` WHERE `spell_trigger` IN (53790,53791,53792,-52658,-59795);
 INSERT INTO `spell_linked_spell` (`spell_trigger`,`spell_effect`,`type`,`comment`) VALUES
 (53790,41105,2, 'Bjarngrim - Defensive Aura'),
 (53791,41107,2, 'Bjarngrim - Berserker Aura'),
-(53792,41106,2, 'Bjarngrim - Battle Aura');
+(53792,41106,2, 'Bjarngrim - Battle Aura'),
+(-52658,53337,0,'Static Overload'),
+(-59795,59798,0,'Static Overload');
 -- achievement: lightning struck
 DELETE FROM `disables` WHERE `sourceType`=4 AND `entry`=6835;
 DELETE FROM `achievement_criteria_data` WHERE `criteria_id`=6835 AND `type`=11;
