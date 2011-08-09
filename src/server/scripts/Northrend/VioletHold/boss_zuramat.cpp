@@ -86,6 +86,7 @@ public:
         void Reset()
         {
             Summons.DespawnAll();
+
             if (pInstance)
             {
                 if (pInstance->GetData(DATA_WAVE_COUNT) == 6)
@@ -105,9 +106,9 @@ public:
         {
             switch(action)
             {
-            case ACTION_VOID_DEAD:
-                bVoidWalkerKilled = true;
-                break;
+                case ACTION_VOID_DEAD:
+                    bVoidWalkerKilled = true;
+                    break;
             }
         }
 
@@ -128,6 +129,7 @@ public:
         void EnterCombat(Unit* /*who*/)
         {
             DoScriptText(SAY_AGGRO, me);
+            
             if (pInstance)
             {
                 if (GameObject *pDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_ZURAMAT_CELL)))
@@ -136,14 +138,12 @@ public:
                         EnterEvadeMode();
                         return;
                     }
-                if (pInstance->GetData(DATA_WAVE_COUNT) == 6)
-                    pInstance->SetData(DATA_1ST_BOSS_EVENT, IN_PROGRESS);
-                else if (pInstance->GetData(DATA_WAVE_COUNT) == 12)
-                    pInstance->SetData(DATA_2ND_BOSS_EVENT, IN_PROGRESS);
+                    if (pInstance->GetData(DATA_WAVE_COUNT) == 6)
+                        pInstance->SetData(DATA_1ST_BOSS_EVENT, IN_PROGRESS);
+                    else if (pInstance->GetData(DATA_WAVE_COUNT) == 12)
+                        pInstance->SetData(DATA_2ND_BOSS_EVENT, IN_PROGRESS);
             }
         }
-
-        void MoveInLineOfSight(Unit* /*who*/) {}
 
         void UpdateAI(const uint32 diff)
         {
@@ -159,7 +159,7 @@ public:
 
             if (SpellVoidShiftTimer <= diff)
             {
-                 if (Unit* pUnit = SelectTarget(SELECT_TARGET_RANDOM, 0))
+                if (Unit* pUnit = SelectTarget(SELECT_TARGET_RANDOM, 0))
                     DoCast(pUnit, SPELL_VOID_SHIFT);
                 SpellVoidShiftTimer = 20000;
             } else SpellVoidShiftTimer -=diff;
@@ -231,7 +231,7 @@ public:
 
     struct npc_void_sentryAI : public ScriptedAI
     {
-        npc_void_sentryAI(Creature *c) : ScriptedAI(c)
+        npc_void_sentryAI(Creature *c) : ScriptedAI(c) , Summons(me)
         {
             m_pInstance = c->GetInstanceScript();
             me->setFaction(14);
@@ -242,6 +242,7 @@ public:
         }
 
         InstanceScript* m_pInstance;
+        SummonList Summons;
 
         Unit* SelectPlayerTargetInRange(float range)
         {
@@ -259,6 +260,7 @@ public:
 
             DoCastAOE(DUNGEON_MODE(SPELL_ZURAMAT_ADD_2,H_SPELL_ZURAMAT_ADD_2),true);
             me->SetPhaseMask(17,true);
+            Summons.DespawnAll();
         }
 
         void JustDied(Unit* /*killer*/)
@@ -274,10 +276,6 @@ public:
         }
     };
 };
-
-/*
-UPDATE creature_template SET scriptname = 'npc_void_sentry' WHERE entry = 29364;
-*/
 
 void AddSC_boss_zuramat()
 {
