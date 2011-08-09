@@ -385,3 +385,11 @@ INSERT INTO `script_texts` (`npc_entry`, `entry`, `content_default`, `content_lo
 ('0','-1575001','Your sacrifice is a testament to your obedience. Indeed you are worthy of this charge. Arise, and forever be known as Svala Sorrowgrave!',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'14732','1','0','0','svala SAY_INTRO_2_ARTHAS'),
 ('0','-1575000','My liege! I have done as you asked, and now beseech you for your blessing!',NULL,NULL,'Mein Meister! Ich tat, was Ihr verlangtet, und ersuche Euch um Euren Segen!',NULL,NULL,NULL,NULL,NULL,'13856','1','0','0','svala SAY_INTRO_1');
 
+
+-- ----------------------------------------------------------------------------------------------
+-- ----------------------------------------------------------------------------------------------
+-- ----------------------------------------------------------------------------------------------
+-- 08_[Dungeon]Draktharon_Keep.sql
+UPDATE creature_template SET unit_flags = unit_flags | 2 WHERE entry IN (26620,31339);
+-- Fix Drak'Tharon Keep reward for DF.
+UPDATE `instance_encounters` SET `creditType` = '0', `creditEntry` = '26632' WHERE `entry` IN ('376', '375')
