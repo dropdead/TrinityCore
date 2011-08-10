@@ -61,6 +61,9 @@ void AddSC_titles_commandscript();
 void AddSC_wp_commandscript();
 void AddSC_gps_commandscript();
 
+//Custom
+void AddSC_Argen_Tournament();
+
 #ifdef SCRIPTS
 //world
 void AddSC_areatrigger_scripts();
@@ -1230,7 +1233,7 @@ void AddBattlegroundScripts()
 void AddCustomScripts()
 {
 #ifdef SCRIPTS
-    /* This is where custom scripts should be added. */
+    AddSC_Argen_Tournament();
 
 #endif
 }
