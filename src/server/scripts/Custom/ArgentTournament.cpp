@@ -2833,7 +2833,7 @@ void AddSC_Argen_Tournament()
     new npc_justicar_mariel_trueheart;
     new npc_crusader_rhydalla;
     new npc_eadric_the_pure;
-    new npc_crok_scourgebane_argent_argent;
+    new npc_crok_scourgebane_argent;
     new npc_valis_windchaser;
     new npc_rugan_steelbelly;
     new npc_jeran_lockwood;
