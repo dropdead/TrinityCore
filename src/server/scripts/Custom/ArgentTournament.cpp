@@ -779,13 +779,13 @@ public:
 };
 
 /*######
-* npc_crok_scourgebane
+* npc_crok_scourgebane_argent
 ######*/
 
-class npc_crok_scourgebane : public CreatureScript
+class npc_crok_scourgebane_argent : public CreatureScript
 {
 public:
-    npc_crok_scourgebane(): CreatureScript("npc_crok_scourgebane"){}
+    npc_crok_scourgebane_argent(): CreatureScript("npc_crok_scourgebane_argent"){}
 
     bool OnGossipHello(Player* pPlayer, Creature* pCreature)
     {
@@ -2833,7 +2833,7 @@ void AddSC_Argen_Tournament()
     new npc_justicar_mariel_trueheart;
     new npc_crusader_rhydalla;
     new npc_eadric_the_pure;
-    new npc_crok_scourgebane;
+    new npc_crok_scourgebane_argent_argent;
     new npc_valis_windchaser;
     new npc_rugan_steelbelly;
     new npc_jeran_lockwood;
