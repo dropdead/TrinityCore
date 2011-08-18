@@ -468,3 +468,14 @@ UPDATE `pool_template` SET `max_limit` =48 WHERE `entry` =898;-- MASTER Minerals
 UPDATE `pool_template` SET `max_limit` =69 WHERE `entry` =897;-- MASTER Minerals Icecrown zone 210
 UPDATE `pool_template` SET `max_limit` =32 WHERE `entry` =896;-- MASTER Minerals Wintergrasp zone 4197
 
+
+-- ----------------------------------------------------------------------------------------------
+-- ----------------------------------------------------------------------------------------------
+-- ----------------------------------------------------------------------------------------------
+-- 04_[Gral]Bg_chance_no_blizlike.sql
+-- Update Chance bgs Warsong - Arathi Basing - Sota - Eye of The Storm (Saldran mas que alterac valley).
+UPDATE `battleground_template` SET `Weight` = '3' WHERE `id` = 2;-- Warsong Gulch
+UPDATE `battleground_template` SET `Weight` = '3' WHERE `id` = 3;-- Arathi Basin
+UPDATE `battleground_template` SET `Weight` = '3' WHERE `id` = 7;-- Eye of The Storm
+UPDATE `battleground_template` SET `Weight` = '2' WHERE `id` = 9;-- Strand of the Ancients
+
