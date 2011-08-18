@@ -200,7 +200,7 @@ public:
         if (player->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, IdItem, count) == EQUIP_ERR_OK)
         {
             Item* item = player->StoreNewItem(dest, IdItem, true, Item::GenerateItemRandomPropertyId(IdItem));
-             player->SendNewItem(item, count, true, false);
+            player->SendNewItem(item, count, true, false);
         }
         return true;
     }
