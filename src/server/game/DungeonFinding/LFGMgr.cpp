@@ -1728,7 +1728,7 @@ void LFGMgr::TeleportPlayer(Player* plr, bool out, bool fromOpcode /*= false*/)
                 {
                     // FIXME - HACK - this should be done by teleport, when teleporting far
                     plr->RemoveAurasByType(SPELL_AURA_MOUNTED);
-                    if(dungeon->type != LFG_TYPE_RANDOM)
+                    if (dungeon->type != LFG_TYPE_RANDOM)
                         plr->CastSpell(plr, LFG_SPELL_LUCK_OF_THE_DRAW, true);
                 }
                 else
