@@ -121,7 +121,7 @@ void CreatureAI::MoveInLineOfSight_Safe(Unit* who)
     m_MoveInLineOfSight_locked = false;
 }
 
-<<<<<<< HEAD
+
 void CreatureAI::DoAttackerAreaInCombat(Unit* attacker, float range, Unit* pUnit)
 {
     if (!attacker)
@@ -151,10 +151,7 @@ void CreatureAI::DoAttackerAreaInCombat(Unit* attacker, float range, Unit* pUnit
     }
 }
 
-void CreatureAI::MoveInLineOfSight(Unit *who)
-=======
 void CreatureAI::MoveInLineOfSight(Unit* who)
->>>>>>> 080c420e6a80ab6368aa08f60277844b4a2ab252
 {
     if (me->getVictim())
         return;

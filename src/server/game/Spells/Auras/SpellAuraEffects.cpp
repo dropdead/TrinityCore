@@ -4506,14 +4506,6 @@ void AuraEffect::HandleModDamagePercentDone(AuraApplication const* aurApp, uint8
     if (!target)
         return;
 
-<<<<<<< HEAD
-    if (target->HasItemFitToSpellRequirements(GetSpellInfo()))
-    {
-        target->ApplyModSignedFloatValue(PLAYER_FIELD_MOD_DAMAGE_DONE_PCT, GetAmount() / 100.0f, apply);
-        target->UpdateDamagePhysical(BASE_ATTACK);
-        target->UpdateDamagePhysical(OFF_ATTACK);
-        target->UpdateDamagePhysical(RANGED_ATTACK);
-=======
     if (target->GetTypeId() == TYPEID_PLAYER)
     {
         for(int i = 0; i < MAX_ATTACK; ++i)
@@ -4533,7 +4525,7 @@ void AuraEffect::HandleModDamagePercentDone(AuraApplication const* aurApp, uint8
     else
     {
         // done in Player::_ApplyWeaponDependentAuraMods for !SPELL_SCHOOL_MASK_NORMAL and also for wand case
->>>>>>> 080c420e6a80ab6368aa08f60277844b4a2ab252
+
     }
 }
 

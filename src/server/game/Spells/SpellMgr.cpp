@@ -2777,22 +2777,6 @@ void SpellMgr::LoadSpellCustomAttr()
                 // ONLY SPELLS WITH SPELLFAMILY_GENERIC and EFFECT_SCHOOL_DAMAGE
                 spellInfo->AttributesCu |= SPELL_ATTR0_CU_SHARE_DAMAGE;
                 break;
-<<<<<<< HEAD
-            case 27820: // Mana Detonation
-            case 69782: // Ooze Flood
-            case 69796: // Ooze Flood
-            case 69798: // Ooze Flood
-            case 69801: // Ooze Flood
-            case 69538: // Ooze Combine
-            case 69553: // Ooze Combine
-            case 69610: // Ooze Combine
-            case 71447: // Bloodbolt Splash
-            case 71481: // Bloodbolt Splash
-            case 71482: // Bloodbolt Splash
-            case 71483: // Bloodbolt Splash
-            case 71390: // Pact of the Darkfallen
-                spellInfo->AttributesCu |= SPELL_ATTR0_CU_EXCLUDE_SELF;
-                break;
             case 57581: //Shadow Fissure - Sartharion Drakes
             case 59128: //Shadow Fissure - Sartharion Drakes
             case 57570: //Shadow Breath - Sartharion Drakes
@@ -2803,8 +2787,6 @@ void SpellMgr::LoadSpellCustomAttr()
                 spellInfo->AttributesCu |= SPELL_ATTR0_CU_DIRECT_DAMAGE; // spellInfo->AttributesEx4 |= SPELL_ATTR4_FIXED_DAMAGE;
                 spellInfo->AttributesCu |= SPELL_ATTR0_CU_IGNORE_ARMOR;
                 break;
-=======
->>>>>>> 080c420e6a80ab6368aa08f60277844b4a2ab252
             case 18500: // Wing Buffet
             case 33086: // Wild Bite
             case 49749: // Piercing Blow
@@ -2995,9 +2977,9 @@ void SpellMgr::LoadDbcDataCorrections()
             spellInfo->EffectImplicitTargetA[1] = TARGET_DEST_CASTER;
             break;
          case 57697: //Lavastrike Hack - Sartharion
-            spellInfo->EffectImplicitTargetA[0] = TARGET_DST_TARGET_ENEMY;
+            spellInfo->EffectImplicitTargetA[0] = TARGET_DEST_TARGET_ENEMY;
             //spellInfo->EffectImplicitTargetB[0] = TARGET_DEST_TARGET_RANDOM;
-            spellInfo->EffectImplicitTargetB[0] = TARGET_DST_TARGET_ENEMY; //This would be more funny
+            spellInfo->EffectImplicitTargetB[0] = TARGET_DEST_TARGET_ENEMY; //This would be more funny
             break;        
         case 41376: // Spite
         case 39992: // Needle Spine
