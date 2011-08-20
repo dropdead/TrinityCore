@@ -128,8 +128,13 @@ public:
                     uiGortokPalehoofSphere = pGo->GetGUID();
                     if (m_auiEncounter[1] == DONE)
                     {
+<<<<<<< HEAD
                         HandleGameObject(NULL, true, pGo);
                         pGo->SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_UNK1);
+=======
+                        HandleGameObject(0, true, go);
+                        go->SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_NOT_SELECTABLE);
+>>>>>>> 080c420e6a80ab6368aa08f60277844b4a2ab252
                     }
                     break;
                 case 191745:
