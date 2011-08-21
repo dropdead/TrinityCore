@@ -30,7 +30,10 @@ enum Spells
     SPELL_SPRING                                  = 55652
 };
 
-//static Position EckSpawnPoint = { 1643.877930, 936.278015, 107.204948, 0.668432 };
+static Position EckSpawnPoint = 
+{ 
+    1643.877930f, 936.278015f, 107.204948f, 0.668432f 
+};
 
 class boss_eck : public CreatureScript
 {
@@ -156,6 +159,8 @@ public:
 
 };
 
+#define RANGE_ECK 1000.0f
+
 class npc_ruins_dweller : public CreatureScript
 {
 public:
@@ -217,12 +222,15 @@ public:
 
         void JustDied(Unit* /*who*/)
         {
-          /*  if (pInstance)
+            if (pInstance)
             {
-                pInstance->SetData64(DATA_RUIN_DWELLER_DIED, me->GetGUID());
-                if (pInstance->GetData(DATA_ALIVE_RUIN_DWELLERS) == 0)
-                    me->SummonCreature(CREATURE_ECK, EckSpawnPoint, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 300*IN_MILLISECONDS);
-            } */
+                if (!me->FindNearestCreature(CREATURE_ECK, RANGE_ECK, true))
+                {
+                    pInstance->SetData64(DATA_RUIN_DWELLER_DIED, me->GetGUID());  
+                    if (pInstance->GetData(DATA_ALIVE_RUIN_DWELLERS) == 0)
+                        me->SummonCreature(CREATURE_ECK, EckSpawnPoint, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 300000);
+                }            
+            } 
         } 
     };
 
