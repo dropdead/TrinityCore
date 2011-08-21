@@ -288,10 +288,18 @@ public:
             uint32 spellId = SPELL_MR_PINCHYS_GIFT;
             switch (urand(1, 5))
             {
-                case 1: spellId = SPELL_MR_PINCHYS_BLESSING; break;
-                case 2: spellId = SPELL_SUMMON_MIGHTY_MR_PINCHY; break;
-                case 3: spellId = SPELL_SUMMON_FURIOUS_MR_PINCHY; break;
-                case 4: spellId = SPELL_TINY_MAGICAL_CRAWDAD; break;
+                case 1: 
+                    spellId = SPELL_MR_PINCHYS_BLESSING;
+                    break;
+                case 2: 
+                    spellId = SPELL_SUMMON_MIGHTY_MR_PINCHY; 
+                    break;
+                case 3: 
+                    spellId = SPELL_SUMMON_FURIOUS_MR_PINCHY; 
+                    break;
+                case 4: 
+                    spellId = SPELL_TINY_MAGICAL_CRAWDAD; 
+                    break;
             }
             pCaster->CastSpell(pCaster, spellId, true, NULL);
         }
@@ -324,26 +332,66 @@ public:
             uint32 newitemid;
             switch (urand(1, 20))
             {
-                case 1:  newitemid = 32688; break;
-                case 2:  newitemid = 32689; break;
-                case 3:  newitemid = 32690; break;
-                case 4:  newitemid = 32691; break;
-                case 5:  newitemid = 32692; break;
-                case 6:  newitemid = 32693; break;
-                case 7:  newitemid = 32700; break;
-                case 8:  newitemid = 32701; break;
-                case 9:  newitemid = 32702; break;
-                case 10: newitemid = 32703; break;
-                case 11: newitemid = 32704; break;
-                case 12: newitemid = 32705; break;
-                case 13: newitemid = 32706; break;
-                case 14: newitemid = 32707; break;
-                case 15: newitemid = 32708; break;
-                case 16: newitemid = 32709; break;
-                case 17: newitemid = 32710; break;
-                case 18: newitemid = 32711; break;
-                case 19: newitemid = 32712; break;
-                case 20: newitemid = 32713; break;
+                case 1:  
+                    newitemid = 32688; 
+                    break;
+                case 2:  
+                    newitemid = 32689; 
+                    break;
+                case 3:  
+                    newitemid = 32690;
+                    break;
+                case 4:  
+                    newitemid = 32691; 
+                    break;
+                case 5:  
+                    newitemid = 32692; 
+                    break;
+                case 6:  
+                    newitemid = 32693; 
+                    break;
+                case 7:  
+                    newitemid = 32700; 
+                    break;
+                case 8:  
+                    newitemid = 32701; 
+                    break;
+                case 9:  
+                    newitemid = 32702;
+                    break;
+                case 10: 
+                    newitemid = 32703; 
+                    break;
+                case 11: 
+                    newitemid = 32704;
+                    break;
+                case 12: 
+                    newitemid = 32705; 
+                    break;
+                case 13: 
+                    newitemid = 32706; 
+                    break;
+                case 14: 
+                    newitemid = 32707; 
+                    break;
+                case 15: 
+                    newitemid = 32708;
+                    break;
+                case 16: 
+                    newitemid = 32709; 
+                    break;
+                case 17: 
+                    newitemid = 32710; 
+                    break;
+                case 18: 
+                    newitemid = 32711; 
+                    break;
+                case 19: 
+                    newitemid = 32712; 
+                    break;
+                case 20: 
+                    newitemid = 32713;
+                    break;
                 default:
                     return;
             }
@@ -457,8 +505,12 @@ public:
             uint32 spellId = SPELL_NOGGENFOGGER_ELIXIR_TRIGGERED3;
             switch (urand(1, 3))
             {
-                case 1: spellId = SPELL_NOGGENFOGGER_ELIXIR_TRIGGERED1; break;
-                case 2: spellId = SPELL_NOGGENFOGGER_ELIXIR_TRIGGERED2; break;
+                case 1: 
+                    spellId = SPELL_NOGGENFOGGER_ELIXIR_TRIGGERED1; 
+                    break;
+                case 2: 
+                    spellId = SPELL_NOGGENFOGGER_ELIXIR_TRIGGERED2; 
+                    break;
             }
 
             pCaster->CastSpell(pCaster, spellId, true, NULL);
@@ -513,9 +565,13 @@ public:
             switch (urand(1, 2))
             {
                 // Flip Out - ninja
-                case 1: spellId = (pCaster->getGender() == GENDER_MALE ? SPELL_FLIP_OUT_MALE : SPELL_FLIP_OUT_FEMALE); break;
+                case 1: 
+                    spellId = (pCaster->getGender() == GENDER_MALE ? SPELL_FLIP_OUT_MALE : SPELL_FLIP_OUT_FEMALE); 
+                    break;
                 // Yaaarrrr - pirate
-                case 2: spellId = (pCaster->getGender() == GENDER_MALE ? SPELL_YAAARRRR_MALE : SPELL_YAAARRRR_FEMALE); break;
+                case 2: 
+                    spellId = (pCaster->getGender() == GENDER_MALE ? SPELL_YAAARRRR_MALE : SPELL_YAAARRRR_FEMALE); 
+                    break;
             }
             pCaster->CastSpell(pCaster, spellId, true, NULL);
         }
@@ -652,8 +708,12 @@ public:
             uint32 spellId = SPELL_UNDERBELLY_ELIXIR_TRIGGERED3;
             switch (urand(1, 3))
             {
-                case 1: spellId = SPELL_UNDERBELLY_ELIXIR_TRIGGERED1; break;
-                case 2: spellId = SPELL_UNDERBELLY_ELIXIR_TRIGGERED2; break;
+                case 1: 
+                    spellId = SPELL_UNDERBELLY_ELIXIR_TRIGGERED1; 
+                    break;
+                case 2: 
+                    spellId = SPELL_UNDERBELLY_ELIXIR_TRIGGERED2; 
+                    break;
             }
             pCaster->CastSpell(pCaster, spellId, true, NULL);
         }
