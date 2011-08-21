@@ -676,7 +676,8 @@ enum eTipsy_mcmanus
     QUEST_STILL_AT_IT           = 12644,
     GOSSIP_TIPSY_MCMANUS_TEXT   = 13288,
     JUNGLE_PUNCH_ENTRY          = 190643,
-    NPC_TIPSY_MCMANUS           = 28566
+    NPC_TIPSY_MCMANUS           = 28566,
+    SAY_COMPLETE_QUEST          = -1850040 // Weve done it! Come get the cask...!
 };
 
 static const uint32 GOEntry[5] = 
@@ -757,6 +758,8 @@ public:
                             float x, y, z;
                             me->GetPosition(x, y, z);         
                             me->SummonGameObject(JUNGLE_PUNCH_ENTRY, x + 1.2f, y + 0.8f, z - 0.23f, 0, 0, 0, 0, 0, 60);// Summon valde credito donde loteas el item.
+                            DoScriptText(SAY_COMPLETE_QUEST ,me);
+                            //me->GetMotionMaster()->MovePoint(0, 5556.482422f, 5759.277344f, -77.613373f);
                             Reset();
                             return;
                         }
