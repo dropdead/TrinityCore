@@ -666,6 +666,164 @@ public:
     }
 };
 
+/*######
+## npc_tipsy_mcmanus Quest Soporte "Still At It" 
+## http://www.wowhead.com/quest=12644
+######*/
+
+enum eTipsy_mcmanus
+{
+    QUEST_STILL_AT_IT           = 12644,
+    GOSSIP_TIPSY_MCMANUS_TEXT   = 13288,
+    JUNGLE_PUNCH_ENTRY          = 190643,
+    NPC_TIPSY_MCMANUS           = 28566
+};
+
+static const uint32 GOEntry[5] = 
+{   
+    190635,// Gameobject: Pressure Valve
+    190636,// Gameobject: Brazier 
+    190637,// Gameobject: Barrel of Oranges 
+    190638,// Gameobject: Barrel of Bananas
+    190639 // Gameobject: Barrel of Papayas 
+};
+
+static const char * Instrucciones[6] =
+{
+    "Pressure's too high! Open the pressure valve!",// Valvula
+    "The still needs heat! Light the brazier!",// Brazier
+    "Add another orange! Quickly!",// Naranjas
+    "Add bananas!",// Bananas
+    "Put a papaya in the still",// Papaya
+    "It's no good! I'm shutting it down..."// Coperaste,Te equivocaste empieza denuevo xD
+};
+
+#define GOSSIP_ITEM_TIPSY  "I'm ready to start the distillation, uh, Tipsy."
+
+class npc_tipsy_mcmanus : public CreatureScript
+{
+public:
+    npc_tipsy_mcmanus() : CreatureScript("npc_tipsy_mcmanus") { }
+
+    struct npc_tipsy_mcmanusAI : public ScriptedAI
+    {
+        npc_tipsy_mcmanusAI(Creature *c) : ScriptedAI(c) {}
+
+        bool Event;
+        bool choice;
+        uint8 count;
+        uint32 rnd;
+        uint32 react_Timer;
+
+        void Reset()
+        {
+            Event = false;
+            choice = true;
+            rnd = 0;
+            count = 0;
+            react_Timer = 10*IN_MILLISECONDS; 
+            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+        }
+
+        void GOUsed(uint32 entry) 
+        {
+            if ((!choice) && (entry == GOEntry[rnd]))   // Usa correcto GO
+            {
+                me->HandleEmoteCommand(EMOTE_ONESHOT_CHEER);     
+                choice = true;
+
+                react_Timer = urand(5*IN_MILLISECONDS, 7*IN_MILLISECONDS);
+            }
+        }
+
+        void UpdateAI(const uint32 diff)
+        {
+            if (UpdateVictim())
+            {
+                DoMeleeAttackIfReady();
+                return;
+            }
+        
+            if (Event) 
+            {
+                if(react_Timer <= diff)
+                {
+                    if (choice)    
+                    {
+                        ++count;
+
+                        if (count > 10)  // Faltante agregar que el npc se mueva 1 poco y texto antes de sumonear el objeto.   
+                        {
+                            float x, y, z;
+                            me->GetPosition(x, y, z);         
+                            me->SummonGameObject(JUNGLE_PUNCH_ENTRY, x + 1.2f, y + 0.8f, z - 0.23f, 0, 0, 0, 0, 0, 60);// Summon valde credito donde loteas el item.
+                            Reset();
+                            return;
+                        }
+                           
+                        rnd = urand(0, 4);
+                    
+                        me->MonsterSay(Instrucciones[rnd], LANG_UNIVERSAL, 0);// Da Nuevas Instruciones
+                        me->HandleEmoteCommand(RAND(EMOTE_ONESHOT_EXCLAMATION, EMOTE_ONESHOT_POINT));
+                    
+                        choice = false;  
+
+                    }else // Si fallas da instruccion de falla y comienzas again.
+                    {
+                        me->MonsterSay(Instrucciones[5], LANG_UNIVERSAL, 0);
+                        me->HandleEmoteCommand(EMOTE_ONESHOT_EXCLAMATION);
+                        Reset();
+                    }
+                    react_Timer = 10*IN_MILLISECONDS;
+
+                }else react_Timer -= diff;
+            }
+        }
+    };
+
+    bool OnGossipSelect(Player* pPlayer, Creature* pCreature, uint32 /*uiSender*/, uint32 uiAction)
+    {
+        if (uiAction == GOSSIP_ACTION_INFO_DEF +1)
+        {
+            pPlayer->CLOSE_GOSSIP_MENU();
+            CAST_AI(npc_tipsy_mcmanus::npc_tipsy_mcmanusAI, pCreature->AI())->Event = true;
+            pCreature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+        }
+        return true;
+    }
+
+    bool OnGossipHello(Player* pPlayer, Creature* pCreature)
+    {
+        if (pPlayer->GetQuestStatus(QUEST_STILL_AT_IT) == QUEST_STATUS_INCOMPLETE)
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_TIPSY, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+
+        pPlayer->SEND_GOSSIP_MENU(GOSSIP_TIPSY_MCMANUS_TEXT, pCreature->GetGUID());
+        return true;
+    }
+
+    CreatureAI* GetAI(Creature* pCreature) const
+    {
+        return new npc_tipsy_mcmanusAI (pCreature);
+    }
+
+};
+
+class go_brew_event : public GameObjectScript
+{
+public:
+    go_brew_event() : GameObjectScript("go_brew_event") { }
+
+    bool OnGossipHello (Player *pPlayer, GameObject *pGO)
+    {
+        uint32 entry = pGO->GetEntry();
+
+        if (Creature* pTipsy = GetClosestCreatureWithEntry(pPlayer, NPC_TIPSY_MCMANUS, 30.0f))
+            CAST_AI(npc_tipsy_mcmanus::npc_tipsy_mcmanusAI, pTipsy->AI())->GOUsed(entry);
+
+        return false;
+    }
+};
+
 void AddSC_sholazar_basin()
 {
     new npc_injured_rainspeaker_oracle();
@@ -675,4 +833,6 @@ void AddSC_sholazar_basin()
     new npc_engineer_helice();
     new npc_adventurous_dwarf();
     new npc_jungle_punch_target();
+    new npc_tipsy_mcmanus();
+    new go_brew_event();
 }
