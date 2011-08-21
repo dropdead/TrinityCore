@@ -2356,20 +2356,8 @@ SpellMissInfo Unit::MeleeSpellHitResult(Unit* victim, SpellInfo const* spell)
         return SPELL_MISS_MISS;
 
     // Chance resist mechanic (select max value from every mechanic spell effect)
-    int32 resist_mech = 0;
-    // Get effects mechanic and chance
-    for (uint8 eff = 0; eff < MAX_SPELL_EFFECTS; ++eff)
-    {
-        int32 effect_mech = spell->GetEffectMechanic(eff);
-        if (effect_mech)
-        {
-            int32 temp = victim->GetTotalAuraModifierByMiscValue(SPELL_AURA_MOD_MECHANIC_RESISTANCE, effect_mech);
-            if (resist_mech < temp*100)
-                resist_mech = temp*100;
-        }
-    }
-    // Roll chance
-    tmp += resist_mech;
+    int32 resist_chance = victim->GetMechanicResistChance(spell) * 100;
+    tmp += resist_chance;
     if (roll < tmp)
         return SPELL_MISS_RESIST;
 
@@ -2379,22 +2367,20 @@ SpellMissInfo Unit::MeleeSpellHitResult(Unit* victim, SpellInfo const* spell)
 
     // Same spells cannot be parry/dodge
     if (spell->Attributes & SPELL_ATTR0_IMPOSSIBLE_DODGE_PARRY_BLOCK)
-        return SPELL_MISS_NONE;
-
-    // Chance resist mechanic
-    int32 resist_chance = victim->GetMechanicResistChance(spell) * 100;
-    tmp += resist_chance;
-    if (roll < tmp)
-        return SPELL_MISS_RESIST;
+        return SPELL_MISS_NONE;    
 
     // Ranged attacks can only miss, resist and deflect
     if (attType == RANGED_ATTACK)
     {
+        // Judgements cannot be deflected
+        if (spell->Category == SPELLCATEGORY_JUDGEMENT)
+            return SPELL_MISS_NONE;
+
         // only if in front
         if (victim->HasInArc(M_PI, this) || victim->HasAuraType(SPELL_AURA_IGNORE_HIT_DIRECTION))
         {
             int32 deflect_chance = victim->GetTotalAuraModifier(SPELL_AURA_DEFLECT_SPELLS) * 100;
-            tmp+=deflect_chance;
+            tmp += deflect_chance;
             if (roll < tmp)
                 return SPELL_MISS_DEFLECT;
         }

@@ -822,9 +822,21 @@ void Spell::prepareDataForTriggerSystem(AuraEffect const* /*triggeredByAura*/)
                 m_procVictim   = PROC_FLAG_TAKEN_RANGED_AUTO_ATTACK;
             }
             else // Ranged spell attack
-            {
-                m_procAttacker = PROC_FLAG_DONE_SPELL_RANGED_DMG_CLASS;
-                m_procVictim   = PROC_FLAG_TAKEN_SPELL_RANGED_DMG_CLASS;
+            {  
+                if (GetSpellInfo()->IsRangedWeaponSpell())
+                {
+                    m_procAttacker = PROC_FLAG_DONE_SPELL_RANGED_DMG_CLASS;
+                    m_procVictim   = PROC_FLAG_TAKEN_SPELL_RANGED_DMG_CLASS;
+                }
+                else
+                {
+                    m_procAttacker = PROC_FLAG_DONE_SPELL_MELEE_DMG_CLASS;
+                    if (m_attackType == OFF_ATTACK)
+                        m_procAttacker |= PROC_FLAG_DONE_OFFHAND_ATTACK;
+                    else
+                        m_procAttacker |= PROC_FLAG_DONE_MAINHAND_ATTACK;
+                    m_procVictim   = PROC_FLAG_TAKEN_MELEE_AUTO_ATTACK;
+                }
             }
             break;
         default:
