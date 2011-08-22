@@ -424,89 +424,89 @@ int32 OPvPCapturePointNA::HandleOpenGo(Player* player, uint64 guid)
 
         switch(retval)
         {
-        case NA_DESTROYED_ROOST_S:
-            del = NA_DESTROYED_ROOST_S;
-            add = NA_ROOST_S;
-            add2 = NA_BOMB_WAGON_S;
-            if (m_ControllingFaction == HORDE)
-                m_WyvernStateSouth = WYVERN_ALLIANCE;
-            else
-                m_WyvernStateSouth = WYVERN_HORDE;
-            UpdateWyvernRoostWorldState(NA_ROOST_S);
-            break;
-        case NA_DESTROYED_ROOST_N:
-            del = NA_DESTROYED_ROOST_N;
-            add = NA_ROOST_N;
-            add2 = NA_BOMB_WAGON_N;
-            if (m_ControllingFaction == HORDE)
-                m_WyvernStateNorth = WYVERN_ALLIANCE;
-            else
-                m_WyvernStateNorth = WYVERN_HORDE;
-            UpdateWyvernRoostWorldState(NA_ROOST_N);
-            break;
-        case NA_DESTROYED_ROOST_W:
-            del = NA_DESTROYED_ROOST_W;
-            add = NA_ROOST_W;
-            add2 = NA_BOMB_WAGON_W;
-            if (m_ControllingFaction == HORDE)
-                m_WyvernStateWest = WYVERN_ALLIANCE;
-            else
-                m_WyvernStateWest = WYVERN_HORDE;
-            UpdateWyvernRoostWorldState(NA_ROOST_W);
-            break;
-        case NA_DESTROYED_ROOST_E:
-            del = NA_DESTROYED_ROOST_E;
-            add = NA_ROOST_E;
-            add2 = NA_BOMB_WAGON_E;
-            if (m_ControllingFaction == HORDE)
-                m_WyvernStateEast = WYVERN_ALLIANCE;
-            else
-                m_WyvernStateEast = WYVERN_HORDE;
-            UpdateWyvernRoostWorldState(NA_ROOST_E);
-            break;
-        case NA_BOMB_WAGON_S:
-            del = NA_BOMB_WAGON_S;
-            del2 = NA_ROOST_S;
-            add = NA_DESTROYED_ROOST_S;
-            if (m_ControllingFaction == HORDE)
-                m_WyvernStateSouth = WYVERN_NEU_ALLIANCE;
-            else
-                m_WyvernStateSouth = WYVERN_NEU_HORDE;
-            UpdateWyvernRoostWorldState(NA_ROOST_S);
-            break;
-        case NA_BOMB_WAGON_N:
-            del = NA_BOMB_WAGON_N;
-            del2 = NA_ROOST_N;
-            add = NA_DESTROYED_ROOST_N;
-            if (m_ControllingFaction == HORDE)
-                m_WyvernStateNorth = WYVERN_NEU_ALLIANCE;
-            else
-                m_WyvernStateNorth = WYVERN_NEU_HORDE;
-            UpdateWyvernRoostWorldState(NA_ROOST_N);
-            break;
-        case NA_BOMB_WAGON_W:
-            del = NA_BOMB_WAGON_W;
-            del2 = NA_ROOST_W;
-            add = NA_DESTROYED_ROOST_W;
-            if (m_ControllingFaction == HORDE)
-                m_WyvernStateWest = WYVERN_NEU_ALLIANCE;
-            else
-                m_WyvernStateWest = WYVERN_NEU_HORDE;
-            UpdateWyvernRoostWorldState(NA_ROOST_W);
-            break;
-        case NA_BOMB_WAGON_E:
-            del = NA_BOMB_WAGON_E;
-            del2 = NA_ROOST_E;
-            add = NA_DESTROYED_ROOST_E;
-            if (m_ControllingFaction == HORDE)
-                m_WyvernStateEast = WYVERN_NEU_ALLIANCE;
-            else
-                m_WyvernStateEast = WYVERN_NEU_HORDE;
-            UpdateWyvernRoostWorldState(NA_ROOST_E);
-            break;
-        default:
-            return -1;
-            break;
+            case NA_DESTROYED_ROOST_S:
+                del = NA_DESTROYED_ROOST_S;
+                add = NA_ROOST_S;
+                add2 = NA_BOMB_WAGON_S;
+                if (m_ControllingFaction == HORDE)
+                    m_WyvernStateSouth = WYVERN_ALLIANCE;
+                else
+                    m_WyvernStateSouth = WYVERN_HORDE;
+                UpdateWyvernRoostWorldState(NA_ROOST_S);
+                break;
+            case NA_DESTROYED_ROOST_N:
+                del = NA_DESTROYED_ROOST_N;
+                add = NA_ROOST_N;
+                add2 = NA_BOMB_WAGON_N;
+                if (m_ControllingFaction == HORDE)
+                    m_WyvernStateNorth = WYVERN_ALLIANCE;
+                else
+                    m_WyvernStateNorth = WYVERN_HORDE;
+                UpdateWyvernRoostWorldState(NA_ROOST_N);
+                break;
+            case NA_DESTROYED_ROOST_W:
+                del = NA_DESTROYED_ROOST_W;
+                add = NA_ROOST_W;
+                add2 = NA_BOMB_WAGON_W;
+                if (m_ControllingFaction == HORDE)
+                    m_WyvernStateWest = WYVERN_ALLIANCE;
+                else
+                    m_WyvernStateWest = WYVERN_HORDE;
+                UpdateWyvernRoostWorldState(NA_ROOST_W);
+                break;
+            case NA_DESTROYED_ROOST_E:
+                del = NA_DESTROYED_ROOST_E;
+                add = NA_ROOST_E;
+                add2 = NA_BOMB_WAGON_E;
+                if (m_ControllingFaction == HORDE)
+                    m_WyvernStateEast = WYVERN_ALLIANCE;
+                else
+                    m_WyvernStateEast = WYVERN_HORDE;
+                UpdateWyvernRoostWorldState(NA_ROOST_E);
+                break;
+            case NA_BOMB_WAGON_S:
+                del = NA_BOMB_WAGON_S;
+                del2 = NA_ROOST_S;
+                add = NA_DESTROYED_ROOST_S;
+                if (m_ControllingFaction == HORDE)
+                    m_WyvernStateSouth = WYVERN_NEU_ALLIANCE;
+                else
+                    m_WyvernStateSouth = WYVERN_NEU_HORDE;
+                UpdateWyvernRoostWorldState(NA_ROOST_S);
+                break;
+            case NA_BOMB_WAGON_N:
+                del = NA_BOMB_WAGON_N;
+                del2 = NA_ROOST_N;
+                add = NA_DESTROYED_ROOST_N;
+                if (m_ControllingFaction == HORDE)
+                    m_WyvernStateNorth = WYVERN_NEU_ALLIANCE;
+                else
+                    m_WyvernStateNorth = WYVERN_NEU_HORDE;
+                UpdateWyvernRoostWorldState(NA_ROOST_N);
+                break;
+            case NA_BOMB_WAGON_W:
+                del = NA_BOMB_WAGON_W;
+                del2 = NA_ROOST_W;
+                add = NA_DESTROYED_ROOST_W;
+                if (m_ControllingFaction == HORDE)
+                    m_WyvernStateWest = WYVERN_NEU_ALLIANCE;
+                else
+                    m_WyvernStateWest = WYVERN_NEU_HORDE;
+                UpdateWyvernRoostWorldState(NA_ROOST_W);
+                break;
+            case NA_BOMB_WAGON_E:
+                del = NA_BOMB_WAGON_E;
+                del2 = NA_ROOST_E;
+                add = NA_DESTROYED_ROOST_E;
+                if (m_ControllingFaction == HORDE)
+                    m_WyvernStateEast = WYVERN_NEU_ALLIANCE;
+                else
+                    m_WyvernStateEast = WYVERN_NEU_HORDE;
+                UpdateWyvernRoostWorldState(NA_ROOST_E);
+                break;
+            default:
+                return -1;
+                break;
         }
 
         if (del>-1)
@@ -631,30 +631,30 @@ void OPvPCapturePointNA::UpdateWyvernRoostWorldState(uint32 roost)
 {
     switch(roost)
     {
-    case NA_ROOST_S:
-        m_PvP->SendUpdateWorldState(NA_MAP_WYVERN_SOUTH_NEU_H, uint32(bool(m_WyvernStateSouth & WYVERN_NEU_HORDE)));
-        m_PvP->SendUpdateWorldState(NA_MAP_WYVERN_SOUTH_NEU_A, uint32(bool(m_WyvernStateSouth & WYVERN_NEU_ALLIANCE)));
-        m_PvP->SendUpdateWorldState(NA_MAP_WYVERN_SOUTH_H, uint32(bool(m_WyvernStateSouth & WYVERN_HORDE)));
-        m_PvP->SendUpdateWorldState(NA_MAP_WYVERN_SOUTH_A, uint32(bool(m_WyvernStateSouth & WYVERN_ALLIANCE)));
-        break;
-    case NA_ROOST_N:
-        m_PvP->SendUpdateWorldState(NA_MAP_WYVERN_NORTH_NEU_H, uint32(bool(m_WyvernStateNorth & WYVERN_NEU_HORDE)));
-        m_PvP->SendUpdateWorldState(NA_MAP_WYVERN_NORTH_NEU_A, uint32(bool(m_WyvernStateNorth & WYVERN_NEU_ALLIANCE)));
-        m_PvP->SendUpdateWorldState(NA_MAP_WYVERN_NORTH_H, uint32(bool(m_WyvernStateNorth & WYVERN_HORDE)));
-        m_PvP->SendUpdateWorldState(NA_MAP_WYVERN_NORTH_A, uint32(bool(m_WyvernStateNorth & WYVERN_ALLIANCE)));
-        break;
-    case NA_ROOST_W:
-        m_PvP->SendUpdateWorldState(NA_MAP_WYVERN_WEST_NEU_H, uint32(bool(m_WyvernStateWest & WYVERN_NEU_HORDE)));
-        m_PvP->SendUpdateWorldState(NA_MAP_WYVERN_WEST_NEU_A, uint32(bool(m_WyvernStateWest & WYVERN_NEU_ALLIANCE)));
-        m_PvP->SendUpdateWorldState(NA_MAP_WYVERN_WEST_H, uint32(bool(m_WyvernStateWest & WYVERN_HORDE)));
-        m_PvP->SendUpdateWorldState(NA_MAP_WYVERN_WEST_A, uint32(bool(m_WyvernStateWest & WYVERN_ALLIANCE)));
-        break;
-    case NA_ROOST_E:
-        m_PvP->SendUpdateWorldState(NA_MAP_WYVERN_EAST_NEU_H, uint32(bool(m_WyvernStateEast & WYVERN_NEU_HORDE)));
-        m_PvP->SendUpdateWorldState(NA_MAP_WYVERN_EAST_NEU_A, uint32(bool(m_WyvernStateEast & WYVERN_NEU_ALLIANCE)));
-        m_PvP->SendUpdateWorldState(NA_MAP_WYVERN_EAST_H, uint32(bool(m_WyvernStateEast & WYVERN_HORDE)));
-        m_PvP->SendUpdateWorldState(NA_MAP_WYVERN_EAST_A, uint32(bool(m_WyvernStateEast & WYVERN_ALLIANCE)));
-        break;
+        case NA_ROOST_S:
+            m_PvP->SendUpdateWorldState(NA_MAP_WYVERN_SOUTH_NEU_H, uint32(bool(m_WyvernStateSouth & WYVERN_NEU_HORDE)));
+            m_PvP->SendUpdateWorldState(NA_MAP_WYVERN_SOUTH_NEU_A, uint32(bool(m_WyvernStateSouth & WYVERN_NEU_ALLIANCE)));
+            m_PvP->SendUpdateWorldState(NA_MAP_WYVERN_SOUTH_H, uint32(bool(m_WyvernStateSouth & WYVERN_HORDE)));
+            m_PvP->SendUpdateWorldState(NA_MAP_WYVERN_SOUTH_A, uint32(bool(m_WyvernStateSouth & WYVERN_ALLIANCE)));
+            break;
+        case NA_ROOST_N:
+            m_PvP->SendUpdateWorldState(NA_MAP_WYVERN_NORTH_NEU_H, uint32(bool(m_WyvernStateNorth & WYVERN_NEU_HORDE)));
+            m_PvP->SendUpdateWorldState(NA_MAP_WYVERN_NORTH_NEU_A, uint32(bool(m_WyvernStateNorth & WYVERN_NEU_ALLIANCE)));
+            m_PvP->SendUpdateWorldState(NA_MAP_WYVERN_NORTH_H, uint32(bool(m_WyvernStateNorth & WYVERN_HORDE)));
+            m_PvP->SendUpdateWorldState(NA_MAP_WYVERN_NORTH_A, uint32(bool(m_WyvernStateNorth & WYVERN_ALLIANCE)));
+            break;
+        case NA_ROOST_W:
+            m_PvP->SendUpdateWorldState(NA_MAP_WYVERN_WEST_NEU_H, uint32(bool(m_WyvernStateWest & WYVERN_NEU_HORDE)));
+            m_PvP->SendUpdateWorldState(NA_MAP_WYVERN_WEST_NEU_A, uint32(bool(m_WyvernStateWest & WYVERN_NEU_ALLIANCE)));
+            m_PvP->SendUpdateWorldState(NA_MAP_WYVERN_WEST_H, uint32(bool(m_WyvernStateWest & WYVERN_HORDE)));
+            m_PvP->SendUpdateWorldState(NA_MAP_WYVERN_WEST_A, uint32(bool(m_WyvernStateWest & WYVERN_ALLIANCE)));
+            break;
+        case NA_ROOST_E:
+            m_PvP->SendUpdateWorldState(NA_MAP_WYVERN_EAST_NEU_H, uint32(bool(m_WyvernStateEast & WYVERN_NEU_HORDE)));
+            m_PvP->SendUpdateWorldState(NA_MAP_WYVERN_EAST_NEU_A, uint32(bool(m_WyvernStateEast & WYVERN_NEU_ALLIANCE)));
+            m_PvP->SendUpdateWorldState(NA_MAP_WYVERN_EAST_H, uint32(bool(m_WyvernStateEast & WYVERN_HORDE)));
+            m_PvP->SendUpdateWorldState(NA_MAP_WYVERN_EAST_A, uint32(bool(m_WyvernStateEast & WYVERN_ALLIANCE)));
+            break;
     }
 }
 
