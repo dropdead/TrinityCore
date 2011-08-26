@@ -1308,7 +1308,7 @@ void SpellMgr::LoadSpellLearnSkills()
 
     // search auto-learned skills and add its to map also for use in unlearn spells/talents
     uint32 dbc_count = 0;
-    for (uint32 spell = 0; spell < sSpellMgr->GetSpellInfoStoreSize(); ++spell)
+    for (uint32 spell = 0; spell < GetSpellInfoStoreSize(); ++spell)
     {
         SpellInfo const* entry = GetSpellInfo(spell);
 
@@ -2659,6 +2659,7 @@ void SpellMgr::LoadSpellCustomAttr()
                     spellInfo->AttributesCu |= SPELL_ATTR0_CU_NO_INITIAL_THREAT;
                     break;
             }
+
             switch (spellInfo->Effects[j].Effect)
             {
                 case SPELL_EFFECT_SCHOOL_DAMAGE:
@@ -2704,7 +2705,7 @@ void SpellMgr::LoadSpellCustomAttr()
                             if (enchant->type[s] != ITEM_ENCHANTMENT_TYPE_COMBAT_SPELL)
                                 continue;
 
-                            SpellInfo* procInfo = (SpellInfo*)sSpellMgr->GetSpellInfo(enchant->spellid[s]);
+                            SpellInfo* procInfo = (SpellInfo*)GetSpellInfo(enchant->spellid[s]);
                             if (!procInfo)
                                 continue;
 
@@ -2857,14 +2858,14 @@ void SpellMgr::LoadSpellCustomAttr()
             case 67860: // Impale
             case 69293: // Wing Buffet
             case 74439: // Machine Gun
-                spellInfo->AttributesCu |= SPELL_ATTR0_CU_IGNORE_ARMOR;
-                break;
             case 63278: // Mark of the Faceless (General Vezax)
                 spellInfo->AttributesCu |= SPELL_ATTR0_CU_IGNORE_ARMOR;
                 break;
             case 64422: // Sonic Screech (Auriaya)
                 spellInfo->AttributesCu |= SPELL_ATTR0_CU_SHARE_DAMAGE;
                 spellInfo->AttributesCu |= SPELL_ATTR0_CU_IGNORE_ARMOR;
+                break;
+            default:
                 break;
         }
 
@@ -2918,16 +2919,6 @@ void SpellMgr::LoadDbcDataCorrections()
                     if (SpellImplicitTargetInfo::IsPosition(spellInfo->EffectImplicitTargetA[j]) ||
                         spellInfo->Targets & (TARGET_FLAG_SOURCE_LOCATION | TARGET_FLAG_DEST_LOCATION))
                         spellInfo->Effect[j] = SPELL_EFFECT_TRIGGER_MISSILE;
-                    break;
-            }
-
-            switch (SpellImplicitTargetInfo::Type[spellInfo->EffectImplicitTargetA[j]])
-            {
-                case TARGET_TYPE_UNIT_TARGET:
-                case TARGET_TYPE_DEST_TARGET:
-                    spellInfo->Targets |= TARGET_FLAG_UNIT;
-                    break;
-                default:
                     break;
             }
         }
@@ -3147,7 +3138,7 @@ void SpellMgr::LoadDbcDataCorrections()
                 spellInfo->AttributesEx3 |= SPELL_ATTR3_STACK_FOR_DIFF_CASTERS;
                 spellInfo->SpellFamilyFlags[2] = 0x10;
                 break;
-            case 41013: // Parasitic Shadowfiend Passive
+            case 41913: // Parasitic Shadowfiend Passive
                 spellInfo->EffectApplyAuraName[0] = 4; // proc debuff, and summon infinite fiends
                 break;
             case 27892: // To Anchor 1
@@ -3376,13 +3367,12 @@ void SpellMgr::LoadDbcDataCorrections()
                 // Starfall Target Selection
                 if (spellInfo->SpellFamilyFlags[2] & 0x100)
                     spellInfo->MaxAffectedTargets = 2;
-                else
-                    break;
                 break;
             case SPELLFAMILY_PALADIN:
                 // Seals of the Pure should affect Seal of Righteousness
                 if (spellInfo->SpellIconID == 25 && spellInfo->Attributes & SPELL_ATTR0_PASSIVE)
                     spellInfo->EffectSpellClassMask[0][1] |= 0x20000000;
+<<<<<<< HEAD
                 // Sanctified Retribution talent fix
                 else if (spellInfo->SpellFamilyFlags[2] & 0x20 && spellInfo->SpellIconID == 555)
                 {
@@ -3391,6 +3381,8 @@ void SpellMgr::LoadDbcDataCorrections()
                 }
                 else
                     break;
+=======
+>>>>>>> 83912c43ad2ed82f24dbc72eb3bbdc0694dcfc87
                 break;
             case SPELLFAMILY_DEATHKNIGHT:
                 // Icy Touch - extend FamilyFlags (unused value) for Sigil of the Frozen Conscience to use
