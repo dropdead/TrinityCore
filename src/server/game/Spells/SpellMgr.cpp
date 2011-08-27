@@ -3372,7 +3372,6 @@ void SpellMgr::LoadDbcDataCorrections()
                 // Seals of the Pure should affect Seal of Righteousness
                 if (spellInfo->SpellIconID == 25 && spellInfo->Attributes & SPELL_ATTR0_PASSIVE)
                     spellInfo->EffectSpellClassMask[0][1] |= 0x20000000;
-<<<<<<< HEAD
                 // Sanctified Retribution talent fix
                 else if (spellInfo->SpellFamilyFlags[2] & 0x20 && spellInfo->SpellIconID == 555)
                 {
@@ -3381,8 +3380,6 @@ void SpellMgr::LoadDbcDataCorrections()
                 }
                 else
                     break;
-=======
->>>>>>> 83912c43ad2ed82f24dbc72eb3bbdc0694dcfc87
                 break;
             case SPELLFAMILY_DEATHKNIGHT:
                 // Icy Touch - extend FamilyFlags (unused value) for Sigil of the Frozen Conscience to use
