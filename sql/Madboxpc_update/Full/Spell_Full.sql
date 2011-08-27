@@ -30,3 +30,7 @@ INSERT INTO `creature_ai_scripts` VALUES
 DELETE FROM `spell_script_names` WHERE `spell_id` = 58597;
 INSERT INTO `spell_script_names` VALUES
 (58597, 'spell_pal_sacred_shield');
+-- 05[Generic]Dungeon_Finder.sql
+DELETE FROM `spell_script_names` WHERE `spell_id` = 72221;
+INSERT INTO `spell_script_names` VALUES
+(72221, 'spell_gen_luck_of_the_draw');
