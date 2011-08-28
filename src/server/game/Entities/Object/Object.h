@@ -358,7 +358,7 @@ class Object
             float  *m_floatValues;
         };
 
-        bool* _changedFields;
+        uint32 *m_uint32Values_mirror;
 
         uint16 m_valuesCount;
 
