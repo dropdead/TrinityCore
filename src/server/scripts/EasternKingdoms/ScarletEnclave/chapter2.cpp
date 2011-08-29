@@ -223,8 +223,7 @@ public:
             switch(uiPointId)
             {
                 case 0:
-                    DoScriptText(SAY_BREAKOUT1, me);
-                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                    DoScriptText(SAY_BREAKOUT1, me);                    
                     break;
                 case 1:
                     me->SetStandState(UNIT_STAND_STATE_KNEEL);
@@ -242,6 +241,7 @@ public:
                     DoCast(me, SPELL_ANTI_MAGIC_ZONE);  // cast again that makes bubble up
                     break;
                 case 4:
+                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                     SetRun(true);
                     break;
                 case 9:
