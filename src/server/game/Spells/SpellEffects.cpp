@@ -1882,13 +1882,22 @@ void Spell::EffectJumpDest(SpellEffIndex effIndex)
 
 void Spell::CalculateJumpSpeeds(uint8 i, float dist, float & speedXY, float & speedZ)
 {
-    if (m_spellInfo->Effects[i].MiscValue)
+    bool fspeed = false;
+    if (m_spellInfo->Effects[i].MiscValue)                        // Fixed Time?
         speedZ = float(m_spellInfo->Effects[i].MiscValue)/10;
-    else if (m_spellInfo->Effects[i].MiscValueB)
-        speedZ = float(m_spellInfo->Effects[i].MiscValueB)/10;
+    else if (m_spellInfo->Effects[i].MiscValueB)                  // Fixed Speed?
+    {
+        speedXY = float(m_spellInfo->Effects[i].MiscValueB)/10;
+        fspeed = true;
+    }
     else
         speedZ = 10.0f;
-    speedXY = dist * 10.0f / speedZ;
+    if (fspeed)
+    {
+        if (m_spellInfo->Effects[i].ValueMultiplier > 0)
+            speedXY *= m_spellInfo->Effects[i].ValueMultiplier;
+        speedZ = dist / speedXY;
+    }
 }
 
 void Spell::EffectTeleportUnits(SpellEffIndex /*effIndex*/)
