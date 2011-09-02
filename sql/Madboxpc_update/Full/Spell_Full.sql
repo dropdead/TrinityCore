@@ -34,3 +34,10 @@ INSERT INTO `spell_script_names` VALUES
 DELETE FROM `spell_script_names` WHERE `spell_id` = 72221;
 INSERT INTO `spell_script_names` VALUES
 (72221, 'spell_gen_luck_of_the_draw');
+-- 06[Druid]Nature_Grasp.sql
+-- Añadido CD interno a Nature Grasp.
+DELETE FROM `spell_proc_event` WHERE `entry` = 16689;
+INSERT INTO `spell_proc_event` (`entry`, `SchoolMask`, `SpellFamilyName`, `SpellFamilyMask0`, `SpellFamilyMask1`, `SpellFamilyMask2`, `procFlags`, `procEx`, `ppmRate`, `CustomChance`, `Cooldown`)
+ VALUE (16689, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2);
+
+
