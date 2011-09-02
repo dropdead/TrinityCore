@@ -758,8 +758,9 @@ bool Creature::Create(uint32 guidlow, Map *map, uint32 phaseMask, uint32 Entry, 
             break;
         case CREATURE_ELITE_WORLDBOSS:
             m_corpseDelay = sWorld->getIntConfig(CONFIG_CORPSE_DECAY_WORLDBOSS);
-            // Se aplica inmunidad a Elit WorldBoss Knock Back
+            // Se aplica inmunidad a  todos los Elite Boss WorldBoss Knock Back - Grip.
             ApplySpellImmune(0,IMMUNITY_EFFECT, SPELL_EFFECT_KNOCK_BACK, true);
+            ApplySpellImmune(0, IMMUNITY_MECHANIC, MECHANIC_GRIP, true);
             break;
         default:
             m_corpseDelay = sWorld->getIntConfig(CONFIG_CORPSE_DECAY_NORMAL);
