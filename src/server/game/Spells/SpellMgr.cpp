@@ -2992,6 +2992,9 @@ void SpellMgr::LoadDbcDataCorrections()
                 spellInfo->EffectImplicitTargetA[0] = TARGET_UNIT_NEARBY_ENTRY;
                 spellInfo->EffectImplicitTargetB[0] = TARGET_DEST_NEARBY_ENTRY;
                 break;
+            case 19465: // Improved Stings, only rank 2 of this spell has target for effect 2 = TARGET_DST_DB
+                spellInfo->EffectImplicitTargetA[2] = TARGET_UNIT_CASTER;
+                break;
             case 59725: // Improved Spell Reflection - aoe aura
                 // Target entry seems to be wrong for this spell :/
                 spellInfo->EffectImplicitTargetA[0] = TARGET_UNIT_CASTER_AREA_PARTY;
@@ -3076,6 +3079,7 @@ void SpellMgr::LoadDbcDataCorrections()
             case 57761: // Fireball!
             case 39805: // Lightning Overload
             case 64823: // Item - Druid T8 Balance 4P Bonus
+            case 34477: // Misdirection
             case 44401: // Missile Barrage
                 spellInfo->procCharges = 1;
                 break;
