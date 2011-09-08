@@ -872,6 +872,8 @@ enum ChallengeToTheBlackFlight
 {
     QUEST_CHALLENGE_TO_THE_BLACK_FLIGHT = 11162,
     NPC_SMOLDERWING                     = 23789,
+    //http://www.wowhead.com/npc=23789#abilities
+    SPELL_FIRE_BREATH                   = 42433,
 };
 
 class npc_smolderwing : public CreatureScript
@@ -886,15 +888,36 @@ public:
 
     struct npc_smolderwingAI : public ScriptedAI
     {
-       npc_smolderwingAI(Creature* c) : ScriptedAI(c) 
-       { 
-           me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-           me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-       }
+        npc_smolderwingAI(Creature* c) : ScriptedAI(c) 
+        { 
+            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+        }
+
+        uint32 uiFireBreath;
+
+        void Reset()
+        {
+            uiFireBreath = 7000;
+        }
 
         void EnterCombat(Unit* pUnit)
         {
             me->AI()->AttackStart(pUnit);
+        }
+
+        void UpdateAI(const uint32 uiDiff)
+        {
+            if (!UpdateVictim())
+                return;
+
+            if (uiFireBreath <= uiDiff)
+            {
+                DoCastVictim(SPELL_FIRE_BREATH);
+                uiFireBreath = 7000;
+            } else uiFireBreath -= uiDiff;
+
+            DoMeleeAttackIfReady();
         }
     };
 };
