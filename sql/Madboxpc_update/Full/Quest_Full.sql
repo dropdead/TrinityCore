@@ -1314,3 +1314,9 @@ INSERT INTO `script_texts` (`npc_entry`,`entry`,`content_default`,`content_loc1`
 -- Fix Quest Prisoners of the Grimtotems
 -- http://www.wowhead.com/quest=11145/deprecated-prisoners-of-the-grimtotems
 UPDATE `gameobject_template` SET `ScriptName`='go_Prisoners_Of_The_Grim_Totems_cage' WHERE `entry`=186287;
+
+
+-- 05_[Quest][11162]Challenge_To_The_Black_Flight.sql
+-- Quest] Challenge to the Black Flight 
+-- ## http://www.wowhead.com/quest=11162/deprecated-challenge-to-the-black-flight
+UPDATE `creature_template` SET `scriptname` = 'npc_smolderwing' WHERE entry = 23789;

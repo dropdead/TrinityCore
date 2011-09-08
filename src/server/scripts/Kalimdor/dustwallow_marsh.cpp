@@ -863,6 +863,42 @@ public:
     }
 };
 
+/*######
+## [Quest] Challenge to the Black Flight 
+## http://www.wowhead.com/quest=11162/deprecated-challenge-to-the-black-flight
+######*/
+
+enum ChallengeToTheBlackFlight
+{
+    QUEST_CHALLENGE_TO_THE_BLACK_FLIGHT = 11162,
+    NPC_SMOLDERWING                     = 23789,
+};
+
+class npc_smolderwing : public CreatureScript
+{
+public:
+   npc_smolderwing() : CreatureScript("npc_smolderwing") { }
+
+    CreatureAI* GetAI(Creature* creature) const
+    {
+        return new npc_smolderwingAI(creature);
+    }
+
+    struct npc_smolderwingAI : public ScriptedAI
+    {
+       npc_smolderwingAI(Creature* c) : ScriptedAI(c) 
+       { 
+           me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+           me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+       }
+
+        void EnterCombat(Unit* /*who*/)
+        {
+            me->AttackStart(player);
+        }
+    };
+};
+
 void AddSC_dustwallow_marsh()
 {
     new mobs_risen_husk_spirit();
@@ -877,4 +913,5 @@ void AddSC_dustwallow_marsh()
     new spell_ooze_zap_channel_end();
     new spell_energize_aoe();
     new go_Prisoners_Of_The_Grim_Totems_cage();
+    new npc_smolderwing();
 }
