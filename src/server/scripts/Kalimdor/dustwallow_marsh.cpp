@@ -888,7 +888,6 @@ public:
 
     struct npc_smolderwingAI : public ScriptedAI
     {
-<<<<<<< HEAD
         npc_smolderwingAI(Creature* c) : ScriptedAI(c) 
         {            
             me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PASSIVE);
