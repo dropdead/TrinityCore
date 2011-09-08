@@ -21,6 +21,7 @@
 #include "ScriptMgr.h"
 #include "Group.h"
 #include "ScriptedFollowerAI.h"
+#include "Vehicle.h"
 
 /*######
 ## Quest Soporte Threat From Above
@@ -2634,196 +2635,178 @@ public:
     }
 };
 
-/*######
-Argent Tournament - Spell
-Spell Fixed:
-    - 62960 - Charge Mount Npc.
-    - 62575 - Shield Mount Npc.
-    - 62544 - Melee Mount Npc.
-    - 62863 - Duel Mount Npc.
-
-DELETE FROM `spell_script_names` WHERE `spell_id` IN (62960,62575,62544,62863);
-INSERT INTO `spell_script_names` (`spell_id`, `ScriptName`) VALUES 
-('62960', 'spell_tournament_charge'),
-('62575', 'spell_tournament_shield'),
-('62544', 'spell_tournament_melee'),
-('62863', 'spell_tournament_duel');
-######*/
-
-class spell_tournament_charge : public SpellScriptLoader
+class spell_tournament_defend : public SpellScriptLoader
 {
 public:
-    spell_tournament_charge() : SpellScriptLoader("spell_tournament_charge") { }
+    spell_tournament_defend() : SpellScriptLoader("spell_tournament_defend") { }
 
-    class spell_tournament_charge_SpellScript : public SpellScript
+    class spell_tournament_defend_AuraScript : public AuraScript
     {
-        PrepareSpellScript(spell_tournament_charge_SpellScript);
+        PrepareAuraScript(spell_tournament_defend_AuraScript);
 
-        void HandleEffectScriptEffect(SpellEffIndex /*effIndex*/)
+        void OnStackChange(AuraEffect const* aurEff, AuraEffectHandleModes mode)
         {
-            if (Unit* pTarget = GetHitUnit())
+            if (Unit* target = GetTarget())
             {
-                if (Unit *caster = GetCaster())
+                target->RemoveAurasDueToSpell(63130);
+                target->RemoveAurasDueToSpell(63131);
+                target->RemoveAurasDueToSpell(63132);
+                
+                switch(GetStackAmount())
                 {
-                    caster->CastSpell(pTarget,74399,true);
-                    caster->CastSpell(pTarget,68321,true);
-
-                    if (pTarget->GetTypeId() == TYPEID_UNIT && pTarget->ToCreature()->GetEntry() == 33272)
-                    {
-                        // Kill Credit
-                        if (Unit *player = caster->GetCharmerOrOwner())
-                            player->CastSpell(player,62658,true);
-                    }
-                }
-
-                if (pTarget->GetAura(64100))
-                    pTarget->RemoveAuraFromStack(64100);
-                else 
-                    if (pTarget->GetAura(62552))
-                        pTarget->RemoveAuraFromStack(62552);
-                    else 
-                        if (pTarget->GetAura(62719))
-                            pTarget->RemoveAuraFromStack(62719);
-            }
-        }
-
-        void Register()
-        {
-            OnEffect += SpellEffectFn(spell_tournament_charge_SpellScript::HandleEffectScriptEffect, EFFECT_0, SPELL_EFFECT_SCRIPT_EFFECT);
-        }
-    };
-
-    SpellScript *GetSpellScript() const
-    {
-        return new spell_tournament_charge_SpellScript();
-    }
-};
-
-class spell_tournament_shield : public SpellScriptLoader
-{
-public:
-    spell_tournament_shield() : SpellScriptLoader("spell_tournament_shield") { }
-
-    class spell_tournament_shield_SpellScript : public SpellScript
-    {
-        PrepareSpellScript(spell_tournament_shield_SpellScript);
-
-        void HandleEffectScriptEffect(SpellEffIndex /*effIndex*/)
-        {
-            if (Unit* pTarget = GetHitUnit())
-            {
-                if (Unit *caster = GetCaster())
-                {
-                    caster->CastSpell(pTarget,62626,true );
-
-                    if (pTarget->GetTypeId() == TYPEID_UNIT && pTarget->ToCreature()->GetEntry() == 33243)
-                    {
-                        // Kill Credit
-                        if (Unit *player = caster->GetCharmerOrOwner())
-                            player->CastSpell(player,62673,true);
-                    }
-                }
-
-                if (pTarget->GetAura(64100))
-                    pTarget->RemoveAuraFromStack(64100);
-                else 
-                    if (pTarget->GetAura(62552))
-                        pTarget->RemoveAuraFromStack(62552);
-                    else 
-                        if (pTarget->GetAura(62719))
-                            pTarget->RemoveAuraFromStack(62719);
-            }
-        }
-
-        void Register()
-        {
-            OnEffect += SpellEffectFn(spell_tournament_shield_SpellScript::HandleEffectScriptEffect, EFFECT_0, SPELL_EFFECT_SCRIPT_EFFECT);
-        }
-    };
-
-    SpellScript *GetSpellScript() const
-    {
-        return new spell_tournament_shield_SpellScript();
-    }
-};
-
-class spell_tournament_melee : public SpellScriptLoader
-{
-public:
-    spell_tournament_melee() : SpellScriptLoader("spell_tournament_melee") { }
-
-    class spell_tournament_melee_SpellScript : public SpellScript
-    {
-        PrepareSpellScript(spell_tournament_melee_SpellScript);
-
-        void HandleEffectScriptEffect(SpellEffIndex /*effIndex*/)
-        {
-            if (Unit* pTarget = GetHitUnit())
-            {
-                if (Unit *caster = GetCaster())
-                {
-                    if (pTarget->GetTypeId() == TYPEID_UNIT && pTarget->ToCreature()->GetEntry() == 33229)
-                    {
-                        // Kill Credit
-                        if (Unit *player = caster->GetCharmerOrOwner())
-                            player->CastSpell(player,62672,true);
-                    }
+                    case 1:
+                        target->CastSpell(target,63130,true,0,aurEff);
+                        break;
+                    case 2:
+                        target->CastSpell(target,63131,true,0,aurEff);
+                        break;
+                    case 3:
+                        target->CastSpell(target,63132,true,0,aurEff);
+                        break;
                 }
             }
         }
 
+        void OnAuraRemoved(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+        {
+            if (Unit* target = GetTarget())
+            {
+                target->RemoveAurasDueToSpell(63130);
+                target->RemoveAurasDueToSpell(63131);
+                target->RemoveAurasDueToSpell(63132);
+            }
+        }
+        
         void Register()
         {
-            OnEffect += SpellEffectFn(spell_tournament_melee_SpellScript::HandleEffectScriptEffect, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
+            AfterEffectApply += AuraEffectApplyFn(spell_tournament_defend_AuraScript::OnStackChange, EFFECT_2, SPELL_AURA_MOD_DAMAGE_PERCENT_TAKEN, AURA_EFFECT_HANDLE_CHANGE_AMOUNT);
+            AfterEffectApply += AuraEffectApplyFn(spell_tournament_defend_AuraScript::OnStackChange, EFFECT_2, SPELL_AURA_MOD_DAMAGE_PERCENT_TAKEN, AURA_EFFECT_HANDLE_REAL);
+            AfterEffectRemove += AuraEffectRemoveFn(spell_tournament_defend_AuraScript::OnAuraRemoved, EFFECT_2, SPELL_AURA_MOD_DAMAGE_PERCENT_TAKEN, AURA_EFFECT_HANDLE_REAL);
         }
     };
 
-    SpellScript *GetSpellScript() const
+    AuraScript* GetAuraScript() const
     {
-        return new spell_tournament_melee_SpellScript();
+        return new spell_tournament_defend_AuraScript();
     }
 };
 
-class spell_tournament_duel : public SpellScriptLoader
+/*########
+## npc_tournament_dummy
+#########*/
+        
+enum TournamentDummySpells
+{
+   SPELL_TOURNAMENT_CHARGE_CREDIT                          = 62658, // Mastery Of The Charge
+   SPELL_TOURNAMENT_BLOCK_CREDIT                           = 62672, // Mastery Of Melee
+   SPELL_TOURNAMENT_SPECIAL_CREDIT                         = 62673, // Mastery Of The Shield-Breaker
+
+   SPELL_DEFEND_AURA_PERIODIC                              = 64223, // 10sec
+};
+
+enum TorunamentDummyEntrys
+{
+   ENTRY_MELEE_DUMMY                                       = 33229,
+   ENTRY_CHARGE_DUMMY                                      = 33272,
+   ENTRY_RANGE_DUMMY                                       = 33243,
+};
+
+class npc_tournament_dummy : public CreatureScript
 {
 public:
-    spell_tournament_duel() : SpellScriptLoader("spell_tournament_duel") { }
+    npc_tournament_dummy() : CreatureScript("npc_tournament_dummy") { }
 
-    class spell_tournament_duel_SpellScript : public SpellScript
+    CreatureAI* GetAI(Creature* pCreature) const
     {
-        PrepareSpellScript(spell_tournament_duel_SpellScript);
+        return new npc_tournament_dummyAI (pCreature);
+    }
 
-        void HandleEffectScriptEffect(SpellEffIndex /*effIndex*/)
+    struct npc_tournament_dummyAI : public Scripted_NoMovementAI
+    {
+        npc_tournament_dummyAI(Creature* pCreature) : Scripted_NoMovementAI(pCreature){ }
+
+        uint32 ResetTimer;
+
+        void Reset()
         {
-            if (Unit* pTarget = GetHitUnit())
-            {
-                if (pTarget->GetTypeId() != TYPEID_PLAYER)
-                    return;
+            ResetTimer = 10000;
+        }
 
-                if (Unit *caster = GetCaster()->GetCharmerOrOwner())
-                    caster->CastSpell(pTarget,62875,true);
+        void SpellHit(Unit* caster, const SpellInfo* spell)
+        {
+            Player* playercaster = NULL;
+
+            if (!caster || !caster->ToPlayer())
+            {
+                if (caster->IsVehicle() && caster->ToCreature())
+                {
+                    Creature* creatureVec = caster->ToCreature();
+                    if (Unit* passager = creatureVec->GetVehicleKit()->GetPassenger(0))
+                    {
+                        if (passager->ToPlayer())
+                            playercaster = passager->ToPlayer();
+                    }
+                }
+            }else
+            {
+                playercaster = caster->ToPlayer();
+            }
+
+            if (!playercaster)
+                return;
+
+            switch (spell->Id)
+            {
+                case 62544:
+                    if (me->GetEntry() == ENTRY_MELEE_DUMMY)
+                        me->CastSpell(playercaster,SPELL_TOURNAMENT_BLOCK_CREDIT,true);
+                    break;
+                case 62626:
+                    if (me->GetEntry() == ENTRY_RANGE_DUMMY)
+                        if (me->GetAura(62665))
+                            me->CastSpell(playercaster,SPELL_TOURNAMENT_SPECIAL_CREDIT,true);
+                    break;
+                case 68321:
+                    if (me->GetEntry() == ENTRY_CHARGE_DUMMY)
+                        me->CastSpell(playercaster,SPELL_TOURNAMENT_CHARGE_CREDIT,true);
+                    break;
             }
         }
 
-        void Register()
+        void DamageTaken(Unit *done_by, uint32 &damage)
         {
-            OnEffect += SpellEffectFn(spell_tournament_duel_SpellScript::HandleEffectScriptEffect, EFFECT_0, SPELL_EFFECT_SCRIPT_EFFECT);
+            damage = 0;
+
+            if (done_by->GetTypeId() != TYPEID_PLAYER && (done_by->GetTypeId() != TYPEID_UNIT || ( !done_by->isGuardian() && !done_by->isPet())))
+                return;
+
+            ResetTimer = 10000;
+        }
+
+        void MoveInLineOfSight(Unit *who) 
+        { 
+            return; 
+        }
+
+        void UpdateAI(const uint32 uiDiff)
+        {
+            if (!UpdateVictim())
+                return;
+
+            if (ResetTimer <= uiDiff)
+            {
+                EnterEvadeMode();
+                ResetTimer = 10000;
+                return;
+            }else  ResetTimer -= uiDiff;
         }
     };
-
-    SpellScript *GetSpellScript() const
-    {
-        return new spell_tournament_duel_SpellScript();
-    }
 };
+
 
 void AddSC_Argen_Tournament()
 {
     /*new npc_chillmaw;*/
-    new spell_tournament_charge;
-    new spell_tournament_shield;
-    new spell_tournament_melee;
-    new spell_tournament_duel;
     new npc_dame_evniki_kapsalis;
     new npc_squire_david;
     new npc_argent_valiant;
@@ -2853,4 +2836,6 @@ void AddSC_Argen_Tournament()
     new npc_lake_frog;
     new npc_maiden_of_ashwood_lake;
     new npc_maiden_of_drak_mar;
+    new spell_tournament_defend();
+    new npc_tournament_dummy();
 }

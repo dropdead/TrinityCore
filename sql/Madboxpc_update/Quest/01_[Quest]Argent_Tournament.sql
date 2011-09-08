@@ -1,10 +1,12 @@
 -- Spells Torneo Montas
 DELETE FROM `spell_script_names` WHERE `spell_id` IN (62960,62575,62544,62863);
-INSERT INTO `spell_script_names` (`spell_id`, `ScriptName`) VALUES 
-('62960', 'spell_tournament_charge'),
-('62575', 'spell_tournament_shield'),
-('62544', 'spell_tournament_melee'),
-('62863', 'spell_tournament_duel');
+DELETE FROM spell_script_names WHERE spell_id = 62552;
+INSERT INTO spell_script_names VALUES
+(62552,'spell_tournament_defend');
+
+-- 
+UPDATE `creature_template`SET `ScriptName = 'npc_tournament_dummy' WHERE `entry` IN (33229,33272,33243);
+
 -- Quest Threat From Above
 -- UPDATE `creature_template` SET `ScriptName`='npc_chillmaw' WHERE `entry`=33687;
 -- -----------------------------------------------

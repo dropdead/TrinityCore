@@ -4425,29 +4425,92 @@ void Spell::EffectScriptEffect(SpellEffIndex effIndex)
                     unitTarget->RemoveAuraFromStack(26464);
                     return;
                 // Argent Tournament Spells
+                // Shield Breaker
                 case 62575:
+                case 66480:
                 {
-                    if (m_caster->GetOwner())
-                        m_caster->GetOwner()->CastSpell(unitTarget,62626,true );
+                    switch (m_spellInfo->Id)
+                    {
+                        case 66480: // 10k Damage
+                            m_caster->CastSpell(unitTarget,64590,true);
+                            break;
+                        case 62575: // 2k Damage
+                            m_caster->CastSpell(unitTarget,62626,true);
+                            break; 
+                    }
                     return;
                 }
+                // Charge 
                 case 62960:
                 {
-                    if (!unitTarget)
+                    if (!unitTarget || !m_caster)
                         return;
-                    m_caster->CastSpell(unitTarget,62563,true );
-                    m_caster->CastSpell(unitTarget,68321,true );
-                    return;
+
+                    m_caster->CastSpell(unitTarget,63661,true);
+                    m_caster->CastSpell(unitTarget,68321,true);
+
+                    return;    
                 }
+                // Shield Breaker Trigger
                 case 62626:
+                case 64590:
+                // Charge Effect 
                 case 68321:
                 {
-                    if (!unitTarget)
+                    if (!unitTarget || !m_caster)
                         return;
-                    if (unitTarget->GetAura(62719))
-                        unitTarget->RemoveAuraFromStack(62719);
-                    if(unitTarget->GetAura(64100))
-                        unitTarget->RemoveAuraFromStack(64100);
+                    
+                    if (unitTarget->HasAura(62552))
+                    {
+                        Aura* defendaura = unitTarget->GetAura(62552);
+                        if (defendaura->GetStackAmount() == 1)
+                        {
+                            unitTarget->RemoveAurasDueToSpell(62552,0,0,AURA_REMOVE_BY_ENEMY_SPELL);
+                        }
+                        else
+                        {
+                            defendaura->ModStackAmount(defendaura->GetStackAmount()-1,AURA_REMOVE_BY_ENEMY_SPELL);
+                        }      
+                    }
+
+                    if (unitTarget->HasAura(66482))
+                    {
+                        Aura* defendaura = unitTarget->GetAura(66482);
+                        if (defendaura->GetStackAmount() == 1)
+                        {
+                            unitTarget->RemoveAurasDueToSpell(66482,0,0,AURA_REMOVE_BY_ENEMY_SPELL);
+                        }                      
+                        else
+                        {
+                            defendaura->ModStackAmount(defendaura->GetStackAmount()-1,AURA_REMOVE_BY_ENEMY_SPELL);
+                        }
+                    }
+
+                    if (unitTarget->HasAura(64100))
+                    {
+                        Aura* defendaura = unitTarget->GetAura(64100);
+                        if (defendaura->GetStackAmount() == 1)
+                        {
+                            unitTarget->RemoveAurasDueToSpell(64100,0,0,AURA_REMOVE_BY_ENEMY_SPELL);
+                        }
+                        else
+                        {
+                            defendaura->ModStackAmount(defendaura->GetStackAmount()-1,AURA_REMOVE_BY_ENEMY_SPELL);
+                        }
+                    }
+
+                    if (unitTarget->HasAura(62719))
+                    {
+                        Aura* defendaura = unitTarget->GetAura(62719);
+                        if (defendaura->GetStackAmount() == 1)
+                        {
+                            unitTarget->RemoveAurasDueToSpell(62719,0,0,AURA_REMOVE_BY_ENEMY_SPELL);
+                        }
+                        else
+                        {
+                            defendaura->ModStackAmount(defendaura->GetStackAmount()-1,AURA_REMOVE_BY_ENEMY_SPELL);
+                        }
+                    }
                     return;
                 }
                 // Shadow Flame (All script effects, not just end ones to prevent player from dodging the last triggered spell)
