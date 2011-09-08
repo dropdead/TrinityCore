@@ -823,6 +823,46 @@ class spell_energize_aoe : public SpellScriptLoader
         }
 };
 
+
+/*######
+## Prisoners of the Grimtotems
+## http://www.wowhead.com/quest=11145/deprecated-prisoners-of-the-grimtotems
+######*/
+
+enum QuestPrisonersOfTheGrimTotems
+{
+    NPC_THERAMORE_PRISONER              = 23720,
+    QUEST_PRISIONERS_OF_THE_GRIM_TOTEMS = 11145,    
+};
+
+class go_Prisoners_Of_The_Grim_Totems_cage : public GameObjectScript
+{
+public:
+    go_Prisoners_Of_The_Grim_Totems_cage() : GameObjectScript("go_Prisoners_Of_The_Grim_Totems_cage") { }
+
+    bool OnGossipHello(Player* player, GameObject* pGO)
+    {
+        if (player->GetQuestStatus(QUEST_PRISIONERS_OF_THE_GRIM_TOTEMS) != QUEST_STATUS_INCOMPLETE)
+            return true;
+
+        Creature* pPrisoner = pGO->FindNearestCreature(NPC_THERAMORE_PRISONER, 2.0f);
+
+        if (pPrisoner)
+        {
+            pGO->UseDoorOrButton();
+        }
+
+        Quest const* qInfo = sObjectMgr->GetQuestTemplate(QUEST_PRISIONERS_OF_THE_GRIM_TOTEMS);
+
+        if (qInfo)
+        {
+            player->KilledMonsterCredit(qInfo->ReqCreatureOrGOId[0], 0);
+            pPrisoner->DisappearAndDie();
+        }
+        return true;
+    }
+};
+
 void AddSC_dustwallow_marsh()
 {
     new mobs_risen_husk_spirit();
@@ -836,4 +876,5 @@ void AddSC_dustwallow_marsh()
     new spell_ooze_zap();
     new spell_ooze_zap_channel_end();
     new spell_energize_aoe();
+    new go_Prisoners_Of_The_Grim_Totems_cage();
 }

@@ -1304,3 +1304,13 @@ UPDATE `gameobject_template` SET `scriptname` = 'go_brew_event' WHERE entry IN (
 DELETE FROM `script_texts` WHERE entry = -1850040 AND `npc_entry`=28566;
 INSERT INTO `script_texts` (`npc_entry`,`entry`,`content_default`,`content_loc1`,`content_loc2`,`content_loc3`,`content_loc4`,`content_loc5`,`content_loc6`,`content_loc7`,`content_loc8`,`sound`,`type`,`language`,`emote`,`comment`) VALUES
 ('28566','-1850040','We''ve done it! Come get the cask...!',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0','0','0','0','Say - Complete Quest');
+
+
+-- ----------------------------------------------------------------------------------------------
+-- ----------------------------------------------------------------------------------------------
+-- ----------------------------------------------------------------------------------------------
+
+-- 04_[Quest][11145]Prisioners_of_the_grimtotems.sql
+-- Fix Quest Prisoners of the Grimtotems
+-- http://www.wowhead.com/quest=11145/deprecated-prisoners-of-the-grimtotems
+UPDATE `gameobject_template` SET `ScriptName`='go_Prisoners_Of_The_Grim_Totems_cage' WHERE `entry`=186287;
