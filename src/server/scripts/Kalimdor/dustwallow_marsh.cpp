@@ -892,9 +892,9 @@ public:
            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
        }
 
-        void EnterCombat(Unit* /*who*/)
+        void EnterCombat(Unit* pUnit)
         {
-            me->AttackStart(player);
+            me->AI()->AttackStart(pUnit);
         }
     };
 };
