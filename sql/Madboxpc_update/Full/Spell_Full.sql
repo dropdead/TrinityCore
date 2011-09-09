@@ -39,5 +39,7 @@ INSERT INTO `spell_script_names` VALUES
 DELETE FROM `spell_proc_event` WHERE `entry` = 16689;
 INSERT INTO `spell_proc_event` (`entry`, `SchoolMask`, `SpellFamilyName`, `SpellFamilyMask0`, `SpellFamilyMask1`, `SpellFamilyMask2`, `procFlags`, `procEx`, `ppmRate`, `CustomChance`, `Cooldown`)
  VALUE (16689, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2);
-
+-- 07[Hunter]Explosive_trap.sql
+-- Fix Spell Explosive Trap (Hunter) daño periódico nulo
+UPDATE `spell_bonus_data` SET `ap_dot_bonus` = '0.1' WHERE `entry` = 13812;
 
