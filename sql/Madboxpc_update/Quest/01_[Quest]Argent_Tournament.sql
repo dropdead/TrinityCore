@@ -5,7 +5,7 @@ INSERT INTO spell_script_names VALUES
 (62552,'spell_tournament_defend');
 
 -- 
-UPDATE `creature_template`SET `ScriptName = 'npc_tournament_dummy' WHERE `entry` IN (33229,33272,33243);
+UPDATE `creature_template`SET `ScriptName` = 'npc_tournament_dummy' WHERE `entry` IN (33229,33272,33243);
 
 -- Quest Threat From Above
 -- UPDATE `creature_template` SET `ScriptName`='npc_chillmaw' WHERE `entry`=33687;
