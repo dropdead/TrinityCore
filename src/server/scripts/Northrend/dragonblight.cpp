@@ -93,10 +93,14 @@ public:
 
     struct npc_no_mercy_for_the_capturedAI : public ScriptedAI
     {
-        npc_no_mercy_for_the_capturedAI(Creature* creature) : ScriptedAI(creature) { }
+        npc_no_mercy_for_the_capturedAI(Creature* creature) : ScriptedAI(creature) 
+        { 
+            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_UNK_15);
+        }
 
         void Reset()
         {
+            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_UNK_15);
             me->RestoreFaction();
         }
     };
@@ -110,8 +114,8 @@ public:
     {
         if (player->GetQuestStatus(QUEST_NO_MERCY_FOR_THE_CAPTURED) == QUEST_STATUS_INCOMPLETE)
             player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_PRISIONEROS, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
+        player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
 
-        player->SEND_GOSSIP_MENU(13691, creature->GetGUID());
         return true;
     }
 
