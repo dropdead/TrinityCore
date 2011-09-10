@@ -84,7 +84,7 @@ enum NoMercyForTheCaptured
     QUEST_NO_MERCY_FOR_THE_CAPTURED = 12245,
 };
 
-#define GOSSIP_PRISIONEROS "Barney Sobalo"
+#define GOSSIP_PRISIONEROS "What do you mean my time has come? I'll kill you where you stand!"
 
 class npc_no_mercy_for_the_captured : public CreatureScript
 {

@@ -1322,3 +1322,5 @@ UPDATE `gameobject_template` SET `ScriptName`='go_Prisoners_Of_The_Grim_Totems_c
 -- Quest] Challenge to the Black Flight 
 -- ## http://www.wowhead.com/quest=11162/deprecated-challenge-to-the-black-flight
 UPDATE `creature_template` SET `scriptname` = 'npc_smolderwing' WHERE entry = 23789;
+-- No Mercy for the Captured http://www.wowhead.com/quest=12245#
+UPDATE `creature_template`SET `ScriptName` = 'npc_no_mercy_for_the_captured' WHERE `entry` IN (27376,27378,27379,27381);
