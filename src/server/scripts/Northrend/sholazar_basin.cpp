@@ -827,6 +827,49 @@ public:
     }
 };
 
+/*######
+##  http://www.wowhead.com/quest=12532/flown-the-coop
+######*/
+ 
+ 
+enum FlowTheCoop
+{
+    QUEST_FLOW_THE_COOP = 12532,
+};
+ 
+ 
+class npc_captured_chicken : public CreatureScript
+{
+public:
+   npc_captured_chicken() : CreatureScript("npc_captured_chicken") { }
+ 
+    CreatureAI* GetAI(Creature* creature) const
+    {
+        return new npc_captured_chickenAI(creature);
+    }
+ 
+    struct npc_captured_chickenAI : public ScriptedAI
+    {
+        npc_captured_chickenAI(Creature* c) : ScriptedAI(c)
+        {            
+            me->SetVisible(false);
+        }
+ 
+        uint64 uiPlayerGUID;
+       
+        void UpdateAI(const uint32 uiDiff)
+        {
+            if (Player* player = Unit::GetPlayer(*me, uiPlayerGUID))
+            {
+                if (player->GetQuestStatus(QUEST_FLOW_THE_COOP) == QUEST_STATUS_INCOMPLETE)
+                {
+                    me->SetVisible(true);
+                }
+            }
+        }
+    };
+};
+
 void AddSC_sholazar_basin()
 {
     new npc_injured_rainspeaker_oracle();
@@ -838,4 +881,5 @@ void AddSC_sholazar_basin()
     new npc_jungle_punch_target();
     new npc_tipsy_mcmanus();
     new go_brew_event();
+	new npc_captured_chicken();
 }
