@@ -118,6 +118,8 @@ DELETE FROM `spell_target_position` WHERE `id` IN (63986,63987);
 INSERT INTO `spell_target_position` (`id`,`target_map`,`target_position_x`,`target_position_y`,`target_position_z`,`target_orientation`) VALUES
 (63986,571,8574.87,700.595,547.29,5.48),
 (63987,571,8460,700,547.4,3.839);
+-- Fix quest 10866 - Zuluhed the Whacked 
+UPDATE `quest_template` SET `ReqCreatureOrGOId1` = -185156, `ObjectiveText1` = 'Karynaku freed', `ReqCreatureOrGOId2` = 11980 , `ObjectiveText2` = 'Zuluhed the Whacked slain'  WHERE entry = 10866;
 -- Spells Monturas Horda
 UPDATE `creature_template` SET `spell1`=62544, `spell2`=62575, `spell3`=62960, `spell4`=62552, `spell5`=64077 WHERE `entry` IN (33844, 33320, 33321, 33322, 33323, 33324);
 -- Spells Monturas Ally
