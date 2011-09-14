@@ -14226,7 +14226,7 @@ void Unit::ProcDamageAndSpellFor(bool isVictim, Unit* pTarget, uint32 procFlag, 
         if (procExtra & PROC_EX_ABSORB && isVictim)
             if (damage || spellProto->Effects[0].TriggerSpell || 
                 spellProto->Effects[1].TriggerSpell || spellProto->Effects[2].TriggerSpell)
-                active = true;
+                active = false;
 
         if (!IsTriggeredAtSpellProcEvent(pTarget, triggerData.aura, procSpell, procFlag, procExtra, attType, isVictim, active, triggerData.spellProcEvent))
             continue;
