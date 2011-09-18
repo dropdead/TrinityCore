@@ -1543,7 +1543,7 @@ public:
                     Shadron->AI()->DoAction(ACTION_CLOSE_PORTAL);
 
                 Creature* pDebuffTarget = NULL;
-                Map *map = me->GetMap();
+                Map* map = me->GetMap();
                 if (map->IsDungeon())
                 {
                     Map::PlayerList const &PlayerList = map->GetPlayers();
@@ -1643,7 +1643,7 @@ public:
                     pVesperon->RemoveAurasDueToSpell(SPELL_TWILIGHT_TORMENT_VESP);
                 }
 
-                Map *map = me->GetMap();
+                Map* map = me->GetMap();
                 if (map->IsDungeon())
                 {
                     Map::PlayerList const &PlayerList = map->GetPlayers();

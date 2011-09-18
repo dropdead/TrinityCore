@@ -60,7 +60,7 @@ struct Locations
 {
     float x, y, z;
 };
- 
+
 struct Locations moveLocs[]=
 {
     {261.6f, -449.3f, 109.5f},
@@ -70,7 +70,7 @@ struct Locations moveLocs[]=
     {310.0f, -453.4f, 109.5f},
     {238.6f, -460.7f, 109.5f}
 };
- 
+
 enum Phase
 {
     PHASE_FRENZIED_WORGEN,
@@ -117,13 +117,13 @@ public:
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_NOT_SELECTABLE|UNIT_FLAG_NOT_ATTACKABLE_1|UNIT_FLAG_OOC_NOT_ATTACKABLE);
             me->SetStandState(UNIT_STAND_STATE_STAND);
             DoCast(me, SPELL_FREEZE);
-        
+
             me->SetReactState(REACT_DEFENSIVE);
- 
+
             for(uint32 i=0;i<4;i++)
                 DoneAdds[i]=false;
             AddCount=0;
- 
+
             currentPhase=PHASE_NONE;
 
             if (pInstance)
@@ -184,7 +184,7 @@ public:
             DoScriptText(SAY_AGGRO, me);
             SetInCombat();
         }
- 
+
         void UpdateAI(const uint32 diff)
         {
             if(currentPhase!=PHASE_GORTOK_PALEHOOF)
@@ -192,30 +192,30 @@ public:
             //Return since we have no target
             if (!UpdateVictim())
                 return;
-        
+
             Creature* pTemp = Unit::GetCreature((*me), pInstance ? pInstance->GetData64(DATA_MOB_ORB) : 0);
             if (pTemp && pTemp->isAlive())
                 pTemp->DisappearAndDie();
-        
+
             if (uiArcingSmashTimer <= diff)
             {
                 DoCast(me, SPELL_ARCING_SMASH);
                 uiArcingSmashTimer = urand(9*IN_MILLISECONDS, 12*IN_MILLISECONDS);
             } else uiArcingSmashTimer -= diff;
-        
+
             if (uiImpaleTimer <= diff)
             {
               if (Unit* pTarget = SelectTarget(SELECT_TARGET_RANDOM, 0, 100, true))
                   DoCast(pTarget, DUNGEON_MODE(SPELL_IMPALE, H_SPELL_IMPALE));
               uiImpaleTimer = urand(9*IN_MILLISECONDS, 12*IN_MILLISECONDS);
             } else uiImpaleTimer -= diff;
-        
+
             if (uiWhiteringRoarTimer <= diff)
             {
                 DoCast(me, DUNGEON_MODE(SPELL_WITHERING_ROAR, H_SPELL_WITHERING_ROAR));
                 uiWhiteringRoarTimer = urand(12*IN_MILLISECONDS, 16*IN_MILLISECONDS);
             } else uiWhiteringRoarTimer -= diff;
-        
+
             DoMeleeAttackIfReady();
         }
 
@@ -318,11 +318,11 @@ public:
             uiTerrifyingRoarTimer = 15*IN_MILLISECONDS;
 
             me->SetReactState(REACT_DEFENSIVE);
-        
+
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_NOT_SELECTABLE|UNIT_FLAG_NOT_ATTACKABLE_1|UNIT_FLAG_OOC_NOT_ATTACKABLE);
             me->SetStandState(UNIT_STAND_STATE_STAND);
             DoCast(me, SPELL_FREEZE);
- 
+
             if (pInstance)
                 if(pInstance->GetData(DATA_GORTOK_PALEHOOF_EVENT)==IN_PROGRESS)
                 {
@@ -421,11 +421,11 @@ public:
             uiEnraged = false;
 
             me->SetReactState(REACT_DEFENSIVE);
-     
+
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_NOT_SELECTABLE|UNIT_FLAG_NOT_ATTACKABLE_1|UNIT_FLAG_OOC_NOT_ATTACKABLE);
             me->SetStandState(UNIT_STAND_STATE_STAND);
             DoCast(me, SPELL_FREEZE);
- 
+
             if (pInstance)
                 if(pInstance->GetData(DATA_GORTOK_PALEHOOF_EVENT)==IN_PROGRESS)
                 {
@@ -513,13 +513,13 @@ public:
             uiStompTimer = 5*IN_MILLISECONDS;
             uiGoreTimer = 10*IN_MILLISECONDS;
             uiGrievousWoundTimer = 12*IN_MILLISECONDS;
-        
+
             me->SetReactState(REACT_DEFENSIVE);
 
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_NOT_SELECTABLE|UNIT_FLAG_NOT_ATTACKABLE_1|UNIT_FLAG_OOC_NOT_ATTACKABLE);
             me->SetStandState(UNIT_STAND_STATE_STAND);
             DoCast(me, SPELL_FREEZE);
- 
+
             if (pInstance)
                 if(pInstance->GetData(DATA_GORTOK_PALEHOOF_EVENT)==IN_PROGRESS)
                 {
@@ -613,13 +613,13 @@ public:
             uiAcidSpitTimer = 5*IN_MILLISECONDS;
             uiAcidSplatterTimer = 12*IN_MILLISECONDS;
             uiPoisonBreathTimer = 15*IN_MILLISECONDS;
-        
+
             me->SetReactState(REACT_DEFENSIVE);
 
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_NOT_SELECTABLE|UNIT_FLAG_NOT_ATTACKABLE_1|UNIT_FLAG_OOC_NOT_ATTACKABLE);
             me->SetStandState(UNIT_STAND_STATE_STAND);
             DoCast(me, SPELL_FREEZE);
- 
+
             if (pInstance)
                 if(pInstance->GetData(DATA_GORTOK_PALEHOOF_EVENT) == IN_PROGRESS)
                 {
@@ -803,9 +803,9 @@ public:
         Creature *pPalehoof = Unit::GetCreature(*pGO, pInstance ? pInstance->GetData64(DATA_GORTOK_PALEHOOF) : 0);
         if (pPalehoof && pPalehoof->isAlive())
         {
-            // maybe these are hacks :(
             pGO->SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_NOT_SELECTABLE);
             pGO->SetGoState(GO_STATE_ACTIVE);
+
             CAST_AI(boss_palehoof::boss_palehoofAI, pPalehoof->AI())->NextPhase();
         }
         return true;

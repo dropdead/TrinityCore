@@ -100,7 +100,7 @@ public:
             pInstance = c->GetInstanceScript();
         }
 
-        InstanceScript *pInstance;
+        InstanceScript* pInstance;
 
         bool bChanneling;
         bool bGuardianSummoned;
@@ -369,7 +369,7 @@ public:
             }
         }
 
-        void SpellHitTarget(Unit *pTarget, const SpellInfo *spell) 
+        void SpellHitTarget(Unit *pTarget, const SpellInfo *spell)
         {
             if (spell->Id == DUNGEON_MODE(SPELL_POUND, SPELL_POUND_H))
                 pTarget->CastSpell(pTarget, DUNGEON_MODE(SPELL_POUND_DMG, SPELL_POUND_DMG_H), true);
@@ -405,7 +405,7 @@ public:
         }
     };
 
-    CreatureAI *GetAI(Creature *creature) const
+    CreatureAI* GetAI(Creature* creature) const
     {
         return new boss_anub_arakAI(creature);
     }

@@ -114,7 +114,7 @@ public:
     struct boss_svalaAI : public ScriptedAI
     {
         uint64 uiDoodadMirror;
-    
+
         boss_svalaAI(Creature *c) : ScriptedAI(c)
         {
             pInstance = c->GetInstanceScript();
@@ -145,7 +145,7 @@ public:
                 {
                     pInstance->SetData(DATA_SVALA_SORROWGRAVE_EVENT, NOT_STARTED);
                 }
-                else 
+                else
                     Phase = FINISHED;
 
             uiDoodadMirror = pInstance? pInstance->GetData64(DATA_DOODAD_UTGARDE_MIRROR_FX01) : NULL;
@@ -169,7 +169,7 @@ public:
                     if (GameObject* go = GameObject::GetGameObject(*me, uiDoodadMirror))
                         go->Use(me);
                 }
-            
+
             }
         }
 
@@ -221,7 +221,7 @@ public:
                             ++uiIntroPhase;
                             uiIntroTimer = 12*IN_MILLISECONDS;
                         }
-                        else 
+                        else
                            Reset();
                         break;
                     case 5:
@@ -283,7 +283,7 @@ public:
         }
 
         // called by svala sorrowgrave to set guid of victim
-        void SetGUID(const uint64 &guid, int32 id) 
+        void SetGUID(const uint64 &guid, int32 id)
         {
             if (Unit *pVictim = me->GetUnit(*me, guid))
             {
@@ -310,10 +310,10 @@ public:
         {
             pInstance = c->GetInstanceScript();
         }
-    
+
         bool bFlames;
         bool bMove;
-    
+
         uint64 uiFlameBrazier_1;
         uint64 uiFlameBrazier_2;
         uint64 uiRitualTarget;
@@ -323,14 +323,14 @@ public:
         uint32 uiSacrificeTimer;
         uint32 uiMoveTimer;
         uint32 uiHealthAmountModifier;
-    
+
         uint64 uiDoodadMirror;
 
         CombatPhase Phase;
 
         SummonList summons;
         Unit* pSacrificeTarget;
-    
+
         InstanceScript* pInstance;
 
         void Reset()
@@ -348,7 +348,7 @@ public:
             uiFlamesCount = 0;
             uiHealthAmountModifier = 1;
             uiMoveTimer = 23*IN_MILLISECONDS;
-        
+
             bFlames = false;
             bMove = true;
 
@@ -370,7 +370,7 @@ public:
 
             if (pInstance)
                 pInstance->SetData(DATA_SVALA_SORROWGRAVE_EVENT, IN_PROGRESS);
-            
+
             if (GameObject* go = GameObject::GetGameObject(*me, uiDoodadMirror))
                 go->ResetDoorOrButton();
         }
@@ -384,8 +384,8 @@ public:
         {
             summons.Despawn(summon);
         }
-    
-        void SpellHitTarget(Unit *pTarget, const SpellInfo *spell) 
+
+        void SpellHitTarget(Unit *pTarget, const SpellInfo *spell)
         {
             if (spell->Id == SPELL_RITUAL_STRIKE_DOT)
                 if (IsHeroic())
@@ -393,7 +393,7 @@ public:
                 else
                     pTarget->RemoveAurasDueToSpell(SPELL_RITUAL_STRIKE_DOT);
         }
-    
+
         void KilledUnit(Unit* who)
         {
             DoScriptText(RAND(SAY_SLAY_1, SAY_SLAY_2, SAY_SLAY_3), me);
@@ -438,7 +438,7 @@ public:
 
                         if (uiFlamesCount < 3)
                         {
-                            if (Creature* pBrazier = Creature::GetCreature(*me, RAND(uiFlameBrazier_1, uiFlameBrazier_2))) 
+                            if (Creature* pBrazier = Creature::GetCreature(*me, RAND(uiFlameBrazier_1, uiFlameBrazier_2)))
                             {
                                 if (IsHeroic())   // find correct spell
                                 {
@@ -452,7 +452,7 @@ public:
                             ++uiFlamesCount;
                         }
                         else
-                        { 
+                        {
                             bFlames = false;
                             uiCallFlamesTimer = urand(8*IN_MILLISECONDS, 12*IN_MILLISECONDS);
                             uiFlamesCount = 0;

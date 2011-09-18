@@ -43,12 +43,12 @@ enum Spells
     H_SPELL_SHADOW_BOLT                           = 59357,
     SPELL_SHADOW_NOVA                             = 52535,
     H_SPELL_SHADOW_NOVA                           = 59358,
-    // anub'ar warrior 
+    // anub'ar warrior
     SPELL_STRIKE                                  = 52532,
     SPELL_CLEAVE                                  = 49806,
     // common watcher spells
     SPELL_WEB_WRAP                                = 52086,
-    SPELL_WEB_WRAP_STUN                           = 52087,    
+    SPELL_WEB_WRAP_STUN                           = 52087,
     SPELL_INFECTED_BITE                           = 52469,
     H_SPELL_INFECTED_BITE                         = 59364,
     // gashra
@@ -390,7 +390,7 @@ public:
 
     struct npc_krikthir_watcherAI : public ScriptedAI
     {
-        npc_krikthir_watcherAI(Creature *c) : ScriptedAI(c) 
+        npc_krikthir_watcherAI(Creature *c) : ScriptedAI(c)
         {
             pInstance = c->GetInstanceScript();
         }
@@ -420,7 +420,7 @@ public:
                     uiSpecialSpell = SPELL_ENRAGE;
                     break;
                 // watcher silthik
-                case 28731: 
+                case 28731:
                     uiSpecialSpell = DUNGEON_MODE(SPELL_POSION_SPRAY, H_SPELL_POSION_SPRAY);
                     break;
                 default:
@@ -537,8 +537,8 @@ public:
         uint64 uiWrapTargetGUID;
 
         void Reset()
-        { 
-            uiWrapTargetGUID = 0; 
+        {
+            uiWrapTargetGUID = 0;
         }
 
         void EnterCombat(Unit* /*who*/) {}

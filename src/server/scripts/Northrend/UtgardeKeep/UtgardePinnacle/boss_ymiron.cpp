@@ -206,7 +206,7 @@ public:
         }
 
         void UpdateAI(const uint32 diff)
-        { 
+        {
             if (m_uiCheckSkadiTimer <= diff)
             {
                 if (pInstance)
@@ -418,7 +418,7 @@ public:
             DoScriptText(RAND(SAY_SLAY_1,SAY_SLAY_2,SAY_SLAY_3,SAY_SLAY_4), me);
         }
 
-        void SpellHitTarget(Unit *pTarget, const SpellInfo *spell) 
+        void SpellHitTarget(Unit *pTarget, const SpellInfo *spell)
         {
             if (spell->Id == SPELL_BANE_TRIGGERED)
                 m_bAchievement = false;

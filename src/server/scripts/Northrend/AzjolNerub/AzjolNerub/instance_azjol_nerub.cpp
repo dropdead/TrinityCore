@@ -271,7 +271,7 @@ public:
                     }
                     if (pCrusher->isAlive())
                         pCrusher->AI()->EnterEvadeMode();
-                    else 
+                    else
                         pCrusher->Respawn();
                 }
                 else
@@ -314,7 +314,7 @@ public:
                         pKrikthir->AI()->EnterEvadeMode();
 
                         // trash
-                        if (!WatcherTrashGUIDs.empty())   
+                        if (!WatcherTrashGUIDs.empty())
                             for (std::set<uint64>::const_iterator itr = WatcherTrashGUIDs.begin(); itr != WatcherTrashGUIDs.end(); ++itr)
                             {
                                 Creature* pTemp = instance->GetCreature(*itr);
@@ -385,7 +385,7 @@ public:
         }
     };
 
-    InstanceScript* GetInstanceScript(InstanceMap *map) const
+    InstanceScript* GetInstanceScript(InstanceMap* map) const
     {
         return new instance_azjol_nerub_InstanceScript(map);
     }

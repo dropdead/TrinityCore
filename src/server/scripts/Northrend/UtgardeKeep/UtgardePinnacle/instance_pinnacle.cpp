@@ -70,7 +70,7 @@ public:
         uint64 uiFlameBrazier_2;
 
         uint32 m_auiEncounter[MAX_ENCOUNTER];
-    
+
         uint64 uiDoodad_Utgarde_Mirror_FX01;
 
         std::string str_data;
@@ -105,8 +105,8 @@ public:
                 case 26686:    uiFerociousRhino = pCreature->GetGUID();                 break;
                 case 29281:    uiSvala = pCreature->GetGUID();                          break;
                 case 26688:    uiPalehoofOrb = pCreature->GetGUID();                    break;
-                case 27273:    
-                    (uiFlameBrazier_1 ? uiFlameBrazier_2 : uiFlameBrazier_1) =  pCreature->GetGUID();  
+                case 27273:
+                    (uiFlameBrazier_1 ? uiFlameBrazier_2 : uiFlameBrazier_1) =  pCreature->GetGUID();
                                                                                         break;
                 case 27327:    uiRitualTarget = pCreature->GetGUID();                   break;
             }

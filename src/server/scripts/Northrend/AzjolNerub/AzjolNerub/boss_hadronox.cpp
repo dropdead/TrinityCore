@@ -225,7 +225,7 @@ class boss_hadronox : public CreatureScript
                     if (me->isInCombat())
                     {
                         me->SetReactState(REACT_AGGRESSIVE);
-                        _events.ScheduleEvent(EVENT_FORCEMOVE, urand(7, 10) *IN_MILLISECONDS);                        
+                        _events.ScheduleEvent(EVENT_FORCEMOVE, urand(7, 10) *IN_MILLISECONDS);
                     }
                     else
                         me->GetMotionMaster()->MovePoint(_wpCount, HadronoxWaypoints[_wpCount]);
@@ -313,13 +313,13 @@ class npc_anubar_crusher : public CreatureScript
 
         struct npc_anubar_crusherAI : public ScriptedAI
         {
-            npc_anubar_crusherAI(Creature* c) : ScriptedAI(c) 
+            npc_anubar_crusherAI(Creature* c) : ScriptedAI(c)
             {
                 _instance = c->GetInstanceScript();
             }
 
             void Reset()
-            { 
+            {
                 _smashTimer = urand(7, 10) *IN_MILLISECONDS;
 
                 if (_instance)
@@ -331,7 +331,7 @@ class npc_anubar_crusher : public CreatureScript
                     cryptFiend->Respawn();
             }
 
-            void EnterCombat(Unit* /*who*/) 
+            void EnterCombat(Unit* /*who*/)
             {
                 if (_instance)
                     _instance->SetData(DATA_HADRONOX_EVENT, IN_PROGRESS);
@@ -339,7 +339,7 @@ class npc_anubar_crusher : public CreatureScript
 
             void UpdateAI(uint32 const diff)
             {
-                if (!UpdateVictim()) 
+                if (!UpdateVictim())
                     return;
 
                 if (_smashTimer <= diff)
@@ -377,13 +377,13 @@ class npc_hadronox_nerubian : public CreatureScript
 
         struct npc_hadronox_nerubianAI : public ScriptedAI
         {
-            npc_hadronox_nerubianAI(Creature* c) : ScriptedAI(c) 
+            npc_hadronox_nerubianAI(Creature* c) : ScriptedAI(c)
             {
                 _instance = c->GetInstanceScript();
             }
 
             void Reset()
-            { 
+            {
                 _wpCount = 1;
                 _wpReached = true;
                 me->SetReactState(REACT_DEFENSIVE);
@@ -434,7 +434,7 @@ class npc_hadronox_nerubian : public CreatureScript
                         AttackStart(hadronox);
                     }
 
-                if (!UpdateVictim()) 
+                if (!UpdateVictim())
                     return;
 
                 /*

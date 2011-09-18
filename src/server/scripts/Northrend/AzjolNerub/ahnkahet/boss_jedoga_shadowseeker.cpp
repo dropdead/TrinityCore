@@ -248,7 +248,7 @@ public:
             me->GetMotionMaster()->MovePoint(0, JedogaPosition[0]);
 
             pInstance->SetData(DATA_JEDOGA_TRIGGER_SWITCH, 1);
-            if (pInstance->GetData(DATA_JEDOGA_SHADOWSEEKER_EVENT) == IN_PROGRESS) 
+            if (pInstance->GetData(DATA_JEDOGA_SHADOWSEEKER_EVENT) == IN_PROGRESS)
                 OpferRufen();
 
             bOnGround = false;
@@ -289,7 +289,7 @@ public:
             if (pInstance->GetData(DATA_JEDOGA_SHADOWSEEKER_EVENT) != IN_PROGRESS && pInstance->GetData(DATA_ALL_INITIAND_DEAD))
                 MoveDown();
 
-            if (bOpFerok && !bOnGround && !bCanDown) 
+            if (bOpFerok && !bOnGround && !bCanDown)
                 Opfern();
 
             if (bOpFerokFail && !bOnGround && !bCanDown)

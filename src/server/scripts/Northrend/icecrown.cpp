@@ -221,7 +221,6 @@ public:
 };
 
 
-
 /*########
 ## npc_the_ocular
 #########*/
@@ -804,7 +803,7 @@ public:
         }
     };
 
-    CreatureAI *GetAI(Creature *creature) const
+    CreatureAI* GetAI(Creature* creature) const
     {
         return new npc_vereth_the_cunningAI(creature);
     }

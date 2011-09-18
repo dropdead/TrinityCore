@@ -16,7 +16,7 @@
  */
 
 /*
- * Comment:  Find correct mushrooms spell to make them visible - buffs of the mushrooms not ever applied to the users...
+ * Comment:  Find correct mushrooms spell
  */
 
 #include "ScriptPCH.h"
@@ -52,10 +52,10 @@ public:
     {
         boss_amanitarAI(Creature* c) : ScriptedAI(c)
         {
-            pInstance = c->GetInstanceScript();
+            instance = c->GetInstanceScript();
         }
 
-        InstanceScript* pInstance;
+        InstanceScript* instance;
 
         uint32 uiRootTimer;
         uint32 uiBashTimer;
@@ -74,44 +74,26 @@ public:
             me->SetMeleeDamageSchool(SPELL_SCHOOL_NATURE);
             me->ApplySpellImmune(0, IMMUNITY_SCHOOL, SPELL_SCHOOL_MASK_NATURE, true);
 
-            if (pInstance)
+            if (instance)
             {
-                DoRemoveAurasDueToSpellOnPlayersAndPets(SPELL_MINI);
-                pInstance->SetData(DATA_AMANITAR_EVENT, NOT_STARTED);
+                instance->DoRemoveAurasDueToSpellOnPlayers(SPELL_MINI);
+                instance->SetData(DATA_AMANITAR_EVENT, NOT_STARTED);
             }
         }
 
-        void JustDied(Unit * /*Killer*/)
+        void JustDied(Unit* /*Killer*/)
         {
-            if (pInstance)
+            if (instance)
             {
-                pInstance->SetData(DATA_AMANITAR_EVENT, DONE);
-                DoRemoveAurasDueToSpellOnPlayersAndPets(SPELL_MINI);
+                instance->SetData(DATA_AMANITAR_EVENT, DONE);
+                instance->DoRemoveAurasDueToSpellOnPlayers(SPELL_MINI);
             }
         }
 
-        void DoRemoveAurasDueToSpellOnPlayersAndPets(uint32 spell)
+        void EnterCombat(Unit* /*who*/)
         {
-            if (!pInstance)
-                return;
-
-            Map::PlayerList const &PlayerList = pInstance->instance->GetPlayers();
-
-            if (!PlayerList.isEmpty())
-                for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
-                    if (Player* pPlayer = i->getSource())
-                    {
-                        pPlayer->RemoveAurasDueToSpell(spell);
-
-                        if (Pet* pPet = pPlayer->GetPet())
-                            pPet->RemoveAurasDueToSpell(spell);
-                    }
-        }
-
-        void EnterCombat(Unit * /*who*/)
-        {
-            if (pInstance)
-                pInstance->SetData(DATA_AMANITAR_EVENT, IN_PROGRESS);
+            if (instance)
+                instance->SetData(DATA_AMANITAR_EVENT, IN_PROGRESS);
         }
 
         void SpawnAdds()
@@ -125,27 +107,26 @@ public:
                 me->GetRandomNearPosition(pos, 45.0f);
                 pos.m_positionZ = me->GetMap()->GetHeight(pos.GetPositionX(), pos.GetPositionY(), MAX_HEIGHT) + 2.0f;
 
-                if (Creature* pHelp = me->SummonCreature(NPC_HELPER, pos))
+                if (Creature* help = me->SummonCreature(NPC_HELPER, pos))
                 {
-                    Creature* temp1 = pHelp->FindNearestCreature(NPC_HEALTHY_MUSHROOM, 6.0f, true);
-                    Creature* temp2 = pHelp->FindNearestCreature(NPC_POISONOUS_MUSHROOM, 6.0f, true);
+                    Creature* temp1 = help->FindNearestCreature(NPC_HEALTHY_MUSHROOM, 6.0f, true);
+                    Creature* temp2 = help->FindNearestCreature(NPC_POISONOUS_MUSHROOM, 6.0f, true);
                     if (temp1 || temp2)
                     {
-                        pHelp->DisappearAndDie();
+                        help->DisappearAndDie();
                     }
                     else  // found good place to spawn
                     {
                         u = 1 - u;
-                        pHelp->DisappearAndDie();
+                        help->DisappearAndDie();
                         me->SummonCreature(u > 0 ? NPC_POISONOUS_MUSHROOM : NPC_HEALTHY_MUSHROOM, pos, TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 60*IN_MILLISECONDS);
                     }
                 }
             }
         }
 
-        void UpdateAI(const uint32 diff)
+        void UpdateAI(uint32 const diff)
         {
-            //Return since we have no target
             if (!UpdateVictim())
                 return;
 
@@ -168,8 +149,8 @@ public:
             {
                 if(!me->IsNonMeleeSpellCasted(false))
                 {
-                    if (Unit *pTarget = SelectTarget(SELECT_TARGET_RANDOM, 0, 100, true))
-                        DoCast(pTarget, SPELL_ENTANGLING_ROOTS);
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100, true))
+                        DoCast(target, SPELL_ENTANGLING_ROOTS);
                     uiRootTimer = urand(10*IN_MILLISECONDS, 15*IN_MILLISECONDS);
                 }
             } else uiRootTimer -= diff;
@@ -187,8 +168,8 @@ public:
             {
                 if(!me->IsNonMeleeSpellCasted(false))
                 {
-                    if (Unit *pTarget = SelectTarget(SELECT_TARGET_RANDOM, 0, 100, true))
-                        DoCast(pTarget, SPELL_VENOM_BOLT_VOLLEY);
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100, true))
+                        DoCast(target, SPELL_VENOM_BOLT_VOLLEY);
                     uiBoltTimer = urand(18*IN_MILLISECONDS, 22*IN_MILLISECONDS);
                 }
             } else uiBoltTimer -= diff;
@@ -197,7 +178,7 @@ public:
         }
     };
 
-    CreatureAI *GetAI(Creature* creature) const
+    CreatureAI* GetAI(Creature* creature) const
     {
         return new boss_amanitarAI(creature);
     }
@@ -227,16 +208,16 @@ public:
             uiAuraTimer = 1*IN_MILLISECONDS;
         }
 
-        void JustDied(Unit *killer)
+        void DamageTaken(Unit* /*attacker*/, uint32 &damage)
         {
-            if (me->GetEntry() == NPC_HEALTHY_MUSHROOM)
+            if (damage >= me->GetHealth() && me->GetEntry() == NPC_HEALTHY_MUSHROOM)
                 DoCast(me, SPELL_HEALTHY_MUSHROOM_POTENT_FUNGUS, true);
         }
 
-        void EnterCombat(Unit * /*who*/) {}
-        void AttackStart(Unit * /*victim*/) {}
+        void EnterCombat(Unit* /*who*/) {}
+        void AttackStart(Unit* /*victim*/) {}
 
-        void UpdateAI(const uint32 diff)
+        void UpdateAI(uint32 const diff)
         {
             if (me->GetEntry() == NPC_POISONOUS_MUSHROOM)
             {
@@ -249,7 +230,7 @@ public:
         }
     };
 
-    CreatureAI *GetAI(Creature* creature) const
+    CreatureAI* GetAI(Creature* creature) const
     {
         return new mob_amanitar_mushroomsAI(creature);
     }
