@@ -270,6 +270,6 @@ UPDATE `quest_template` SET `PrevQuestId`='12191' WHERE (`entry`='12192');
 DELETE FROM  `spell_linked_spell` WHERE `spell_trigger` = 42436;
 INSERT INTO `spell_linked_spell` (`spell_trigger`,`spell_effect`,`type`,`comment`)
 VALUES ('42436','47173','0','Brewfest Sampler');
-UPDATE `item_template` SET `ScriptName`='item_brewfest_sampler' WHERE (`entry`='33096');
+UPDATE `item_template` SET `ScriptName`='item_brewfest_ChugAndChuck' WHERE (`entry`='33096');
 UPDATE `creature_template` SET `scale`='0.01',`AIName`='',`flags_extra`='0',`ScriptName`='npc_brewfest_trigger' WHERE `entry` in (24202, 24203, 24204, 24205);
 UPDATE `quest_template` SET `PrevQuestId`='0' WHERE (`entry`='12193');
