@@ -419,6 +419,7 @@ void Spell::SpellDamageSchoolDmg(SpellEffIndex effIndex)
                         damage = unitTarget->CountPctFromMaxHealth(50);
                         break;
                     }
+                    case 20625: // Ritual of Doom Sacrifice
                     case 29142: // Eyesore Blaster
                     case 35139: // Throw Boom's Doom
                     case 55269: // Deathly Stare
@@ -1395,7 +1396,7 @@ void Spell::EffectDummy(SpellEffIndex effIndex)
 
                     // remove invalid attackers
                     for (Unit::AttackerSet::iterator aItr = attackers.begin(); aItr != attackers.end();)
-                        if (!(*aItr)->canAttack(m_caster))
+                        if (!(*aItr)->IsValidAttackTarget(m_caster))
                             attackers.erase(aItr++);
                         else
                             ++aItr;
@@ -1404,10 +1405,9 @@ void Spell::EffectDummy(SpellEffIndex effIndex)
                     uint32 maxTargets = std::min<uint32>(3, attackers.size());
                     for (uint32 i = 0; i < maxTargets; ++i)
                     {
-                        Unit::AttackerSet::iterator aItr = attackers.begin();
-                        std::advance(aItr, urand(0, attackers.size() - 1));
-                        AddUnitTarget(*aItr, 1);
-                        attackers.erase(aItr);
+                        Unit* attacker = SelectRandomContainerElement(attackers);
+                        AddUnitTarget(attacker, 1 << 1);
+                        attackers.erase(attacker);
                     }
 
                     // now let next effect cast spell at each target.
@@ -2661,10 +2661,7 @@ void Spell::EffectEnergize(SpellEffIndex effIndex)
         if (!avalibleElixirs.empty())
         {
             // cast random elixir on target
-            uint32 rand_spell = urand(0, avalibleElixirs.size()-1);
-            std::set<uint32>::iterator itr = avalibleElixirs.begin();
-            std::advance(itr, rand_spell);
-            m_caster->CastSpell(unitTarget, *itr, true, m_CastItem);
+            m_caster->CastSpell(unitTarget, SelectRandomContainerElement(avalibleElixirs), true, m_CastItem);
         }
     }
 }
