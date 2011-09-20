@@ -40,6 +40,7 @@ EndContentData */
 #include "ScriptedEscortAI.h"
 #include "blackrock_depths.h"
 #include "LFGMgr.h"
+#include "SpellAuraEffects.h"
 
 /*######
 +## go_shadowforge_brazier
@@ -1355,6 +1356,10 @@ public:
 
 };
 
+/*######
+## Brew Fest Evento.
+######*/
+
 enum CorenDirebrew
 {
     SPELL_DISARM                = 47310,
@@ -1704,6 +1709,73 @@ class go_mole_machine_console : public GameObjectScript
         }
 };
 
+
+enum BrewfestQuestChugAndChuck
+{
+    QUEST_CHUG_AND_CHUCK_A    = 12022,
+    QUEST_CHUG_AND_CHUCK_H    = 12191,
+    NPC_BREWFEST_STOUT        = 24108
+};
+class item_brewfest_ChugAndChuck : public ItemScript
+{
+public:
+    item_brewfest_ChugAndChuck() : ItemScript("item_brewfest_ChugAndChuck") { }
+
+    bool OnUse(Player* pPlayer, Item* pItem, const SpellCastTargets & /*pTargets*/)
+    {
+        if (pPlayer->GetQuestStatus(QUEST_CHUG_AND_CHUCK_A) == QUEST_STATUS_INCOMPLETE
+            || pPlayer->GetQuestStatus(QUEST_CHUG_AND_CHUCK_H) == QUEST_STATUS_INCOMPLETE)
+        {
+            if (Creature* pStout = pPlayer->FindNearestCreature(NPC_BREWFEST_STOUT, 10.0f)) // spell range
+            {
+                return false;
+            } else
+                pPlayer->SendEquipError(EQUIP_ERR_OUT_OF_RANGE, pItem, NULL);
+        } else
+            pPlayer->SendEquipError(EQUIP_ERR_CANT_DO_RIGHT_NOW ,pItem, NULL);
+        return true;
+    }
+};
+
+/*####
+## npc_brewfest_trigger
+####*/
+enum eBrewfestBarkQuests
+{
+    BARK_FOR_THE_THUNDERBREWS       = 11294,
+    BARK_FOR_TCHALIS_VOODOO_BREWERY = 11408,
+    BARK_FOR_THE_BARLEYBREWS        = 11293,
+    BARK_FOR_DROHNS_DISTILLERY      = 11407
+};
+
+class npc_brewfest_trigger : public CreatureScript
+{
+public:
+    npc_brewfest_trigger() : CreatureScript("npc_brewfest_trigger") { }
+
+    struct npc_brewfest_triggerAI : public ScriptedAI
+    {
+        npc_brewfest_triggerAI(Creature* c) : ScriptedAI(c) {}
+        
+        void MoveInLineOfSight(Unit *who)
+        {
+            Player *pPlayer = who->ToPlayer();
+            if (!pPlayer)
+                return;
+            if (pPlayer->GetQuestStatus(BARK_FOR_THE_THUNDERBREWS) == QUEST_STATUS_INCOMPLETE
+                || pPlayer->GetQuestStatus(BARK_FOR_TCHALIS_VOODOO_BREWERY) == QUEST_STATUS_INCOMPLETE
+                || pPlayer->GetQuestStatus(BARK_FOR_THE_BARLEYBREWS) == QUEST_STATUS_INCOMPLETE
+                || pPlayer->GetQuestStatus(BARK_FOR_DROHNS_DISTILLERY) == QUEST_STATUS_INCOMPLETE)
+                pPlayer->KilledMonsterCredit(me->GetEntry(),0);
+        }
+    };
+
+    CreatureAI *GetAI(Creature *creature) const
+    {
+        return new npc_brewfest_triggerAI(creature);
+    }
+};
+
 void AddSC_blackrock_depths()
 {
     new go_shadowforge_brazier();
@@ -1720,4 +1792,6 @@ void AddSC_blackrock_depths()
     new npc_coren_direbrew();
     new npc_brewmaiden();
     new go_mole_machine_console();
+    new npc_brewfest_trigger();
+    new item_brewfest_ChugAndChuck();
 }

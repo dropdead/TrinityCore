@@ -263,3 +263,13 @@ DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId`=13 AND `SourceEntry`=42
 INSERT INTO `conditions` (`SourceTypeOrReferenceId`,`SourceGroup`,`SourceEntry`,`ElseGroup`,`ConditionTypeOrReference`,`ConditionValue1`,`ConditionValue2`,`ConditionValue3`,`ErrorTextId`,`ScriptName`,`Comment`) VALUES
 (13,0,42518,0,18,1,0,0,0,'',"Spell Create Complimentary Brewfest Sampler targets players"),
 (13,0,42518,0,26,33096,0,0,0,'',"Spell Create Complimentary Brewfest Sampler targets players");
+
+-- Fix Quest Chug and chuck (A/H) and Bark for... (Q 11294,11408,11293,11407)
+UPDATE `quest_template` SET `PrevQuestId`='11409' WHERE (`entry`='12194');
+UPDATE `quest_template` SET `PrevQuestId`='12191' WHERE (`entry`='12192');
+DELETE FROM  `spell_linked_spell` WHERE `spell_trigger` = 42436;
+INSERT INTO `spell_linked_spell` (`spell_trigger`,`spell_effect`,`type`,`comment`)
+VALUES ('42436','47173','0','Brewfest Sampler');
+UPDATE `item_template` SET `ScriptName`='item_brewfest_sampler' WHERE (`entry`='33096');
+UPDATE `creature_template` SET `scale`='0.01',`AIName`='',`flags_extra`='0',`ScriptName`='npc_brewfest_trigger' WHERE `entry` in (24202, 24203, 24204, 24205);
+UPDATE `quest_template` SET `PrevQuestId`='0' WHERE (`entry`='12193');
