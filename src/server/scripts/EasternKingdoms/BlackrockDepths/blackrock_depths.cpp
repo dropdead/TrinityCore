@@ -1950,8 +1950,10 @@ public:
                   pPlayer->CastSpell(pPlayer,SPELL_SPEED_RAM_GALLOP,false);
             } else if (pPlayer->HasAura(SPELL_SPEED_RAM_GALLOP))
                 pPlayer->GetAura(SPELL_SPEED_RAM_GALLOP)->SetDuration(4000);
-        } else
-            pPlayer->SendEquipError(EQUIP_ERR_CANT_DO_RIGHT_NOW ,pItem, NULL);
+        } 
+        /* else
+            pPlayer->SendEquipError(EQUIP_ERR_CANT_DO_RIGHT_NOW ,pItem, NULL);*/
+
         return true;
     }
 };
