@@ -7,13 +7,13 @@ INSERT INTO `gameobject` (`id`, `map`, `spawnMask`, `phaseMask`, `position_x`, `
 (188498, 230, 1, 1, 1133.59, -462.347, -103.659, 5.75403, 0, 0, 0.261501, -0.965203, 300, 0, 1);
 DELETE FROM `game_event_gameobject` WHERE `guid` IN (SELECT `guid` FROM `gameobject` WHERE `id` = 188498); -- Añadido al eventlink correspondiente.
 INSERT INTO `game_event_gameobject` (`guid`, `eventEntry`) VALUES
-((SELECT `guid` FROM `gameobject` WHERE `id` = 188498), 26);
+((SELECT `guid` FROM `gameobject` WHERE `id` = 188498), 24);
 DELETE FROM `creature` WHERE `id` IN (23872); -- Spawn Coren Direbrew
 INSERT INTO `creature` (`id`, `map`, `spawnMask`, `phaseMask`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `dynamicflags`) VALUES
 (23872, 230, 1, 1, 0, 0, 890.38, -135.366, -49.7525, 5.19012, 300, 0, 0, 302400, 0, 0, 0, 0, 0);
 DELETE FROM `game_event_creature` WHERE `guid` IN (SELECT `guid` FROM `creature` WHERE `id` IN (23872));
 INSERT INTO `game_event_creature` (`guid`, `eventEntry`) VALUES
-((SELECT `guid` FROM `creature` WHERE `id` = 23872), 26);
+((SELECT `guid` FROM `creature` WHERE `id` = 23872), 24);
 -- Spawn de creatures por guid asignadas a correcto evento ID.
 DELETE FROM `game_event_creature` WHERE `guid` IN (SELECT `guid` FROM `creature` WHERE `id` IN (23872,26719,27584,28329)); -- Añadido al eventlink correspondiente.
 -- Añadido ScriptNames
