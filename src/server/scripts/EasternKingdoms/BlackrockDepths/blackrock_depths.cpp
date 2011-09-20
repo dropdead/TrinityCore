@@ -39,6 +39,7 @@ EndContentData */
 #include "ScriptPCH.h"
 #include "ScriptedEscortAI.h"
 #include "blackrock_depths.h"
+#include "LFGMgr.h"
 
 /*######
 +## go_shadowforge_brazier
@@ -1354,389 +1355,354 @@ public:
 
 };
 
-/*######
-## coren direbrew
-######*/
-
 enum CorenDirebrew
 {
-    SPELL_DISARM                                      = 47310,
-    SPELL_DISARM_PRECAST                              = 47407,
-    SPELL_MOLE_MACHINE_EMERGE                         = 50313,  // wrong spell
-    QUEST_INSULT_COREN_DIREBREW                       = 12062,
-    NPC_ILSA_DIREBREW                                 = 26764,
-    NPC_URSULA_DIREBREW                               = 26822,
-    NPC_DIREBREW_MINION                               = 26776
+    SPELL_DISARM                = 47310,
+    SPELL_DISARM_PRECAST        = 47407,
+    SPELL_MOLE_MACHINE_EMERGE   = 50313, 
+    NPC_ILSA_DIREBREW           = 26764,
+    NPC_URSULA_DIREBREW         = 26822,
+    NPC_DIREBREW_MINION         = 26776,
+
+    EQUIP_ID_TANKARD            = 48663,
+    FACTION_HOSTILE             = 736
 };
 
-static Position Loc[]=
+#define GOSSIP_TEXT_INSULT "Insult Coren Direbrew's brew."
+
+static Position _pos[]=
 {
-    {890.87f, -133.95f, -48.0f, 0.0f},
-    {892.47f, -133.26f, -48.0f, 0.0f},
-    {893.54f, -131.81f, -48.0f, 0.0f}
+    {890.87f, -133.95f, -48.0f, 1.53f},
+    {892.47f, -133.26f, -48.0f, 2.16f},
+    {893.54f, -131.81f, -48.0f, 2.75f}
 };
 
 class npc_coren_direbrew : public CreatureScript
 {
-public:
-    npc_coren_direbrew() : CreatureScript("npc_coren_direbrew") { }
+    public:
+        npc_coren_direbrew() : CreatureScript("npc_coren_direbrew") { }
 
-    struct npc_coren_direbrewAI : public ScriptedAI
-    {
-        npc_coren_direbrewAI(Creature* c) : ScriptedAI(c), _summons(me) { }
-
-        SummonList _summons;
-
-        uint32 Add_Timer;
-        uint32 Disarm_Timer;
-
-        bool SpawnedIlsa;
-        bool SpawnedUrsula;
-
-        uint64 AddGUID[3];
-
-        void Reset()
+        bool OnGossipHello(Player* player, Creature* creature)
         {
-            me->setFaction(35);
+            if (creature->isQuestGiver())
+                player->PrepareQuestMenu(creature->GetGUID());
 
-            Add_Timer = 20000;
-            Disarm_Timer = urand(10000, 15000);
-
-            SpawnedIlsa = false;
-            SpawnedUrsula = false; 
-
-            _summons.DespawnAll();
-            me->SetCorpseDelay(90); // 1.5 minutes
-
-            for (uint8 i = 0; i < 3; ++i)
-            {
-                if (Creature* creature = me->SummonCreature(NPC_DIREBREW_MINION, Loc[i], TEMPSUMMON_CORPSE_TIMED_DESPAWN, 15000))
-                {
-                    AddGUID[i] = creature->GetGUID();
-                    creature->setFaction(35);
-                    creature->SetInFront(me);
-                    creature->SetReactState(REACT_PASSIVE);
-                    creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-                }
-            }
+            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_TEXT_INSULT, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+            player->SEND_GOSSIP_MENU(15858, creature->GetGUID());
+            return true;
         }
 
-        void StartEvent(Player* player)
+        bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action)
         {
-            if (!player)
-                return;
+            player->PlayerTalkClass->ClearMenus();
 
-            me->RestoreFaction();
-            AttackStart(player);
-
-            for (uint8 i = 0; i < 3; ++i)
+            if (action == GOSSIP_ACTION_INFO_DEF + 1)
             {
-                if (AddGUID[i])
+                creature->setFaction(FACTION_HOSTILE);
+                creature->AI()->AttackStart(player);
+                creature->AI()->DoZoneInCombat();
+                player->CLOSE_GOSSIP_MENU();
+            }
+
+            return true;
+        }
+
+        struct npc_coren_direbrewAI : public ScriptedAI
+        {
+            npc_coren_direbrewAI(Creature* c) : ScriptedAI(c), _summons(me)
+            {
+            }
+
+            void Reset()
+            {
+                me->RestoreFaction();
+                me->SetCorpseDelay(90); // 1.5 minutes
+
+                _addTimer = 20000;
+                _disarmTimer = urand(10, 15) *IN_MILLISECONDS;
+
+                _spawnedIlsa = false;
+                _spawnedUrsula = false;
+                _summons.DespawnAll();
+
+                for (uint8 i = 0; i < 3; ++i)
+                    if (Creature* creature = me->SummonCreature(NPC_DIREBREW_MINION, _pos[i], TEMPSUMMON_CORPSE_TIMED_DESPAWN, 15000))
+                        _add[i] = creature->GetGUID();
+            }
+
+            void EnterCombat(Unit* /*who*/)
+            {
+                SetEquipmentSlots(false, EQUIP_ID_TANKARD, EQUIP_ID_TANKARD, EQUIP_NO_CHANGE);
+
+                for (uint8 i = 0; i < 3; ++i)
                 {
-                    Creature* creature = Unit::GetCreature((*me), AddGUID[i]);
-                    if (creature && creature->isAlive())
+                    if (_add[i])
                     {
-                        creature->RestoreFaction();
-                        creature->SetReactState(REACT_AGGRESSIVE);
-                        creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-                        creature->AI()->AttackStart(player);
+                        Creature* creature = ObjectAccessor::GetCreature((*me), _add[i]);
+                        if (creature && creature->isAlive())
+                        {
+                            creature->setFaction(FACTION_HOSTILE);
+                            creature->SetInCombatWithZone();
+                        }
+                        _add[i] = 0;
                     }
-                    AddGUID[i] = 0;
                 }
             }
-        }
 
-        void SetInCombat()
-        {
-            Map* map = me->GetMap();
-            if (!map->IsDungeon())
-                return;
-
-            Map::PlayerList const &PlayerList = map->GetPlayers();
-            for(Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
+            void UpdateAI(uint32 const diff)
             {
-                if (Player* i_pl = i->getSource())
-                    if (!i_pl->isGameMaster() && i_pl->isAlive() && me->GetDistance(i_pl) <= 100)
-                    {
-                        me->SetInCombatWith(i_pl);
-                        i_pl->SetInCombatWith(me);
-                        me->AddThreat(i_pl, 1.0f);
-                    }
-            }
-        }
+                if (!UpdateVictim())
+                    return;
 
-        void EnterCombat(Unit* who)
-        {
-            SetInCombat();
-        }
-
-        void UpdateAI(uint32 const diff)
-        {
-            if (!UpdateVictim())
-                return;
-
-            // disarm
-            if (Disarm_Timer <= diff)
-            {
-                DoCast(SPELL_DISARM_PRECAST);
-                DoCastVictim(SPELL_DISARM, false);
-                Disarm_Timer = urand(20000, 25000);
-            }
-            else
-                Disarm_Timer -= diff;
-
-            // spawn non-elite adds
-            if (Add_Timer <= diff)
-            {
-                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100, true))
+                // disarm
+                if (_disarmTimer <= diff)
                 {
-                    float posX, posY, posZ;
-                    target->GetPosition(posX, posY, posZ);
-                    target->CastSpell(target, SPELL_MOLE_MACHINE_EMERGE, true, 0, 0, me->GetGUID());
-                    me->SummonCreature(NPC_DIREBREW_MINION, posX, posY, posZ, 0, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 15000);
+                    DoCast(SPELL_DISARM_PRECAST);
+                    DoCastVictim(SPELL_DISARM, false);
+                    _disarmTimer = urand(20, 25) *IN_MILLISECONDS;
+                }
+                else
+                    _disarmTimer -= diff;
 
-                    Add_Timer = 20000;
-                    if (SpawnedIlsa)
-                        Add_Timer -= 4000;
-                    if (SpawnedUrsula)
-                        Add_Timer -= 4000;
+                // spawn non-elite adds
+                if (_addTimer <= diff)
+                {
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100, true))
+                    {
+                        float posX, posY, posZ;
+                        target->GetPosition(posX, posY, posZ);
+                        target->CastSpell(target, SPELL_MOLE_MACHINE_EMERGE, true, 0, 0, me->GetGUID());
+                        me->SummonCreature(NPC_DIREBREW_MINION, posX, posY, posZ, 0, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 15000);
+
+                        _addTimer = 15000;
+                        if (_spawnedIlsa)
+                            _addTimer -= 3000;
+                        if (_spawnedUrsula)
+                            _addTimer -= 3000;
+                    }
+                }
+                else
+                    _addTimer -= diff;
+
+                if (!_spawnedIlsa && HealthBelowPct(66))
+                {
+                    DoSpawnCreature(NPC_ILSA_DIREBREW, 0, 0, 0, 0, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 15000);
+                    _spawnedIlsa = true;
+                }
+
+                if (!_spawnedUrsula && HealthBelowPct(33))
+                {
+                    DoSpawnCreature(NPC_URSULA_DIREBREW, 0, 0, 0, 0, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 15000);
+                    _spawnedUrsula = true;
+                }
+
+                DoMeleeAttackIfReady();
+            }
+
+            void JustSummoned(Creature* summon)
+            {
+                if (me->getFaction() == FACTION_HOSTILE)
+                {
+                    summon->setFaction(FACTION_HOSTILE);
+
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100, true))
+                        summon->AI()->AttackStart(target);
+                }
+
+                _summons.Summon(summon);
+            }
+
+            void JustDied(Unit* /*killer*/)
+            {
+                _summons.DespawnAll();
+
+                // TODO: unhack
+                Map* map = me->GetMap();
+                if (map && map->IsDungeon())
+                {
+                    Map::PlayerList const& players = map->GetPlayers();
+                    if (!players.isEmpty())
+                        for (Map::PlayerList::const_iterator i = players.begin(); i != players.end(); ++i)
+                            if (Player* player = i->getSource())
+                                if (player->GetDistance(me) < 100.0f)
+                                    sLFGMgr->RewardDungeonDoneFor(287, player);
                 }
             }
-            else
-                Add_Timer -= diff;
 
-            if (!SpawnedIlsa && HealthBelowPct(66))
-            {
-                DoSpawnCreature(NPC_ILSA_DIREBREW, 0, 0, 0, 0, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 15000);
-                SpawnedIlsa = true;
-            }
+        private:
+            SummonList _summons;
+            uint64 _add[3];
+            uint32 _addTimer;
+            uint32 _disarmTimer;
+            bool _spawnedIlsa;
+            bool _spawnedUrsula;
+        };
 
-            if (!SpawnedUrsula && HealthBelowPct(33))
-            {
-                DoSpawnCreature(NPC_URSULA_DIREBREW, 0, 0, 0, 0, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 15000);
-                SpawnedUrsula = true;
-            }
-
-            DoMeleeAttackIfReady();
-        }
-
-        void JustSummoned(Creature* summon)
+        CreatureAI* GetAI(Creature* c) const
         {
-            summon->setFaction(736);
-
-            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100, true))
-                summon->AI()->AttackStart(target);
-
-            _summons.Summon(summon);
+            return new npc_coren_direbrewAI(c);
         }
-
-        void JustDied(Unit* /*killer*/)
-        {
-            _summons.DespawnAll();
-        }
-   };
-
-   CreatureAI* GetAI(Creature* c) const
-   {
-       return new npc_coren_direbrewAI(c);
-   }
-
-   bool OnQuestReward(Player* player, Creature* creature, const Quest* quest, uint32 /*item*/)
-   {
-       if (quest->GetQuestId() == QUEST_INSULT_COREN_DIREBREW)
-       {
-           CAST_AI(npc_coren_direbrew::npc_coren_direbrewAI, creature->AI())->StartEvent(player);
-       }
-       return true;
-   }
 };
 
 /*######
 ## dark iron brewmaiden
 ######*/
 
-enum eBrewmaiden
+enum Brewmaiden
 {
-    SPELL_SEND_FIRST_MUG                              = 47333,
-    SPELL_SEND_SECOND_MUG                             = 47339,
-    SPELL_CREATE_BREW                                 = 47345,
-    SPELL_HAS_BREW_BUFF                               = 47376,
-    SPELL_HAS_BREW                                    = 47331,
-    SPELL_DARK_BREWMAIDENS_STUN                       = 47340,
-    SPELL_CONSUME_BREW                                = 47377,
-    SPELL_BARRELED                                    = 47442,
-    SPELL_CHUCK_MUG                                   = 50276
+    SPELL_SEND_FIRST_MUG = 47333,
+    SPELL_SEND_SECOND_MUG = 47339,
+    //SPELL_CREATE_BREW = 47345,
+    SPELL_HAS_BREW_BUFF = 47376,
+    //SPELL_HAS_BREW = 47331,
+    //SPELL_DARK_BREWMAIDENS_STUN = 47340,
+    SPELL_CONSUME_BREW = 47377,
+    SPELL_BARRELED = 47442,
+    SPELL_CHUCK_MUG = 50276
 };
 
 class npc_brewmaiden : public CreatureScript
 {
-public:
-    npc_brewmaiden() : CreatureScript("npc_brewmaiden") { }
+    public:
+        npc_brewmaiden() : CreatureScript("npc_brewmaiden") { }
 
-    CreatureAI* GetAI(Creature* pCreature) const
-    {
-        return new npc_brewmaidenAI(pCreature);
-    }
-    
-    struct npc_brewmaidenAI : public ScriptedAI
-    {
-        npc_brewmaidenAI(Creature *c) : ScriptedAI(c) 
+        struct npc_brewmaidenAI : public ScriptedAI
         {
-            /*/some workarounds
-            SpellEntry* TempSpell = (SpellEntry*)sSpellStore.LookupEntry(SPELL_HAS_BREW);
-            if (TempSpell)
-            TempSpell->DurationIndex = 18; //20 seconds due to item aura issues when item is not equipped
-            TempSpell = (SpellEntry*)sSpellStore.LookupEntry(SPELL_SEND_FIRST_MUG);
-            if (TempSpell)
-            TempSpell->EffectTriggerSpell[0] = 0; //disable, triggers on main target only
-            TempSpell = (SpellEntry*)sSpellStore.LookupEntry(SPELL_SEND_SECOND_MUG);
-            if (TempSpell)
-            TempSpell->EffectTriggerSpell[0] = 0; //disable, triggers on main target only
-            */
-        }
-
-        uint32 Brew_Timer;
-        uint32 Barrel_Timer;
-        uint32 Chuck_Mug_Timer;
-
-        void Reset()
-        {
-            Brew_Timer = 2000;
-            Barrel_Timer = 5000;
-            Chuck_Mug_Timer = 10000;
-        }
-        
-        void SetInCombat()
-        {
-            Map *map = me->GetMap();
-            if (!map->IsDungeon())
-                return;
-            
-            Map::PlayerList const &PlayerList = map->GetPlayers();
-            for(Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
+            npc_brewmaidenAI(Creature* c) : ScriptedAI(c)
             {
-                if (Player* i_pl = i->getSource())
-                    if (!i_pl->isGameMaster() && i_pl->isAlive() && me->GetDistance(i_pl) <= 100)
-                    {
-                        me->SetInCombatWith(i_pl);
-                        i_pl->SetInCombatWith(me);
-                        me->AddThreat(i_pl, 1.0f);
-                    }
-            }
-        }
-
-        void EnterCombat(Unit* who)
-        {
-            SetInCombat();
-        }
-
-        void AttackStart(Unit* pWho)
-        {
-            if (!pWho)               
-                return;
-
-            if (me->Attack(pWho, true))
-            {
-                me->AddThreat(pWho, 1.0f);
-                me->SetInCombatWith(pWho);
-                pWho->SetInCombatWith(me);
-
-                if (me->GetEntry() == NPC_URSULA_DIREBREW)
-                    me->GetMotionMaster()->MoveFollow(pWho, 10.0f, 0.0f);
-                else
-                    me->GetMotionMaster()->MoveChase(pWho);
-            }
-        }
-
-        void SpellHitTarget(Unit *pTarget, const SpellInfo *spell) 
-        {
-            if (spell->Id == SPELL_SEND_FIRST_MUG)
-            {
-                pTarget->CastSpell(pTarget, SPELL_CREATE_BREW, true);
-                pTarget->CastSpell(pTarget, SPELL_HAS_BREW, true);
-                pTarget->CastSpell(pTarget, SPELL_HAS_BREW_BUFF, true);
             }
 
-            if (spell->Id == SPELL_SEND_SECOND_MUG)
+            void Reset()
             {
-                pTarget->CastSpell(pTarget, SPELL_DARK_BREWMAIDENS_STUN, true);
-                pTarget->CastSpell(pTarget, SPELL_CONSUME_BREW, true);
-                pTarget->RemoveAurasDueToSpell(SPELL_HAS_BREW);
+                _brewTimer = 2000;
+                _barrelTimer = 5000;
+                _chuckMugTimer = 10000;
             }
-        } 
 
-        void UpdateAI(const uint32 diff)
-        {
-            if (!UpdateVictim())
-                return;
-
-            if (Brew_Timer <= diff)
+            void EnterCombat(Unit* /*who*/)
             {
-                if(!me->IsNonMeleeSpellCasted(false))
+                me->SetInCombatWithZone();
+            }
+
+            void AttackStart(Unit* who)
+            {
+                if (!who)
+                    return;
+
+                if (me->Attack(who, true))
                 {
-                    Unit* pTarget = SelectTarget(SELECT_TARGET_RANDOM, 0, 100, true);
+                    me->AddThreat(who, 1.0f);
+                    me->SetInCombatWith(who);
+                    who->SetInCombatWith(me);
 
-                    if (pTarget && me->GetDistance(pTarget) > 5.0f)
+                    if (me->GetEntry() == NPC_URSULA_DIREBREW)
+                        me->GetMotionMaster()->MoveFollow(who, 10.0f, 0.0f);
+                    else
+                        me->GetMotionMaster()->MoveChase(who);
+                }
+            }
+
+            void SpellHitTarget(Unit* target, SpellInfo const* spell)
+            {
+                // TODO: move to DB
+
+                if (spell->Id == SPELL_SEND_FIRST_MUG)
+                    target->CastSpell(target, SPELL_HAS_BREW_BUFF, true);
+
+                if (spell->Id == SPELL_SEND_SECOND_MUG)
+                    target->CastSpell(target, SPELL_CONSUME_BREW, true);
+            }
+
+            void UpdateAI(uint32 const diff)
+            {
+                if (!UpdateVictim())
+                    return;
+
+                if (_brewTimer <= diff)
+                {
+                    if (!me->IsNonMeleeSpellCasted(false))
                     {
-                        DoCast(pTarget, SPELL_SEND_FIRST_MUG);
-                        Brew_Timer = 12000;
+                        Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100, true);
+
+                        if (target && me->GetDistance(target) > 5.0f)
+                        {
+                            DoCast(target, SPELL_SEND_FIRST_MUG);
+                            _brewTimer = 12000;
+                        }
                     }
                 }
-            } else Brew_Timer -= diff;
+                else
+                    _brewTimer -= diff;
 
-            if (Chuck_Mug_Timer <= diff)
-            {
-                if (Unit* pTarget = SelectTarget(SELECT_TARGET_RANDOM, 0, 100, true))
-                    DoCast(pTarget, SPELL_CHUCK_MUG);
-
-                Chuck_Mug_Timer = 15000;
-            } else Chuck_Mug_Timer -= diff;
-
-            if (me->GetEntry() == NPC_URSULA_DIREBREW)
-            {
-                if (Barrel_Timer <= diff)
+                if (_chuckMugTimer <= diff)
                 {
-                    if(!me->IsNonMeleeSpellCasted(false))
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100, true))
+                        DoCast(target, SPELL_CHUCK_MUG);
+
+                    _chuckMugTimer = 15000;
+                }
+                else
+                    _chuckMugTimer -= diff;
+
+                if (me->GetEntry() == NPC_URSULA_DIREBREW)
+                {
+                    if (_barrelTimer <= diff)
                     {
-                        DoCast(me->getVictim(), SPELL_BARRELED);
-                        Barrel_Timer = 18000;
+                        if (!me->IsNonMeleeSpellCasted(false))
+                        {
+                            DoCastVictim(SPELL_BARRELED);
+                            _barrelTimer = urand(15, 18) *IN_MILLISECONDS;
+                        }
                     }
-                } else Barrel_Timer -= diff;
-            } else
-                DoMeleeAttackIfReady();
+                    else
+                        _barrelTimer -= diff;
+                }
+                else
+                    DoMeleeAttackIfReady();
+            }
+
+        private:
+            uint32 _brewTimer;
+            uint32 _barrelTimer;
+            uint32 _chuckMugTimer;
+        };
+
+        CreatureAI* GetAI(Creature* c) const
+        {
+            return new npc_brewmaidenAI(c);
         }
-   };
 };
 
 /*######
 ## go_mole_machine_console
 ######*/
 
-enum eMoleMachineConsole
+enum MoleMachineConsole
 {
-    SPELL_TELEPORT           = 49466 //wrong spell
+    SPELL_TELEPORT = 49466 // bad id?
 };
 
-#define GOSSIP_ITEM_MOLE_CONSOLE  "[PH] Please teleport me."
+#define GOSSIP_ITEM_MOLE_CONSOLE "[PH] Please teleport me."
 
 class go_mole_machine_console : public GameObjectScript
 {
-public:
-    go_mole_machine_console() : GameObjectScript("go_mole_machine_console") { }
+    public:
+        go_mole_machine_console() : GameObjectScript("go_mole_machine_console") { }
 
-    bool OnGossipHello (Player* pPlayer, GameObject* pGO)
-    {
-        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_MOLE_CONSOLE, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);       pPlayer->SEND_GOSSIP_MENU(12709, pGO->GetGUID());
-        
-        return true;
-    }
+        bool OnGossipHello (Player* player, GameObject* go)
+        {
+            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_MOLE_CONSOLE, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+            player->SEND_GOSSIP_MENU(12709, go->GetGUID());
+            return true;
+        }
 
-    bool OnGossipSelect(Player* pPlayer, GameObject* pGO, uint32 /*uiSender*/, uint32 uiAction)
-    {
-        if (uiAction == GOSSIP_ACTION_INFO_DEF + 1)  
-            pPlayer->CastSpell(pPlayer, SPELL_TELEPORT, true);
-        return true;
-    }
+        bool OnGossipSelect(Player* player, GameObject* /*go*/, uint32 /*sender*/, uint32 action)
+        {
+            if (action == GOSSIP_ACTION_INFO_DEF + 1)
+                player->CastSpell(player, SPELL_TELEPORT, true);
+
+            return true;
+        }
 };
 
 void AddSC_blackrock_depths()

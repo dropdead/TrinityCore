@@ -3,24 +3,19 @@
 -- Faltante Loot. Chekear.
 */
 DELETE FROM `gameobject` WHERE `id` = 188498; -- Spawn Mole- machine Consola en la entrada de Brd
-INSERT INTO `gameobject` (`id`, `map`, `spawnMask`, `phaseMask`, `position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, `spawntimesecs`, `animprogress`, `state`)VALUES
-('188498','230','1','1','436.934','16.7189','-70.956','4.55729','0','0','0.759762','-0.650201','300','0','1');
+INSERT INTO `gameobject` (`id`, `map`, `spawnMask`, `phaseMask`, `position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, `spawntimesecs`, `animprogress`, `state`) VALUES
+(188498, 230, 1, 1, 1133.59, -462.347, -103.659, 5.75403, 0, 0, 0.261501, -0.965203, 300, 0, 1);
 DELETE FROM `game_event_gameobject` WHERE `guid` IN (SELECT `guid` FROM `gameobject` WHERE `id` = 188498); -- Añadido al eventlink correspondiente.
 INSERT INTO `game_event_gameobject` (`guid`, `eventEntry`) VALUES
 ((SELECT `guid` FROM `gameobject` WHERE `id` = 188498), 26);
-DELETE FROM `creature` WHERE `id` IN (23872,26719,27584,28329); -- Spawn Coren Direbrew, Quest Givers
-INSERT INTO `creature` (`id`, `map`, `spawnMask`, `phaseMask`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`) VALUES
-('23872','230','1','1','0','0','890.931','-130.817','-49.7464','5.22232','20','0','0','302400','0','0'),
-('26719','230','1','1','0','0','885.068','-160.315','-49.7594','2.14591','300','0','0','2614','0','0'),
-('27584','0','1','1','21849','0','-5138.6','-616.636','397.767','2.41067','300','0','0','4050','0','0'),
-('28329','1','1','1','0','0','1207.08','-4273.46','21.1918','4.32346','300','0','0','4050','0','0');
+DELETE FROM `creature` WHERE `id` IN (23872); -- Spawn Coren Direbrew
+INSERT INTO `creature` (`id`, `map`, `spawnMask`, `phaseMask`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `dynamicflags`) VALUES
+(23872, 230, 1, 1, 0, 0, 890.38, -135.366, -49.7525, 5.19012, 300, 0, 0, 302400, 0, 0, 0, 0, 0);
+DELETE FROM `game_event_creature` WHERE `guid` IN (SELECT `guid` FROM `creature` WHERE `id` IN (23872));
+INSERT INTO `game_event_creature` (`guid`, `eventEntry`) VALUES
+((SELECT `guid` FROM `creature` WHERE `id` = 23872), 26);
 -- Spawn de creatures por guid asignadas a correcto evento ID.
 DELETE FROM `game_event_creature` WHERE `guid` IN (SELECT `guid` FROM `creature` WHERE `id` IN (23872,26719,27584,28329)); -- Añadido al eventlink correspondiente.
-INSERT INTO `game_event_creature` (`guid`, `eventEntry`) VALUES
-((SELECT `guid` FROM `creature` WHERE `id` = 23872), 26),
-((SELECT `guid` FROM `creature` WHERE `id` = 26719), 26),
-((SELECT `guid` FROM `creature` WHERE `id` = 27584), 26),
-((SELECT `guid` FROM `creature` WHERE `id` = 28329), 26);
 -- Añadido ScriptNames
 UPDATE `creature_template` SET `ScriptName` = 'npc_coren_direbrew', `flags_extra` = 0, `dmg_multiplier` = 20, `lootid` = 23872 WHERE `entry` = 23872;
 UPDATE `creature_template` SET `ScriptName` = 'npc_brewmaiden' WHERE `entry` IN (26822,26764);
@@ -32,11 +27,11 @@ INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceEntry`, `ConditionTy
 (13, 47310, 18, 1, 0),-- Cast Disarm AOE
 (13, 47344, 18, 1, 26764), 
 (13, 47344, 18, 1, 26822);  
--- Spell Scripts
-DELETE FROM `spell_scripts` WHERE `id` IN (47344,49466);
-INSERT INTO `spell_scripts` (`id`, `effIndex`, `delay`, `command`, `datalong`, `datalong2`, `dataint`, `x`, `y`, `z`, `o`) VALUES 
-(47344, 0, 0, 15, 47339, 3, 0, 0, 0, 0, 0), -- Cast  "Send Second Mug"  -  "Request Second Mug" hit
-(49466, 1, 0, 6, 230, 0, 0, 872.789, -156.874, -49, 0.462); 
+-- Spell scripts
+DELETE FROM `spell_scripts` WHERE `id`=47344;
+INSERT INTO `spell_scripts` (`id`, `effIndex`, `delay`, `command`, `datalong`, `datalong2`, `dataint`, `x`, `y`, `z`, `o`)
+VALUES
+(47344, 0, 0, 15, 47339, 3, 0, 0, 0, 0, 0); -- cast back "Send Second Mug" on "Request Second Mug" hit
 -- Spell Auras Drinking Brew
 DELETE FROM `spell_linked_spell` WHERE `spell_trigger` = 47371;
 INSERT INTO `spell_linked_spell` (`spell_trigger`, `spell_effect`, `type`, `comment`) VALUES
@@ -45,6 +40,8 @@ INSERT INTO `spell_linked_spell` (`spell_trigger`, `spell_effect`, `type`, `comm
 -- Inmunidades
 UPDATE `creature_template` SET `mechanic_immune_mask` = `mechanic_immune_mask`|1|2|8|16|32|64|128|256|512|1024|2048|4096|8192|65536|131072|524288|4194304|8388608|33554432|67108864|536870912 WHERE `entry` IN (23872,26822,26764);
 
+UPDATE `quest_template` SET `SpecialFlags`=9 WHERE `entry`=25483;
+UPDATE `creature_template` SET `npcflag`=3 WHERE `entry`=23872;
 
 -- Tapper Swindlekeg <Brewfest Organizer>
 -- Ipfelkofer Ironkeg <Brewfest Organizer>
