@@ -1363,9 +1363,8 @@ enum CorenDirebrew
     NPC_ILSA_DIREBREW           = 26764,
     NPC_URSULA_DIREBREW         = 26822,
     NPC_DIREBREW_MINION         = 26776,
-
     EQUIP_ID_TANKARD            = 48663,
-    FACTION_HOSTILE             = 736
+    FACTION_HOSTILE_CORE        = 736
 };
 
 #define GOSSIP_TEXT_INSULT "Insult Coren Direbrew's brew."
@@ -1398,7 +1397,7 @@ class npc_coren_direbrew : public CreatureScript
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
             {
-                creature->setFaction(FACTION_HOSTILE);
+                creature->setFaction(FACTION_HOSTILE_CORE);
                 creature->AI()->AttackStart(player);
                 creature->AI()->DoZoneInCombat();
                 player->CLOSE_GOSSIP_MENU();
@@ -1441,7 +1440,7 @@ class npc_coren_direbrew : public CreatureScript
                         Creature* creature = ObjectAccessor::GetCreature((*me), _add[i]);
                         if (creature && creature->isAlive())
                         {
-                            creature->setFaction(FACTION_HOSTILE);
+                            creature->setFaction(FACTION_HOSTILE_CORE);
                             creature->SetInCombatWithZone();
                         }
                         _add[i] = 0;
@@ -1501,9 +1500,9 @@ class npc_coren_direbrew : public CreatureScript
 
             void JustSummoned(Creature* summon)
             {
-                if (me->getFaction() == FACTION_HOSTILE)
+                if (me->getFaction() == FACTION_HOSTILE_CORE)
                 {
-                    summon->setFaction(FACTION_HOSTILE);
+                    summon->setFaction(FACTION_HOSTILE_CORE);
 
                     if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100, true))
                         summon->AI()->AttackStart(target);
