@@ -284,7 +284,7 @@ INSERT INTO `spell_linked_spell` (`spell_trigger`,`spell_effect`,`type`,`comment
 ('-43880','-43310','0','Remove brewfest speed buffs when player dismounted'),
 ('-43880','-43492','0','Remove brewfest speed buffs when player dismounted'),
 ('-43880','-43052','0','Remove brewfest speed buffs when player dismounted'),
-('-43880','-43332','0','Remove brewfest speed buffs when player dismounted')
+('-43880','-43332','0','Remove brewfest speed buffs when player dismounted'),
 ('42994','-42993','0','Switch brewfest speed buffs'),
 ('42994','-42992','0','Switch brewfest speed buffs'),
 ('42994','-43310','0','Switch brewfest speed buffs'),
@@ -307,7 +307,7 @@ INSERT INTO `spell_linked_spell` (`spell_trigger`,`spell_effect`,`type`,`comment
 ('43332','-42994','0','Switch brewfest speed buffs'),    
 ('-43332','43310','0','Switch brewfest speed buffs');
 
-DELETE FROM `spell_script_names` WHERE ScriptName` = 'spell_brewfest_speed';
+DELETE FROM `spell_script_names` WHERE `ScriptName` = 'spell_brewfest_speed';
 INSERT INTO `spell_script_names` (`spell_id`,`ScriptName`) VALUES 
 ('43332','spell_brewfest_speed'),
 ('43310','spell_brewfest_speed'),
