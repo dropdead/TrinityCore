@@ -1802,23 +1802,23 @@ public:
     {
         PrepareAuraScript(spell_brewfest_speed_AuraScript);
 
-        bool Validate(SpellEntry const * /*spellEntry*/)
+        bool Validate(SpellInfo const* /*spellInfo*/)
         {
-            if (!sSpellStore.LookupEntry(SPELL_RAM_FATIGUE))
+            if (!sSpellMgr->GetSpellInfo(SPELL_RAM_FATIGUE))
                 return false;
-            if (!sSpellStore.LookupEntry(SPELL_BREWFEST_RAM))
+            if (!sSpellMgr->GetSpellInfo(SPELL_BREWFEST_RAM))
                 return false;
-            if (!sSpellStore.LookupEntry(SPELL_SPEED_RAM_GALLOP))
+            if (!sSpellMgr->GetSpellInfo(SPELL_SPEED_RAM_GALLOP))
                 return false;
-            if (!sSpellStore.LookupEntry(SPELL_SPEED_RAM_CANTER))
+            if (!sSpellMgr->GetSpellInfo(SPELL_SPEED_RAM_CANTER))
                 return false;
-            if (!sSpellStore.LookupEntry(SPELL_SPEED_RAM_TROT))
+            if (!sSpellMgr->GetSpellInfo(SPELL_SPEED_RAM_TROT))
                 return false;
-            if (!sSpellStore.LookupEntry(SPELL_SPEED_RAM_NORMAL))
+            if (!sSpellMgr->GetSpellInfo(SPELL_SPEED_RAM_NORMAL))
                 return false;
-            if (!sSpellStore.LookupEntry(SPELL_SPEED_RAM_GALLOP))
+            if (!sSpellMgr->GetSpellInfo(SPELL_SPEED_RAM_GALLOP))
                 return false;
-            if (!sSpellStore.LookupEntry(SPELL_SPEED_RAM_EXHAUSED))
+            if (!sSpellMgr->GetSpellInfo(SPELL_SPEED_RAM_EXHAUSED))
                 return false;
             return true;
         }
