@@ -273,3 +273,82 @@ VALUES ('42436','47173','0','Brewfest Sampler');
 UPDATE `item_template` SET `ScriptName`='item_brewfest_ChugAndChuck' WHERE (`entry`='33096');
 UPDATE `creature_template` SET `scale`='0.01',`AIName`='',`flags_extra`='0',`ScriptName`='npc_brewfest_trigger' WHERE `entry` in (24202, 24203, 24204, 24205);
 UPDATE `quest_template` SET `PrevQuestId`='0' WHERE (`entry`='12193');
+
+-- Ram Barrel Run Quest
+DELETE FROM `spell_linked_spell` WHERE `spell_trigger` IN (-43880, 42994, 42993, 42992, 43310, 43332, -43332);
+INSERT INTO `spell_linked_spell` (`spell_trigger`,`spell_effect`,`type`,`comment`) VALUES 
+('-43880','-42994','0','Remove brewfest speed buffs when player dismounted'),
+('-43880','-42993','0','Remove brewfest speed buffs when player dismounted'),
+('-43880','-42992','0','Remove brewfest speed buffs when player dismounted'),
+('-43880','-42146','0','Remove brewfest speed buffs when player dismounted'),
+('-43880','-43310','0','Remove brewfest speed buffs when player dismounted'),
+('-43880','-43492','0','Remove brewfest speed buffs when player dismounted'),
+('-43880','-43052','0','Remove brewfest speed buffs when player dismounted'),
+('-43880','-43332','0','Remove brewfest speed buffs when player dismounted')
+('42994','-42993','0','Switch brewfest speed buffs'),
+('42994','-42992','0','Switch brewfest speed buffs'),
+('42994','-43310','0','Switch brewfest speed buffs'),
+('42994','-43332','0','Switch brewfest speed buffs'),
+('42993','-42994','0','Switch brewfest speed buffs'),
+('42993','-42992','0','Switch brewfest speed buffs'),
+('42993','-43310','0','Switch brewfest speed buffs'),
+('42993','-43332','0','Switch brewfest speed buffs'),
+('42992','-42993','0','Switch brewfest speed buffs'),
+('42992','-42994','0','Switch brewfest speed buffs'),
+('42992','-43310','0','Switch brewfest speed buffs'),
+('42992','-43332','0','Switch brewfest speed buffs'),
+('43310','-42993','0','Switch brewfest speed buffs'),
+('43310','-42992','0','Switch brewfest speed buffs'),
+('43310','-42994','0','Switch brewfest speed buffs'),
+('43310','-43332','0','Switch brewfest speed buffs'),
+('43332','-42993','0','Switch brewfest speed buffs'),
+('43332','-42992','0','Switch brewfest speed buffs'),
+('43332','-43310','0','Switch brewfest speed buffs'),
+('43332','-42994','0','Switch brewfest speed buffs'),    
+('-43332','43310','0','Switch brewfest speed buffs');
+
+DELETE FROM `spell_script_names` WHERE ScriptName` = 'spell_brewfest_speed';
+INSERT INTO `spell_script_names` (`spell_id`,`ScriptName`) VALUES 
+('43332','spell_brewfest_speed'),
+('43310','spell_brewfest_speed'),
+('42992','spell_brewfest_speed'),
+('42993','spell_brewfest_speed'),
+('42994','spell_brewfest_speed');
+
+UPDATE `item_template` SET `Duration`='240' WHERE (`entry`='33797');
+UPDATE `creature_template` SET `scale`='0.01',`flags_extra`='0',`ScriptName`='npc_brewfest_apple_trigger' WHERE (`entry`='24337');
+UPDATE `creature_template` SET `flags_extra`='0',`ScriptName`='npc_brewfest_keg_thrower' WHERE (`entry`='24364');
+UPDATE `creature_template` SET `flags_extra`='0',`ScriptName`='npc_brewfest_keg_thrower' WHERE (`entry`='24527');
+UPDATE `creature_template` SET `flags_extra`='0',`ScriptName`='npc_brewfest_keg_receiver' WHERE (`entry`='24468');
+UPDATE `creature_template` SET `flags_extra`='0',`ScriptName`='npc_brewfest_keg_receiver' WHERE (`entry`='24510');
+UPDATE `creature_template` SET `flags_extra`='0',`ScriptName`='npc_brewfest_ram_master' WHERE (`entry`='23558');
+UPDATE `creature_template` SET `flags_extra`='0',`ScriptName`='npc_brewfest_ram_master' WHERE (`entry`='24497');
+
+DELETE FROM `creature` WHERE `id` IN (24364,24527,24337);
+INSERT INTO `creature` (`id`,`map`,`spawnMask`,`phaseMask`,`modelid`,`equipment_id`,`position_x`,`position_y`,`position_z`,`orientation`,`spawntimesecs`,`spawndist`,`currentwaypoint`,`curhealth`,`curmana`,`MovementType`) 
+VALUES 
+('24364','0','1','1','0','0','-5608.76','-460.569','403.345','5.74527','300','0','0','1003','0','0'),
+('24527','1','1','1','0','0','856.609','-4497.95','6.43272','0.0600562','300','0','0','1003','0','0');
+INSERT INTO `creature` 
+(`id`,`map`,`spawnMask`,`phaseMask`,`position_x`,`position_y`,`position_z`,`orientation`,`spawntimesecs`,`curhealth`)
+VALUES 
+(24337, 0, 1, 1, '-5667.41', '-476.651', '396.275', '-2.00713', 180, 42),
+(24337, 0, 1, 1, '-5355.3', '-527.423', '391.493', '-2.3911', 180, 42),
+(24337, 0, 1, 1, '-5189.16', '-482.752', '387.244', '-1.65806', 180, 42),
+(24337, 1, 1, 1, '1290.86', '-4433.25', '27.1411', '2.05949', 180, 42),
+(24337, 1, 1, 1, '1096.65', '-4427.11', '20.2013', '2.3911', 180, 42),
+(24337, 1, 1, 1, '1004.55', '-4479.3', '10.9096', '-0.244346', 180, 42),
+(24337, 0, 1, 1, '-5498.16', '-511.732', '397.462', '1.85111', 300, 42);
+DELETE FROM `gameobject` WHERE `id` = 186331;
+INSERT INTO gameobject
+(`id`, `map`, `spawnMask`, `phaseMask`, `position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, `spawntimesecs`, `animprogress`, `state`)
+VALUES
+(186331, 0, 1, 1, '-5667.41', '-476.651', '396.275', '-2.00713', 0, 0, '0.843391', '-0.5373', 180, 100, 1),
+(186331, 0, 1, 1, '-5355.3', '-527.423', '391.493', '-2.3911', 0, 0, '0.930418', '-0.366501', 180, 100, 1),
+(186331, 0, 1, 1, '-5189.16', '-482.752', '387.244', '-1.65806', 0, 0, '0.737277', '-0.67559', 180, 100, 1),
+(186331, 1, 1, 1, '1290.86', '-4433.25', '27.1411', '2.05949', 0, 0, '0.857167', '0.515038', 180, 100, 1),
+(186331, 1, 1, 1, '1096.65', '-4427.11', '20.2013', '2.3911', 0, 0, '0.930418', '0.366501', 180, 100, 1),
+(186331, 1, 1, 1, '1004.55', '-4479.3', '10.9096', '-0.244346', 0, 0, '0.121869', '-0.992546', 180, 100, 1),
+(186331, 0, 1, 1, '-5498.16', '-511.732', '397.462', '1.85111', 0, 0, '0.798954', '0.601392', 300, 0, 1);
+
+UPDATE `item_template` SET `ScriptName`='item_brewfest_ram_reins' WHERE (`entry`='33306');

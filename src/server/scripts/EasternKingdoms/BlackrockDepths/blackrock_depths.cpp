@@ -1776,6 +1776,374 @@ public:
     }
 };
 
+/**
+## Ram Barrel Run Quest (A/H)
+TODO:
+
+**/
+
+enum eBrewfestSpeedSpells
+{
+    SPELL_BREWFEST_RAM          = 43880,
+    SPELL_RAM_FATIGUE           = 43052,
+    SPELL_SPEED_RAM_GALLOP      = 42994,
+    SPELL_SPEED_RAM_CANTER      = 42993,
+    SPELL_SPEED_RAM_TROT        = 42992,
+    SPELL_SPEED_RAM_NORMAL      = 43310,
+    SPELL_SPEED_RAM_EXHAUSED    = 43332
+};
+
+class spell_brewfest_speed : public SpellScriptLoader
+{
+public:
+    spell_brewfest_speed() : SpellScriptLoader("spell_brewfest_speed") {}
+
+    class spell_brewfest_speed_AuraScript : public AuraScript
+    {
+        PrepareAuraScript(spell_brewfest_speed_AuraScript);
+
+        bool Validate(SpellEntry const * /*spellEntry*/)
+        {
+            if (!sSpellStore.LookupEntry(SPELL_RAM_FATIGUE))
+                return false;
+            if (!sSpellStore.LookupEntry(SPELL_BREWFEST_RAM))
+                return false;
+            if (!sSpellStore.LookupEntry(SPELL_SPEED_RAM_GALLOP))
+                return false;
+            if (!sSpellStore.LookupEntry(SPELL_SPEED_RAM_CANTER))
+                return false;
+            if (!sSpellStore.LookupEntry(SPELL_SPEED_RAM_TROT))
+                return false;
+            if (!sSpellStore.LookupEntry(SPELL_SPEED_RAM_NORMAL))
+                return false;
+            if (!sSpellStore.LookupEntry(SPELL_SPEED_RAM_GALLOP))
+                return false;
+            if (!sSpellStore.LookupEntry(SPELL_SPEED_RAM_EXHAUSED))
+                return false;
+            return true;
+        }
+        
+        void HandlePeriodicTick(AuraEffect const* /*aurEff*/)
+        {
+            if (GetId() == SPELL_SPEED_RAM_EXHAUSED)
+                return;
+            Player* pCaster = GetCaster()->ToPlayer();
+            if (!pCaster)
+                return;
+            int i;
+            switch (GetId())
+            {
+                case SPELL_SPEED_RAM_GALLOP:
+                     for (i = 0; i < 5; i++)
+                       pCaster->AddAura(SPELL_RAM_FATIGUE,pCaster);
+                   break;
+                case SPELL_SPEED_RAM_CANTER:
+                    pCaster->AddAura(SPELL_RAM_FATIGUE,pCaster);
+                    break;
+                case SPELL_SPEED_RAM_TROT:
+                    if (pCaster->HasAura(SPELL_RAM_FATIGUE))
+                        if (pCaster->GetAura(SPELL_RAM_FATIGUE)->GetStackAmount() <= 2)
+                            pCaster->RemoveAura(SPELL_RAM_FATIGUE);
+                        else
+                            pCaster->GetAura(SPELL_RAM_FATIGUE)->ModStackAmount(-2);
+                    break;
+                case SPELL_SPEED_RAM_NORMAL:
+                    if (pCaster->HasAura(SPELL_RAM_FATIGUE))
+                        if (pCaster->GetAura(SPELL_RAM_FATIGUE)->GetStackAmount() <= 4)
+                             pCaster->RemoveAura(SPELL_RAM_FATIGUE);
+                        else
+                            pCaster->GetAura(SPELL_RAM_FATIGUE)->ModStackAmount(-4);
+                    break;
+            }
+            if (pCaster->HasAura(SPELL_RAM_FATIGUE))
+                if (pCaster->GetAura(SPELL_RAM_FATIGUE)->GetStackAmount() >= 100)
+                    pCaster->CastSpell(pCaster,SPELL_SPEED_RAM_EXHAUSED, false);
+        }
+
+        void OnRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+        {
+            Player* pCaster = GetCaster()->ToPlayer();
+            if (!pCaster)
+                return;
+            if (!pCaster->HasAura(SPELL_BREWFEST_RAM))
+                return;
+            if (GetId() == SPELL_SPEED_RAM_EXHAUSED) 
+            {
+                if (pCaster->HasAura(SPELL_RAM_FATIGUE))
+                    pCaster->GetAura(SPELL_RAM_FATIGUE)->ModStackAmount(-15);
+            } else if (!pCaster->HasAura(SPELL_RAM_FATIGUE) || pCaster->GetAura(SPELL_RAM_FATIGUE)->GetStackAmount() < 100)
+                switch (GetId())
+                {
+                    case SPELL_SPEED_RAM_GALLOP:
+                        if (!pCaster->HasAura(SPELL_SPEED_RAM_EXHAUSED))
+                            pCaster->CastSpell(pCaster,SPELL_SPEED_RAM_CANTER, false);
+                        break;
+                    case SPELL_SPEED_RAM_CANTER:
+                        if (!pCaster->HasAura(SPELL_SPEED_RAM_GALLOP))
+                            pCaster->CastSpell(pCaster,SPELL_SPEED_RAM_TROT, false);
+                        break;
+                    case SPELL_SPEED_RAM_TROT:
+                        if (!pCaster->HasAura(SPELL_SPEED_RAM_CANTER))
+                            pCaster->CastSpell(pCaster,SPELL_SPEED_RAM_NORMAL, false);
+                        break;
+                }
+        }
+
+        void OnApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+        {
+            Player* pCaster = GetCaster()->ToPlayer();
+            
+            if (!pCaster)
+                return;
+
+            switch (GetId())
+            {
+                case SPELL_SPEED_RAM_GALLOP:
+                   pCaster->GetAura(SPELL_SPEED_RAM_GALLOP)->SetDuration(4000);
+                    break;
+                case SPELL_SPEED_RAM_CANTER:
+                    pCaster->GetAura(SPELL_SPEED_RAM_CANTER)->SetDuration(4000);
+                    break;
+                case SPELL_SPEED_RAM_TROT:
+                   pCaster->GetAura(SPELL_SPEED_RAM_TROT)->SetDuration(4000);
+                    break;
+             }
+        }
+
+        void Register()
+        {
+            OnEffectApply += AuraEffectApplyFn(spell_brewfest_speed_AuraScript::OnApply, EFFECT_0, SPELL_AURA_MOD_INCREASE_MOUNTED_SPEED, AURA_EFFECT_HANDLE_REAL);
+            OnEffectPeriodic += AuraEffectPeriodicFn(spell_brewfest_speed_AuraScript::HandlePeriodicTick, EFFECT_1, SPELL_AURA_PERIODIC_DUMMY);
+            OnEffectRemove += AuraEffectRemoveFn(spell_brewfest_speed_AuraScript::OnRemove, EFFECT_2, SPELL_AURA_USE_NORMAL_MOVEMENT_SPEED, AURA_EFFECT_HANDLE_REAL);
+        }
+    };
+
+    AuraScript* GetAuraScript() const
+    {
+        return new spell_brewfest_speed_AuraScript();
+    }
+};
+
+
+class item_brewfest_ram_reins : public ItemScript
+{
+public:
+    item_brewfest_ram_reins() : ItemScript("item_brewfest_ram_reins") { }
+
+    bool OnUse(Player* pPlayer, Item* pItem, const SpellCastTargets & /*pTargets*/)
+    {
+        if (pPlayer->HasAura(SPELL_BREWFEST_RAM) && !pPlayer->HasAura(SPELL_SPEED_RAM_EXHAUSED))
+        {
+            if (pPlayer->HasAura(SPELL_SPEED_RAM_NORMAL))
+                pPlayer->CastSpell(pPlayer,SPELL_SPEED_RAM_TROT,false);
+            else if (pPlayer->HasAura(SPELL_SPEED_RAM_TROT))
+            {
+                if (pPlayer->GetAura(SPELL_SPEED_RAM_TROT)->GetDuration() < 3000)
+                    pPlayer->GetAura(SPELL_SPEED_RAM_TROT)->SetDuration(4000);
+                else
+                  pPlayer->CastSpell(pPlayer,SPELL_SPEED_RAM_CANTER,false);
+            } else if (pPlayer->HasAura(SPELL_SPEED_RAM_CANTER))
+            {
+                if (pPlayer->GetAura(SPELL_SPEED_RAM_CANTER)->GetDuration() < 3000)
+                    pPlayer->GetAura(SPELL_SPEED_RAM_CANTER)->SetDuration(4000);
+                else
+                  pPlayer->CastSpell(pPlayer,SPELL_SPEED_RAM_GALLOP,false);
+            } else if (pPlayer->HasAura(SPELL_SPEED_RAM_GALLOP))
+                pPlayer->GetAura(SPELL_SPEED_RAM_GALLOP)->SetDuration(4000);
+        } else
+            pPlayer->SendEquipError(EQUIP_ERR_CANT_DO_RIGHT_NOW ,pItem, NULL);
+        return true;
+    }
+};
+
+/*####
+## npc_brewfest_apple_trigger
+####*/
+
+#define SPELL_RAM_FATIGUE    43052
+
+class npc_brewfest_apple_trigger : public CreatureScript
+{
+public:
+    npc_brewfest_apple_trigger() : CreatureScript("npc_brewfest_apple_trigger") { }
+    
+    struct npc_brewfest_apple_triggerAI : public ScriptedAI
+    {
+        npc_brewfest_apple_triggerAI(Creature* c) : ScriptedAI(c) {}
+        
+        void MoveInLineOfSight(Unit *who)
+        {
+            Player *pPlayer = who->ToPlayer();
+            if (!pPlayer)
+                return;
+            if (pPlayer->HasAura(SPELL_RAM_FATIGUE) && me->GetDistance(pPlayer->GetPositionX(),pPlayer->GetPositionY(),pPlayer->GetPositionZ()) <= 7.5f)
+                pPlayer->RemoveAura(SPELL_RAM_FATIGUE);
+        }
+    };
+
+    CreatureAI *GetAI(Creature *creature) const
+    {
+        return new npc_brewfest_apple_triggerAI(creature);
+    }
+};
+
+/*####
+## npc_brewfest_keg_thrower
+####*/
+
+enum eBrewfestKegThrower
+{
+    SPELL_THROW_KEG      = 43660,
+    ITEM_BREWFEST_KEG    = 33797
+};
+
+class npc_brewfest_keg_thrower : public CreatureScript
+{
+public:
+    npc_brewfest_keg_thrower() : CreatureScript("npc_brewfest_keg_thrower") { }
+
+    struct npc_brewfest_keg_throwerAI : public ScriptedAI
+    {
+        npc_brewfest_keg_throwerAI(Creature* c) : ScriptedAI(c) {}
+
+        void MoveInLineOfSight(Unit *who)
+        {
+            Player *pPlayer = who->ToPlayer();
+            if (!pPlayer)
+                return;
+            if (pPlayer->HasAura(SPELL_BREWFEST_RAM) 
+                && me->GetDistance(pPlayer->GetPositionX(),pPlayer->GetPositionY(),pPlayer->GetPositionZ()) <= 25.0f
+                && !pPlayer->HasItemCount(ITEM_BREWFEST_KEG,1))
+            {
+                me->CastSpell(pPlayer,SPELL_THROW_KEG,false);
+                me->CastSpell(pPlayer,42414,false);
+            }
+        }
+    };
+
+    CreatureAI *GetAI(Creature *creature) const
+    {
+        return new npc_brewfest_keg_throwerAI(creature);
+    }
+};
+
+/*####
+## npc_brewfest_keg_receiver
+####*/
+
+enum eBrewfestKegReceiver
+{
+    SPELL_CREATE_TICKETS            = 44501,
+    QUEST_THERE_AND_BACK_AGAIN_A    = 11122,
+    QUEST_THERE_AND_BACK_AGAIN_H    = 11412,
+    NPC_BREWFEST_DELIVERY_BUNNY     = 24337   
+};
+
+class npc_brewfest_keg_receiver : public CreatureScript
+{
+public:
+    npc_brewfest_keg_receiver() : CreatureScript("npc_brewfest_keg_receiver") { }
+
+    struct npc_brewfest_keg_receiverAI : public ScriptedAI
+    {
+        npc_brewfest_keg_receiverAI(Creature* c) : ScriptedAI(c) {}
+        
+        void MoveInLineOfSight(Unit *who)
+        {
+            Player *pPlayer = who->ToPlayer();
+            if (!pPlayer)
+                return;
+
+            if (pPlayer->HasAura(SPELL_BREWFEST_RAM) 
+                && me->GetDistance(pPlayer->GetPositionX(),pPlayer->GetPositionY(),pPlayer->GetPositionZ()) <= 5.0f
+                && pPlayer->HasItemCount(ITEM_BREWFEST_KEG,1)) 
+            {
+                pPlayer->CastSpell(me,SPELL_THROW_KEG,true);
+                pPlayer->DestroyItemCount(ITEM_BREWFEST_KEG,1,true);
+                pPlayer->GetAura(SPELL_BREWFEST_RAM)->SetDuration(pPlayer->GetAura(SPELL_BREWFEST_RAM)->GetDuration() + 30000);
+                if (pPlayer->GetQuestRewardStatus(QUEST_THERE_AND_BACK_AGAIN_A) 
+                    || pPlayer->GetQuestRewardStatus(QUEST_THERE_AND_BACK_AGAIN_H))
+                {
+                    pPlayer->CastSpell(pPlayer,SPELL_CREATE_TICKETS,true);
+                }
+                else
+                {
+                    pPlayer->KilledMonsterCredit(NPC_BREWFEST_DELIVERY_BUNNY,0);
+                    if (pPlayer->GetQuestStatus(QUEST_THERE_AND_BACK_AGAIN_A) == QUEST_STATUS_INCOMPLETE) 
+                        pPlayer->AreaExploredOrEventHappens(QUEST_THERE_AND_BACK_AGAIN_A);
+                    if (pPlayer->GetQuestStatus(QUEST_THERE_AND_BACK_AGAIN_H) == QUEST_STATUS_INCOMPLETE) 
+                        pPlayer->AreaExploredOrEventHappens(QUEST_THERE_AND_BACK_AGAIN_H);
+                    if (pPlayer->GetQuestStatus(QUEST_THERE_AND_BACK_AGAIN_A) == QUEST_STATUS_COMPLETE
+                        || pPlayer->GetQuestStatus(QUEST_THERE_AND_BACK_AGAIN_H) == QUEST_STATUS_COMPLETE)
+                        pPlayer->RemoveAura(SPELL_BREWFEST_RAM);
+                }
+            }
+        }
+    };
+
+    CreatureAI *GetAI(Creature *creature) const
+    {
+        return new npc_brewfest_keg_receiverAI(creature);
+    }
+};
+
+/*####
+## npc_brewfest_ram_master
+####*/
+#define GOSSIP_ITEM_RAM             "Do you have additional work?"
+#define GOSSIP_ITEM_RAM_REINS       "Give me another Ram Racing Reins"
+#define SPELL_BREWFEST_SUMMON_RAM   43720
+
+class npc_brewfest_ram_master : public CreatureScript
+{
+public:
+    npc_brewfest_ram_master() : CreatureScript("npc_brewfest_ram_master") { }
+
+    bool OnGossipHello(Player *pPlayer, Creature *pCreature)
+    {
+        if (pCreature->isQuestGiver())
+            pPlayer->PrepareQuestMenu(pCreature->GetGUID());
+
+            if (pPlayer->HasSpellCooldown(SPELL_BREWFEST_SUMMON_RAM) 
+                && !pPlayer->GetQuestRewardStatus(QUEST_THERE_AND_BACK_AGAIN_A) 
+                && !pPlayer->GetQuestRewardStatus(QUEST_THERE_AND_BACK_AGAIN_H)
+                && (pPlayer->GetQuestStatus(QUEST_THERE_AND_BACK_AGAIN_A) == QUEST_STATUS_INCOMPLETE
+                || pPlayer->GetQuestStatus(QUEST_THERE_AND_BACK_AGAIN_H) == QUEST_STATUS_INCOMPLETE))
+                pPlayer->RemoveSpellCooldown(SPELL_BREWFEST_SUMMON_RAM);
+
+            if (!pPlayer->HasAura(SPELL_BREWFEST_RAM) && ((pPlayer->GetQuestStatus(QUEST_THERE_AND_BACK_AGAIN_A) == QUEST_STATUS_INCOMPLETE 
+            || pPlayer->GetQuestStatus(QUEST_THERE_AND_BACK_AGAIN_H) == QUEST_STATUS_INCOMPLETE 
+            || (!pPlayer->HasSpellCooldown(SPELL_BREWFEST_SUMMON_RAM) && 
+                (pPlayer->GetQuestRewardStatus(QUEST_THERE_AND_BACK_AGAIN_A) 
+                || pPlayer->GetQuestRewardStatus(QUEST_THERE_AND_BACK_AGAIN_H))))))
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_RAM, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
+
+            if ((pPlayer->GetQuestRewardStatus(QUEST_THERE_AND_BACK_AGAIN_A) 
+                || pPlayer->GetQuestRewardStatus(QUEST_THERE_AND_BACK_AGAIN_H))
+                && !pPlayer->HasItemCount(33306,1,true))
+            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_RAM_REINS, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+2);
+
+        pPlayer->SEND_GOSSIP_MENU(384, pCreature->GetGUID());
+        return true;
+    }
+
+    bool OnGossipSelect(Player* pPlayer, Creature* pCreature, uint32 /*uiSender*/, uint32 uiAction)
+    {
+        if (uiAction == GOSSIP_ACTION_INFO_DEF+1)
+        {
+            if (pPlayer->HasItemCount(ITEM_BREWFEST_KEG,1)) 
+                pPlayer->DestroyItemCount(ITEM_BREWFEST_KEG,1,true);
+            pPlayer->CastSpell(pPlayer,SPELL_BREWFEST_SUMMON_RAM,true);
+            pPlayer->AddSpellCooldown(SPELL_BREWFEST_SUMMON_RAM,0,time(NULL) + 18*60*60);
+        }
+        if (uiAction == GOSSIP_ACTION_INFO_DEF+2)
+        {
+            pPlayer->CastSpell(pPlayer,44371,false);
+        }
+        return true;
+    }
+};
+
 void AddSC_blackrock_depths()
 {
     new go_shadowforge_brazier();
@@ -1794,4 +2162,10 @@ void AddSC_blackrock_depths()
     new go_mole_machine_console();
     new npc_brewfest_trigger();
     new item_brewfest_ChugAndChuck();
+    new spell_brewfest_speed();
+    new item_brewfest_ram_reins;
+    new npc_brewfest_apple_trigger;
+    new npc_brewfest_keg_thrower;
+    new npc_brewfest_keg_receiver;
+    new npc_brewfest_ram_master;
 }
