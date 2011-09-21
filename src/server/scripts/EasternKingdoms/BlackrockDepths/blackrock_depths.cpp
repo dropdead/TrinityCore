@@ -1784,7 +1784,7 @@ TODO:
 
 enum eBrewfestSpeedSpells
 {
-    SPELL_BREWFEST_RAM          = 43880,
+    SPELL_BREWFEST_RAM          = 43883,
     SPELL_RAM_FATIGUE           = 43052,
     SPELL_SPEED_RAM_GALLOP      = 42994,
     SPELL_SPEED_RAM_CANTER      = 42993,
