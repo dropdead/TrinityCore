@@ -1823,7 +1823,7 @@ public:
             return true;
         }
         
-        void HandlePeriodicTick(AuraEffect const* /*aurEff*/)
+        void HandlePeriodicTick(AuraEffect const* aurEff)
         {
             if (GetId() == SPELL_SPEED_RAM_EXHAUSED)
                 return;
@@ -1860,7 +1860,8 @@ public:
                     pCaster->CastSpell(pCaster,SPELL_SPEED_RAM_EXHAUSED, false);
         }
 
-        void OnRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+
+        void OnRemove(AuraEffect const * aurEff, AuraEffectHandleModes /*mode*/)
         {
             Player* pCaster = GetCaster()->ToPlayer();
             if (!pCaster)
@@ -1889,7 +1890,7 @@ public:
                 }
         }
 
-        void OnApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+        void OnApply(AuraEffect const* aurEff, AuraEffectHandleModes /*mode*/)
         {
             Player* pCaster = GetCaster()->ToPlayer();
             
@@ -1951,8 +1952,8 @@ public:
             } else if (pPlayer->HasAura(SPELL_SPEED_RAM_GALLOP))
                 pPlayer->GetAura(SPELL_SPEED_RAM_GALLOP)->SetDuration(4000);
         } 
-        /* else
-            pPlayer->SendEquipError(EQUIP_ERR_CANT_DO_RIGHT_NOW ,pItem, NULL);*/
+        else
+            pPlayer->SendEquipError(EQUIP_ERR_CANT_DO_RIGHT_NOW ,pItem, NULL);
 
         return true;
     }
@@ -1993,7 +1994,7 @@ public:
 ## npc_brewfest_keg_thrower
 ####*/
 
-enum eBrewfestKegThrower
+enum BrewfestKegThrower
 {
     SPELL_THROW_KEG      = 43660,
     ITEM_BREWFEST_KEG    = 33797
@@ -2033,7 +2034,7 @@ public:
 ## npc_brewfest_keg_receiver
 ####*/
 
-enum eBrewfestKegReceiver
+enum BrewfestKegReceiver
 {
     SPELL_CREATE_TICKETS            = 44501,
     QUEST_THERE_AND_BACK_AGAIN_A    = 11122,
