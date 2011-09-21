@@ -1760,7 +1760,6 @@ enum eBrewfestBarkQuests
     NPC_BARKER_BUNNY_2              = 24203,
     NPC_BARKER_BUNNY_3              = 24204,
     NPC_BARKER_BUNNY_4              = 24205,
-
 };
 
 class npc_brewfest_trigger : public CreatureScript
