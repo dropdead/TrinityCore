@@ -995,12 +995,9 @@ void Battleground::RemovePlayerAtLeave(uint64 guid, bool Transport, bool SendPac
         // remove from raid group if player is member
         if (Group* group = GetBgRaid(team))
         {
-            if (!(isArena() && isRated())) // Fix Temporal Para Grupos de Arena, Ahora veras a tú compañero siempre y no tendras que estar rearmando.
+            if (!group->RemoveMember(guid))                // group was disbanded
             {
-                if (!group->RemoveMember(guid))
-                {
-                    SetBgRaid(team, NULL);
-                }
+                SetBgRaid(team, NULL);
             }
         }
         DecreaseInvitedCount(team);
