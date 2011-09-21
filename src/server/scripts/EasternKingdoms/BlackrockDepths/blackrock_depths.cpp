@@ -1790,7 +1790,10 @@ enum eBrewfestSpeedSpells
     SPELL_SPEED_RAM_CANTER      = 42993,
     SPELL_SPEED_RAM_TROT        = 42992,
     SPELL_SPEED_RAM_NORMAL      = 43310,
-    SPELL_SPEED_RAM_EXHAUSED    = 43332
+    SPELL_SPEED_RAM_EXHAUSED    = 43332,
+    NPC_SPEED_BUNNY_GREEN       = 24263,
+    NPC_SPEED_BUNNY_YELLOW      = 24264,
+    NPC_SPEED_BUNNY_RED         = 24265,
 };
 
 class spell_brewfest_speed : public SpellScriptLoader
@@ -1827,16 +1830,17 @@ public:
         {
             if (GetId() == SPELL_SPEED_RAM_EXHAUSED)
                 return;
-            Player* pCaster = GetCaster()->ToPlayer();
+
+            Player* pCaster = GetCaster()->ToPlayer();            
             if (!pCaster)
                 return;
             int i;
             switch (GetId())
             {
                 case SPELL_SPEED_RAM_GALLOP:
-                     for (i = 0; i < 5; i++)
-                       pCaster->AddAura(SPELL_RAM_FATIGUE,pCaster);
-                   break;
+                    for (i = 0; i < 5; i++)
+                        pCaster->AddAura(SPELL_RAM_FATIGUE,pCaster);
+                    break;
                 case SPELL_SPEED_RAM_CANTER:
                     pCaster->AddAura(SPELL_RAM_FATIGUE,pCaster);
                     break;
@@ -1850,16 +1854,31 @@ public:
                 case SPELL_SPEED_RAM_NORMAL:
                     if (pCaster->HasAura(SPELL_RAM_FATIGUE))
                         if (pCaster->GetAura(SPELL_RAM_FATIGUE)->GetStackAmount() <= 4)
-                             pCaster->RemoveAura(SPELL_RAM_FATIGUE);
-                        else
-                            pCaster->GetAura(SPELL_RAM_FATIGUE)->ModStackAmount(-4);
+                            pCaster->RemoveAura(SPELL_RAM_FATIGUE);
+                       else
+                           pCaster->GetAura(SPELL_RAM_FATIGUE)->ModStackAmount(-4);
+                    break;
+            }
+
+            switch (aurEff->GetId())
+            {
+                case SPELL_SPEED_RAM_TROT:
+                    if (aurEff->GetTickNumber() == 4)
+                        pCaster->KilledMonsterCredit(NPC_SPEED_BUNNY_GREEN, 0);
+                    break;
+                case SPELL_SPEED_RAM_CANTER:
+                    if (aurEff->GetTickNumber() == 8)
+                        pCaster->KilledMonsterCredit(NPC_SPEED_BUNNY_YELLOW, 0);
+                    break;
+                case SPELL_SPEED_RAM_GALLOP:
+                    if (aurEff->GetTickNumber() == 8)
+                        pCaster->KilledMonsterCredit(NPC_SPEED_BUNNY_RED, 0);
                     break;
             }
             if (pCaster->HasAura(SPELL_RAM_FATIGUE))
                 if (pCaster->GetAura(SPELL_RAM_FATIGUE)->GetStackAmount() >= 100)
                     pCaster->CastSpell(pCaster,SPELL_SPEED_RAM_EXHAUSED, false);
         }
-
 
         void OnRemove(AuraEffect const * aurEff, AuraEffectHandleModes /*mode*/)
         {
@@ -1911,6 +1930,8 @@ public:
                     break;
              }
         }
+
+
 
         void Register()
         {
