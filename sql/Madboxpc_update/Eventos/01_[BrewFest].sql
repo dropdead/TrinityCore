@@ -358,6 +358,45 @@ UPDATE `item_template` SET `ScriptName`='item_brewfest_ram_reins' WHERE (`entry`
 -- Spell de quest faltante Rental Racing Ram al tomar la quest para quedar montado
 UPDATE `quest_template` SET `SrcSpell`=43883 WHERE `entry` IN (11293,11294,11407,11408,11409,11122,11412);
 
+-- Cambio de Modelo(Uno invisible) y asociacion de script al npc Barker Bunny
+UPDATE `creature_template` SET `modelid1`=11686, `ScriptName`='npc_brewfest_barker_bunny' WHERE `entry`=24202;
+UPDATE `creature_template` SET `modelid1`=11686, `ScriptName`='npc_brewfest_barker_bunny' WHERE `entry`=24203;
+UPDATE `creature_template` SET `modelid1`=11686, `ScriptName`='npc_brewfest_barker_bunny' WHERE `entry`=24204;
+UPDATE `creature_template` SET `modelid1`=11686, `ScriptName`='npc_brewfest_barker_bunny' WHERE `entry`=24205;
+
+-- Agrega bunnys para las quest de Barker
+SET @GUID := 2420200;
+INSERT INTO `creature` (`guid`,`id`,`map`,`spawnMask`,`phaseMask`,`modelid`,`equipment_id`,`position_x`,`position_y`,`position_z`,`orientation`,`spawntimesecs`,`spawndist`,`currentwaypoint`,`curhealth`,`curmana`,`MovementType`) VALUES
+(@GUID,24202,0,1,1,0,0,-4912.327148,-948.907410,501.493164,5.5,600,0,0,1,0,0),
+(@GUID+1,24203,0,1,1,0,0,-4969.666016,-1208.679565,501.77864,3.8,600,0,0,1,0,0),
+(@GUID+2,24204,0,1,1,0,0,-4690.384766,-1235.180908,501.659607,2.3,600,0,0,1,0,0),
+(@GUID+3,24205,0,1,1,0,0,-4661.659668,-955.10980,500.377472,3.8,600,0,0,1,0,0),
+(@GUID+4,24202,1,1,1,0,0,1647.637939,-4409.758789,17.244448,5.06,600,0,0,1,0,0),
+(@GUID+5,24203,1,1,1,0,0,1947.653931,-4686.246094,25.314669,4.2,600,0,0,1,0,0),
+(@GUID+6,24204,1,1,1,0,0,1932.215698,-4298.459473,24.518383,4.99,600,0,0,1,0,0),
+(@GUID+7,24205,1,1,1,0,0,1578.210327,-4199.839355,41.619968,5.1,600,0,0,1,0,0);
+INSERT INTO `game_event_creature` (`eventEntry`,`guid`) VALUES
+(24, @GUID),
+(24, @GUID+1),
+(24, @GUID+2),
+(24, @GUID+3),
+(24, @GUID+4),
+(24, @GUID+5),
+(24, @GUID+6),
+(24, @GUID+7);
+
+-- Agrega Dark Iron Mole Machine Wreckage (Noblizzlike pero da una daily)
+SET @GUID := 189989;
+INSERT INTO `gameobject` (`guid`,`id`,`map`,`spawnMask`,`phaseMask`,`position_x`,`position_y`,`position_z`,`orientation`,`rotation0`,`rotation1`,`rotation2`,`rotation3`,`spawntimesecs`,`animprogress`,`state`) VALUES
+(@GUID,189989,0,1,1,-5154.36,-609.284,398.452,2.13369,0,0,0.875682,0.482887,300,0,1),
+(@GUID+1,189989,1,1,1,1198.66,-4297.37,21.3811,4.92821,0,0,0.626838,-0.77915,300,0,1);
+INSERT INTO `game_event_gameobject` (`eventEntry`,`guid`) VALUES
+(24, @GUID),
+(24, @GUID+1);
+ 
+-- Borrado de Dark Iron Plans (Quest removida)
+DELETE FROM `gameobject` WHERE `guid` IN (11140);
+DELETE FROM `gameobject` WHERE `guid` IN (18015);
 
 /*Dark Iron Attack
 Only show gossip X if player has aura 43156 after attack
