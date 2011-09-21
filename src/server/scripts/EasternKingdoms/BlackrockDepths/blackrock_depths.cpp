@@ -1873,6 +1873,7 @@ public:
                 if (pCaster->HasAura(SPELL_RAM_FATIGUE))
                     pCaster->GetAura(SPELL_RAM_FATIGUE)->ModStackAmount(-15);
             } else if (!pCaster->HasAura(SPELL_RAM_FATIGUE) || pCaster->GetAura(SPELL_RAM_FATIGUE)->GetStackAmount() < 100)
+                
                 switch (GetId())
                 {
                     case SPELL_SPEED_RAM_GALLOP:
@@ -1900,13 +1901,13 @@ public:
             switch (GetId())
             {
                 case SPELL_SPEED_RAM_GALLOP:
-                   pCaster->GetAura(SPELL_SPEED_RAM_GALLOP)->SetDuration(4000);
+                    pCaster->GetAura(SPELL_SPEED_RAM_GALLOP)->SetDuration(4000);
                     break;
                 case SPELL_SPEED_RAM_CANTER:
                     pCaster->GetAura(SPELL_SPEED_RAM_CANTER)->SetDuration(4000);
                     break;
                 case SPELL_SPEED_RAM_TROT:
-                   pCaster->GetAura(SPELL_SPEED_RAM_TROT)->SetDuration(4000);
+                    pCaster->GetAura(SPELL_SPEED_RAM_TROT)->SetDuration(4000);
                     break;
              }
         }
