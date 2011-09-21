@@ -721,3 +721,6 @@ INSERT INTO `creature_text` (`entry`,`groupid`,`id`,`TEXT`,`type`,`language`,`pr
 (@ENTRY,2,0,"Chug and chuck! Chug and chuck!",12,0,100,1,0,0,"Ita Thunderbrew"),
 (@ENTRY,2,1,"Down the free brew and pelt the Guzzlers with your mug!",12,0,100,1,0,0,"Ita Thunderbrew");
 
+-- respawn Core Direbrew
+UPDATE `creature` SET `spawntimesecs` = 604800 WHERE `id`  = 23972;
+
