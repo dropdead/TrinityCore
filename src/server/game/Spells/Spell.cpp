@@ -1541,7 +1541,41 @@ SpellMissInfo Spell::DoSpellHitOnUnit(Unit* unit, const uint32 effectMask, bool 
             }
         }
 
-        if (m_originalCaster)
+        // Chance resist debuff
+        bool auraResist = false;
+        if (!m_spellInfo->IsPositive())
+        {
+            bool bNegativeAura = false;
+            for (uint8 i = 0; i < MAX_SPELL_EFFECTS; ++i)
+            {
+                if (m_spellInfo->Effects[i].ApplyAuraName != 0)
+                {
+                    bNegativeAura = true;
+                    break;
+                }
+            }
+
+            bool bDirectDamage = false;
+            for (uint8 i = 0; i < MAX_SPELL_EFFECTS; ++i)
+            {
+                if (m_spellInfo->Effects[i].Effect == SPELL_EFFECT_SCHOOL_DAMAGE || m_spellInfo->Effects[i].Effect == SPELL_EFFECT_HEALTH_LEECH)
+                {
+                    bDirectDamage = true;
+                    break;
+                }
+            }
+
+            if (bNegativeAura && bDirectDamage)
+            {
+                uint32 tmp = 0;
+                tmp += unit->GetMaxPositiveAuraModifierByMiscValue(SPELL_AURA_MOD_DEBUFF_RESISTANCE, int32(m_spellInfo->Dispel)) * 100;
+                tmp += unit->GetMaxNegativeAuraModifierByMiscValue(SPELL_AURA_MOD_DEBUFF_RESISTANCE, int32(m_spellInfo->Dispel)) * 100;
+                if (urand(0,10000) < tmp)
+                    auraResist = true;
+            }
+        }
+
+        if (m_originalCaster && !auraResist)
         {
             bool refresh = false;
             m_spellAura = Aura::TryRefreshStackOrCreate(aurSpellInfo, effectMask, unit,
@@ -1592,6 +1626,35 @@ SpellMissInfo Spell::DoSpellHitOnUnit(Unit* unit, const uint32 effectMask, bool 
                     // and duration of auras affected by SPELL_AURA_PERIODIC_HASTE
                     else if (m_originalCaster->HasAuraTypeWithAffectMask(SPELL_AURA_PERIODIC_HASTE, aurSpellInfo) || m_spellInfo->AttributesEx5 & SPELL_ATTR5_HASTE_AFFECT_DURATION)
                         duration = int32(duration * m_originalCaster->GetFloatValue(UNIT_MOD_CAST_SPEED));
+
+                    // Seduction with Improved Succubus talent - fix duration.
+                    if (m_spellInfo->Id == 6358 && unit->GetTypeId() == TYPEID_PLAYER && m_originalCaster->GetOwner())
+                    {
+                        float mod = 1.0f;
+                        float durationadd = 0.0f;
+                    
+                        if (m_originalCaster->GetOwner()->HasAura(18754))
+                            durationadd += float(1.5*IN_MILLISECONDS*0.22);
+                        else if (m_originalCaster->GetOwner()->HasAura(18755))
+                            durationadd += float(1.5*IN_MILLISECONDS*0.44);
+                        else if (m_originalCaster->GetOwner()->HasAura(18756))
+                            durationadd += float(1.5*IN_MILLISECONDS*0.66);
+
+                        if (durationadd)
+                        {
+                            switch (m_diminishLevel)
+                            {
+                            case DIMINISHING_LEVEL_1: break;
+                            // lol, we lost 1 second here
+                            case DIMINISHING_LEVEL_2: duration += 1000; mod = 0.5f; break;
+                            case DIMINISHING_LEVEL_3: duration += 1000; mod = 0.25f; break;
+                            case DIMINISHING_LEVEL_IMMUNE: { m_spellAura->Remove(); return SPELL_MISS_IMMUNE; }
+                            default: break;
+                            }
+                            durationadd *= mod;
+                            duration += int32(durationadd);
+                        }
+                    }  
 
                     if (duration != m_spellAura->GetMaxDuration())
                     {
@@ -5338,6 +5401,14 @@ SpellCastResult Spell::CheckCast(bool strict)
                     return SPELL_FAILED_BAD_TARGETS;
                 break;
             }
+            case SPELL_EFFECT_REDIRECT_THREAT:
+            {
+                // Tricks of the Trade
+                if (m_spellInfo->Id == 57934 && m_targets.GetUnitTarget() &&
+                    m_targets.GetUnitTarget()->GetTypeId() != TYPEID_PLAYER)
+                    return SPELL_FAILED_BAD_TARGETS;
+                break;
+            }
             case SPELL_EFFECT_LEAP_BACK:
             {
                 // Spell 781 (Disengage) requires player to be in combat
@@ -5526,6 +5597,14 @@ SpellCastResult Spell::CheckCast(bool strict)
                 if (m_targets.GetUnitTarget()->getPowerType() != POWER_MANA)
                     return SPELL_FAILED_BAD_TARGETS;
 
+                break;
+            }
+            case SPELL_AURA_MOD_DAMAGE_PERCENT_TAKEN:
+            {
+                // Pain Suppression
+                if (m_spellInfo->Id == 33206)
+                    if (!m_caster->HasAura(63248) && m_caster->HasAuraType(SPELL_AURA_MOD_STUN))
+                        return SPELL_FAILED_STUNNED;          
                 break;
             }
             default:
@@ -7256,6 +7335,13 @@ void Spell::PrepareTriggersExecutedOnHit()
              if (m_spellInfo->SpellFamilyFlags[1] & 0x00001000 ||  m_spellInfo->SpellFamilyFlags[0] & 0x00100220)
                  m_preCastSpell = 68391;
              break;
+        }
+        case SPELLFAMILY_DEATHKNIGHT:
+        {
+            // Frost Fever (prevents proc of Chilblains at login)
+            if (m_spellInfo->Id == 59921 && m_caster->GetTypeId() == TYPEID_PLAYER && m_caster->ToPlayer()->GetSession()->PlayerLoading())
+                return;
+            break;
         }
     }
 

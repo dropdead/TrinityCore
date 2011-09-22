@@ -1200,6 +1200,17 @@ void Aura::HandleAuraSpecificMods(AuraApplication const* aurApp, Unit* caster, b
                                 target->RemoveMovementImpairingAuras();
                             }
                         break;
+                    case 6358: // Seduction
+                        if (!caster)
+                            break;
+                        if (Unit *owner = caster->GetOwner())
+                            if (owner->HasAura(56250)) // Glyph of Succubus
+                            {
+                                target->RemoveAurasByType(SPELL_AURA_PERIODIC_DAMAGE, 0, target->GetAura(32409)); // SW:D shall not be removed.
+                                target->RemoveAurasByType(SPELL_AURA_PERIODIC_DAMAGE_PERCENT);
+                                target->RemoveAurasByType(SPELL_AURA_PERIODIC_LEECH);
+                            }
+                        break;
                 }
                 break;
             case SPELLFAMILY_PRIEST:
@@ -1316,6 +1327,9 @@ void Aura::HandleAuraSpecificMods(AuraApplication const* aurApp, Unit* caster, b
                             }
                         }
                         break;
+                    case 12281: // Sword Specialization
+                        target->CastSpell(target, 16459, true); 
+                        break;
                 }
                 break;
             case SPELLFAMILY_MAGE:
@@ -1415,7 +1429,10 @@ void Aura::HandleAuraSpecificMods(AuraApplication const* aurApp, Unit* caster, b
                             target->RemoveGameObject(GetId(), true);
                         target->RemoveAura(62388);
                         break;
-                   default:
+                   case 6358: // Seduction
+                       // Interrupt cast if aura removed from target
+                       // maybe should be used SpellChannelInterruptFlags instead
+                       caster->InterruptNonMeleeSpells(false, 6358, false);
                        break;
                 }
                 break;
@@ -1792,7 +1809,40 @@ void Aura::HandleAuraSpecificMods(AuraApplication const* aurApp, Unit* caster, b
             }
             break;
     }
-}
+    if (GetSpellInfo()->IsPassive() && !GetCastItemGUID())
+        for (uint8 i = 0; i < MAX_SPELL_EFFECTS; ++i)
+        {
+            if (m_effects[i] && m_effects[i]->GetAuraType() == SPELL_AURA_MECHANIC_DURATION_MOD)
+            {
+                uint32 spell_immune;
+
+                switch(m_effects[i]->GetMiscValue())
+                {
+                    case 5:  
+                        spell_immune = 55357; 
+                        break;                    
+                    case 7: 
+                    case 11: 
+                        spell_immune = 55378; 
+                        break;
+                    case 9:  
+                        spell_immune = 55366;
+                        break;
+                    case 12: 
+                        spell_immune = 55358; 
+                        break;
+                    default:
+                        break;
+                }
+                if (spell_immune)
+                {
+                    if (apply) target->RemoveAurasDueToSpell(spell_immune);
+                    target->ApplySpellImmune(0, IMMUNITY_ID, spell_immune, apply);
+                }
+            }
+        }
+}               
+
 
 bool Aura::CanBeAppliedOn(Unit* target)
 {
