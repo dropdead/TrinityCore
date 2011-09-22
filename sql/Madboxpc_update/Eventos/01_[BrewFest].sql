@@ -811,5 +811,6 @@ INSERT INTO `creature_text` (`entry`,`groupid`,`id`,`text`,`type`,`language`,`pr
 (@ENTRY,2,0,"Chug and chuck! Chug and chuck!",12,0,100,1,0,0,"Ita Thunderbrew"),
 (@ENTRY,2,1,"Down the free brew and pelt the Guzzlers with your mug!",12,0,100,1,0,0,"Ita Thunderbrew");
 
-
-
+-- Quest 12491 y 12492 no tienen prerequisito en el 2010
+UPDATE `quest_template` SET `PrevQuestId`=0 WHERE `entry`=12491;
+UPDATE `quest_template` SET `PrevQuestId`=0 WHERE `entry`=12492;
