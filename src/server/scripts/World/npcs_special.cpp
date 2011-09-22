@@ -2642,6 +2642,36 @@ public:
         return true;
     }
 };
+enum hallowen
+{
+    QUEST_INCOMING_GUMDROP  = 8358,
+    EMOTE_TRAIN             = 264,
+};
+
+class npc_kali_remik : public CreatureScript
+{
+public:
+    npc_kali_remik() : CreatureScript("npc_kali_remik") { }
+
+    CreatureAI *GetAI(Creature *creature) const
+    {
+        return new npc_kali_remikAI(creature);
+    }
+
+    struct npc_kali_remikAI : public ScriptedAI
+    {
+        npc_kali_remikAI(Creature* c) : ScriptedAI(c) {}
+
+        void ReceiveEmote(Player* player, uint32 emote)
+        {
+            if (!IsHolidayActive(HOLIDAY_HALLOWS_END))
+                return;
+
+            if (player->GetQuestStatus(QUEST_INCOMING_GUMDROP) == QUEST_STATUS_INCOMPLETE && emote == EMOTE_TRAIN)
+                player->KilledMonsterCredit(me->GetEntry(),0);
+        }
+    };
+};
 
 void AddSC_npcs_special()
 {
@@ -2673,5 +2703,6 @@ void AddSC_npcs_special()
     new npc_locksmith;
     new npc_tabard_vendor;
     new npc_experience;
+    new npc_kali_remik;
 }
 
