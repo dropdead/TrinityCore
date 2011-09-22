@@ -11767,14 +11767,6 @@ bool Unit::IsImmunedToSpellEffect(SpellInfo const* spellInfo, uint32 index) cons
                 return true;
     }
 
-    if (GetTypeId() == TYPEID_PLAYER && spellInfo->Id != 49560)
-    {
-        if (spellInfo->Effects[index].Effect == SPELL_EFFECT_ATTACK_ME)
-            return true;
-        if (spellInfo->Effects[index].ApplyAuraName == SPELL_AURA_MOD_TAUNT)
-            return true;
-    }
-
     return false;
 }
 
@@ -14541,10 +14533,6 @@ void Unit::ProcDamageAndSpellFor(bool isVictim, Unit* pTarget, uint32 procFlag, 
         bool useCharges  = i->aura->IsUsingCharges();
         // no more charges to use, prevent proc
         if (useCharges && !i->aura->GetCharges())
-            continue;
-
-        // Prayer of Mending
-        if ((i->aura->GetId() == 41635 || i->aura->GetId() == 48110 || i->aura->GetId() == 48111) && !damage)
             continue;
 
         bool takeCharges = false;
