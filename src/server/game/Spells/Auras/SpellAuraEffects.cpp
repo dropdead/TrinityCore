@@ -595,7 +595,7 @@ int32 AuraEffect::CalculateAmount(Unit* caster)
             {
                 amount = m_spellInfo->Effects[m_effIndex].BasePoints;
                 amount = caster->SpellHealingBonus(GetBase()->GetUnitOwner(), GetSpellInfo(), amount, SPELL_DIRECT_DAMAGE);
-                amount = caster->ApplyEffectModifiers(GetSpellInfo(), m_effIndex, float(amount));
+                amount = int32(caster->ApplyEffectModifiers(GetSpellInfo(), m_effIndex, float(amount)));
             }
             break;
         case SPELL_AURA_PERIODIC_DAMAGE:
