@@ -1200,17 +1200,6 @@ void Aura::HandleAuraSpecificMods(AuraApplication const* aurApp, Unit* caster, b
                                 target->RemoveMovementImpairingAuras();
                             }
                         break;
-                    case 6358: // Seduction
-                        if (!caster)
-                            break;
-                        if (Unit *owner = caster->GetOwner())
-                            if (owner->HasAura(56250)) // Glyph of Succubus
-                            {
-                                target->RemoveAurasByType(SPELL_AURA_PERIODIC_DAMAGE, 0, target->GetAura(32409)); // SW:D shall not be removed.
-                                target->RemoveAurasByType(SPELL_AURA_PERIODIC_DAMAGE_PERCENT);
-                                target->RemoveAurasByType(SPELL_AURA_PERIODIC_LEECH);
-                            }
-                        break;
                 }
                 break;
             case SPELLFAMILY_PRIEST:
@@ -1429,10 +1418,7 @@ void Aura::HandleAuraSpecificMods(AuraApplication const* aurApp, Unit* caster, b
                             target->RemoveGameObject(GetId(), true);
                         target->RemoveAura(62388);
                         break;
-                   case 6358: // Seduction
-                       // Interrupt cast if aura removed from target
-                       // maybe should be used SpellChannelInterruptFlags instead
-                       caster->InterruptNonMeleeSpells(false, 6358, false);
+                   default:
                        break;
                 }
                 break;
