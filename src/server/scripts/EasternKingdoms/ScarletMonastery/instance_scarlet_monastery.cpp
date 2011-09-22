@@ -58,6 +58,7 @@ public:
         uint64 DoorHighInquisitorGUID;
 
         uint32 m_auiEncounter[MAX_ENCOUNTER];
+        uint32 HorsemanPhase;
 
         void Initialize()
         {
@@ -67,6 +68,7 @@ public:
             HorsemanGUID = 0;
             HeadGUID = 0;
             HorsemanAdds.clear();
+            HorsemanPhase = 0;
 
             MograineGUID = 0;
             WhitemaneGUID = 0;
@@ -125,6 +127,9 @@ public:
                     HandleGameObject(PumpkinShrineGUID, false);
                 }
                 break;
+            case DATA_HORSEMAN_PHASE:
+                HorsemanPhase = data;
+                break;
             }
         }
 
@@ -145,14 +150,18 @@ public:
 
         uint32 GetData(uint32 type)
         {
-            if (type == TYPE_MOGRAINE_AND_WHITE_EVENT)
-                return m_auiEncounter[0];
-            if (type == DATA_HORSEMAN_EVENT)
-                return m_auiEncounter[1];
-            return 0;
+            switch(type)
+            {
+                case TYPE_MOGRAINE_AND_WHITE_EVENT:
+                    return m_auiEncounter[0];
+                case DATA_HORSEMAN_EVENT:
+                    return m_auiEncounter[1];
+                case DATA_HORSEMAN_PHASE:
+                    return HorsemanPhase;
+                default: return 0;
+            }
         }
     };
-
 };
 
 void AddSC_instance_scarlet_monastery()
