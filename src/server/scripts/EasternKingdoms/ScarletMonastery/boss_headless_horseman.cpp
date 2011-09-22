@@ -321,7 +321,7 @@ public:
 
             if (spell->Id == SPELL_FLYING_HEAD)
             {
-                if(Phase == 0) Phase = 1;
+                if (Phase == 0) Phase = 1;
                 DoZoneInCombat();
                 withbody = false;
                 if (!bodyGUID)
@@ -344,7 +344,7 @@ public:
         void Disappear();
         void UpdateAI(const uint32 diff)
         {
-            if(pInstance && pInstance->GetData(DATA_HORSEMAN_EVENT) != IN_PROGRESS)
+            if (pInstance && pInstance->GetData(DATA_HORSEMAN_EVENT) != IN_PROGRESS)
             {
                 me->Kill(me);
                 me->RemoveCorpse();
@@ -354,7 +354,7 @@ public:
             {
                 if (wait <= diff)
                 {
-                    if(Unit* target = SelectTarget(SELECT_TARGET_RANDOM,0,100,true))
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM,0,100,true))
                     {
                         me->GetMotionMaster()->Clear(false);
                         me->GetMotionMaster()->MoveFollow(target,5.0f,0.0f);
@@ -600,7 +600,7 @@ public:
             if (pInstance)
                 pInstance->SetData(DATA_HORSEMAN_EVENT, DONE);
 
-            if(me->GetMap()->IsDungeon())
+            if (me->GetMap()->IsDungeon())
             {
                 Map::PlayerList const& players =  me->GetMap()->GetPlayers();
 
@@ -622,17 +622,17 @@ public:
 
             if (spell->Id == SPELL_FLYING_HEAD)
             {
-                if(caster->GetGUID() == headGUID)
+                if (caster->GetGUID() == headGUID)
                 {
                     uint32 newPhase;
-                    if(caster->GetHealthPct() <= 33)
+                    if (caster->GetHealthPct() <= 33)
                         newPhase = 3;
-                    else if(caster->GetHealthPct() <= 66)
+                    else if (caster->GetHealthPct() <= 66)
                         newPhase = 2;
                     else newPhase = 1;
 
                     Phase = newPhase;
-                    if(pInstance) pInstance->SetData(DATA_HORSEMAN_PHASE, Phase);
+                    if (pInstance) pInstance->SetData(DATA_HORSEMAN_PHASE, Phase);
                 }
 
                 withhead = true;
@@ -666,7 +666,7 @@ public:
 
                 if (!headGUID)
                 {
-                    if(Creature* head = DoSpawnCreature(HEAD, float(rand()%2), float(rand()%2),0,0,TEMPSUMMON_DEAD_DESPAWN,0))
+                    if (Creature* head = DoSpawnCreature(HEAD, float(rand()%2), float(rand()%2),0,0,TEMPSUMMON_DEAD_DESPAWN,0))
                     {
                         headGUID = head->GetGUID();
                         if (pInstance)
@@ -792,15 +792,15 @@ public:
                         if (Head && Head->isAlive())
                         {
                             uint32 newPhase;
-                            if(Head->GetHealthPct() <= 33)
+                            if (Head->GetHealthPct() <= 33)
                                 newPhase = 3;
-                            else if(Head->GetHealthPct() <= 66)
+                            else if (Head->GetHealthPct() <= 66)
                                 newPhase = 2;
                             else newPhase = 1;
 
                             Phase = newPhase;
                             
-                            if(pInstance) pInstance->SetData(DATA_HORSEMAN_PHASE, Phase);
+                            if (pInstance) pInstance->SetData(DATA_HORSEMAN_PHASE, Phase);
                             CAST_AI(mob_head::mob_headAI, Head->AI())->Phase = newPhase;
                             //CAST_AI(mob_head::mob_headAI, Head->AI())->Phase = Phase;
                             CAST_AI(mob_head::mob_headAI, Head->AI())->Disappear();
