@@ -270,16 +270,6 @@ void Spell::EffectInstaKill(SpellEffIndex /*effIndex*/)
     if (!unitTarget || !unitTarget->isAlive())
         return;
 
-    // Death pact should only affet his ghoul
-    if (m_spellInfo->Id == 48743)
-    {
-        if (unitTarget->GetTypeId() != TYPEID_UNIT || unitTarget->GetEntry() != 26125)
-            return;
-        //Do not harm other ghouls
-        if (unitTarget->GetOwnerGUID() != m_caster->GetGUID())
-            return;
-    }
-
     if (m_caster == unitTarget)                              // prevent interrupt message
         finish();
 
@@ -1431,11 +1421,7 @@ void Spell::EffectDummy(SpellEffIndex effIndex)
                 // Restorative Totems
                 if (Unit* owner = m_caster->GetOwner())
                     if (AuraEffect* dummy = owner->GetAuraEffect(SPELL_AURA_DUMMY, SPELLFAMILY_SHAMAN, 338, 1))
-                    {
-                        damage += int32(owner->SpellDamageBonus(unitTarget, m_spellInfo, 0, HEAL) * 0.44f);
-                        if (AuraEffect* dummy = owner->GetDummyAuraEffect(SPELLFAMILY_SHAMAN, 338, 1))
                         AddPctN(damage, dummy->GetAmount());
-                    }
 
                 m_caster->CastCustomSpell(unitTarget, 52042, &damage, 0, 0, true, 0, 0, m_originalCasterGUID);
                 return;

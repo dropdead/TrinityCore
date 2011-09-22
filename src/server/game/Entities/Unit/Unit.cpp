@@ -1668,10 +1668,6 @@ void Unit::CalcAbsorbResist(Unit* victim, SpellSchoolMask schoolMask, DamageEffe
             if ((*j)->GetMiscValue() & schoolMask)
                 AddPctN(damageResisted, -(*j)->GetAmount());
 
-        // These spells should ignore any resistances
-        if (spellInfo && spellInfo->AttributesEx3 & SPELL_ATTR3_IGNORE_HIT_RESULT)
-            damageResisted = 0;
-
         dmgInfo.ResistDamage(uint32(damageResisted));
     }
 
@@ -2285,10 +2281,6 @@ bool Unit::isSpellBlocked(Unit* victim, SpellInfo const* spellProto, WeaponAttac
             victim->ToCreature()->GetCreatureInfo()->flags_extra & CREATURE_FLAG_EXTRA_NO_BLOCK)
                 return false;
 
-        // These spells shouldn't be blocked
-        if (spellProto && spellProto->Attributes & SPELL_ATTR0_IMPOSSIBLE_DODGE_PARRY_BLOCK)
-            return false;
-
         float blockChance = victim->GetUnitBlockChance();
         blockChance += (int32(GetWeaponSkillValue(attackType)) - int32(victim->GetMaxSkillValueForLevel())) * 0.04f;
         if (roll_chance_f(blockChance))
@@ -2565,18 +2557,7 @@ SpellMissInfo Unit::MagicSpellHitResult(Unit* victim, SpellInfo const* spell)
             }
         }
 
-        // Direct Damage spells should not be fully resisted
-        bool bDirectDamage = false;
-        for (uint8 i = 0; i < MAX_SPELL_EFFECTS; ++i)
-        {
-            if (spell->Effects[i].Effect == SPELL_EFFECT_SCHOOL_DAMAGE || spell->Effects[i].Effect == SPELL_EFFECT_HEALTH_LEECH)
-            {
-                bDirectDamage = true;
-                break;
-            }
-        }
-
-        if (bNegativeAura && !bDirectDamage)
+        if (bNegativeAura)
         {
             tmp += victim->GetMaxPositiveAuraModifierByMiscValue(SPELL_AURA_MOD_DEBUFF_RESISTANCE, int32(spell->Dispel)) * 100;
             tmp += victim->GetMaxNegativeAuraModifierByMiscValue(SPELL_AURA_MOD_DEBUFF_RESISTANCE, int32(spell->Dispel)) * 100;
@@ -6494,18 +6475,6 @@ bool Unit::HandleDummyAuraProc(Unit* victim, uint32 damage, AuraEffect* triggere
                     triggered_spell_id = 32747;
                     break;
                 }
-                // Tricks of the Trade
-                case 57934:
-                {
-                    if (Unit * unitTarget = GetMisdirectionTarget())
-                    {
-                        RemoveAura(dummySpell->Id, GetGUID(), 0, AURA_REMOVE_BY_DEFAULT);
-                        CastSpell(this, 59628, true);
-                        CastSpell(unitTarget, 57933, true);
-                        return true;
-                    }
-                    return false;
-                }
             }
 
             switch (dummySpell->SpellIconID)
@@ -7900,13 +7869,6 @@ bool Unit::HandleModDamagePctTakenAuraProc(Unit* victim, uint32 /*damage*/, Aura
             }
             break;
         }
-        case SPELLFAMILY_WARRIOR:
-        {
-            // Recklessness - prevent double proc
-            if (dummySpell->Id == 1719)
-                return false;
-            break;
-        }
     }
     // processed charge only counting case
     if (!triggered_spell_id)
@@ -8218,10 +8180,6 @@ bool Unit::HandleProcTriggerSpell(Unit* victim, uint32 damage, AuraEffect* trigg
             case SPELLFAMILY_GENERIC:
                 switch (auraSpellInfo->Id)
                 {
-                    case 56614:             // Wrecking Crew
-                        trigger_spell_id = 57522;
-                        target = this;
-                        break;
                     case 23780:             // Aegis of Preservation (Aegis of Preservation trinket)
                         trigger_spell_id = 23781;
                         break;
