@@ -466,7 +466,7 @@ exact same way, together with target_type 1 and target_0 it will always walk out
 Brewers only throw in phase 1
  
 */
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Misc.
 DELETE FROM `gameobject` WHERE `id`=186881; -- Dark Iron Dwarf Plans should be summoned by event
 UPDATE `creature_template` SET `flags_extra`=`flags_extra`|128 WHERE `entry`=24109; -- [DND] Brewfest Target Dummy Move To Target
