@@ -1234,7 +1234,7 @@ void Battleground::EventPlayerLoggedOut(Player* player)
                 EndBattleground(GetOtherTeam(player->GetTeam()));
     }
 
-    //player->LeaveBattleground();
+    player->LeaveBattleground();
 }
 
 // This method should be called only once ... it adds pointer to queue
