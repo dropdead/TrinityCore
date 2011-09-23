@@ -1746,6 +1746,7 @@ enum eBrewfestBarkQuests
     BARK_FOR_TCHALIS_VOODOO_BREWERY = 11408,
     BARK_FOR_THE_BARLEYBREWS        = 11293,
     BARK_FOR_DROHNS_DISTILLERY      = 11407,
+    SPELL_RAMSTEIN_SWIFT_WORK_RAM   = 43880,
     SPELL_BREWFEST_RAM              = 43883,
     SPELL_RAM_FATIGUE               = 43052,
     SPELL_SPEED_RAM_GALLOP          = 42994,
@@ -1826,6 +1827,8 @@ public:
         {
             if (!sSpellMgr->GetSpellInfo(SPELL_RAM_FATIGUE))
                 return false;
+            if (!sSpellMgr->GetSpellInfo(SPELL_RAMSTEIN_SWIFT_WORK_RAM))
+                return false;
             if (!sSpellMgr->GetSpellInfo(SPELL_BREWFEST_RAM))
                 return false;
             if (!sSpellMgr->GetSpellInfo(SPELL_SPEED_RAM_GALLOP))
@@ -1902,7 +1905,7 @@ public:
             Player* pCaster = GetCaster()->ToPlayer();
             if (!pCaster)
                 return;
-            if (!pCaster->HasAura(SPELL_BREWFEST_RAM))
+            if (!pCaster->HasAura(SPELL_BREWFEST_RAM) || !pCaster->HasAura(SPELL_RAMSTEIN_SWIFT_WORK_RAM))
                 return;
             if (GetId() == SPELL_SPEED_RAM_EXHAUSED) 
             {
@@ -1970,7 +1973,7 @@ public:
 
     bool OnUse(Player* pPlayer, Item* pItem, const SpellCastTargets & /*pTargets*/)
     {
-        if (pPlayer->HasAura(SPELL_BREWFEST_RAM) && !pPlayer->HasAura(SPELL_SPEED_RAM_EXHAUSED))
+        if ((pPlayer->HasAura(SPELL_BREWFEST_RAM) || pPlayer->HasAura(SPELL_RAMSTEIN_SWIFT_WORK_RAM)) && !pPlayer->HasAura(SPELL_SPEED_RAM_EXHAUSED))
         {
             if (pPlayer->HasAura(SPELL_SPEED_RAM_NORMAL))
                 pPlayer->CastSpell(pPlayer,SPELL_SPEED_RAM_TROT,false);
@@ -2051,7 +2054,7 @@ public:
             Player *pPlayer = who->ToPlayer();
             if (!pPlayer)
                 return;
-            if (pPlayer->HasAura(SPELL_BREWFEST_RAM) 
+            if ((pPlayer->HasAura(SPELL_BREWFEST_RAM) || pPlayer->HasAura(SPELL_RAMSTEIN_SWIFT_WORK_RAM))
                 && me->GetDistance(pPlayer->GetPositionX(),pPlayer->GetPositionY(),pPlayer->GetPositionZ()) <= 25.0f
                 && !pPlayer->HasItemCount(ITEM_BREWFEST_KEG,1))
             {
@@ -2094,13 +2097,14 @@ public:
             if (!pPlayer)
                 return;
 
-            if (pPlayer->HasAura(SPELL_BREWFEST_RAM) 
+            if ((pPlayer->HasAura(SPELL_BREWFEST_RAM) ||  pPlayer->HasAura(SPELL_RAMSTEIN_SWIFT_WORK_RAM)
                 && me->GetDistance(pPlayer->GetPositionX(),pPlayer->GetPositionY(),pPlayer->GetPositionZ()) <= 5.0f
                 && pPlayer->HasItemCount(ITEM_BREWFEST_KEG,1)) 
             {
                 pPlayer->CastSpell(me,SPELL_THROW_KEG,true);
                 pPlayer->DestroyItemCount(ITEM_BREWFEST_KEG,1,true);
                 pPlayer->GetAura(SPELL_BREWFEST_RAM)->SetDuration(pPlayer->GetAura(SPELL_BREWFEST_RAM)->GetDuration() + 30000);
+                pPlayer->GetAura(SPELL_RAMSTEIN_SWIFT_WORK_RAM)->SetDuration(pPlayer->GetAura(SPELL_RAMSTEIN_SWIFT_WORK_RAM)->GetDuration() + 30000);
                 if (pPlayer->GetQuestRewardStatus(QUEST_THERE_AND_BACK_AGAIN_A) 
                     || pPlayer->GetQuestRewardStatus(QUEST_THERE_AND_BACK_AGAIN_H))
                 {
