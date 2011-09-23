@@ -2103,8 +2103,10 @@ public:
             {
                 pPlayer->CastSpell(me,SPELL_THROW_KEG,true);
                 pPlayer->DestroyItemCount(ITEM_BREWFEST_KEG,1,true);
-                pPlayer->GetAura(SPELL_BREWFEST_RAM)->SetDuration(pPlayer->GetAura(SPELL_BREWFEST_RAM)->GetDuration() + 30000);
-                pPlayer->GetAura(SPELL_RAMSTEIN_SWIFT_WORK_RAM)->SetDuration(pPlayer->GetAura(SPELL_RAMSTEIN_SWIFT_WORK_RAM)->GetDuration() + 30000);
+                if (pPlayer->HasAura(SPELL_BREWFEST_RAM))
+                    pPlayer->GetAura(SPELL_BREWFEST_RAM)->SetDuration(pPlayer->GetAura(SPELL_BREWFEST_RAM)->GetDuration() + 30000);
+                if (pPlayer->HasAura(SPELL_RAMSTEIN_SWIFT_WORK_RAM))
+                    pPlayer->GetAura(SPELL_RAMSTEIN_SWIFT_WORK_RAM)->SetDuration(pPlayer->GetAura(SPELL_RAMSTEIN_SWIFT_WORK_RAM)->GetDuration() + 30000);
                 if (pPlayer->GetQuestRewardStatus(QUEST_THERE_AND_BACK_AGAIN_A) 
                     || pPlayer->GetQuestRewardStatus(QUEST_THERE_AND_BACK_AGAIN_H))
                 {
