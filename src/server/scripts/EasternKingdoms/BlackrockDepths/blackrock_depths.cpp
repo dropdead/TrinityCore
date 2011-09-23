@@ -2097,7 +2097,7 @@ public:
             if (!pPlayer)
                 return;
 
-            if ((pPlayer->HasAura(SPELL_BREWFEST_RAM) ||  pPlayer->HasAura(SPELL_RAMSTEIN_SWIFT_WORK_RAM)
+            if ((pPlayer->HasAura(SPELL_BREWFEST_RAM) ||  pPlayer->HasAura(SPELL_RAMSTEIN_SWIFT_WORK_RAM))
                 && me->GetDistance(pPlayer->GetPositionX(),pPlayer->GetPositionY(),pPlayer->GetPositionZ()) <= 5.0f
                 && pPlayer->HasItemCount(ITEM_BREWFEST_KEG,1)) 
             {
