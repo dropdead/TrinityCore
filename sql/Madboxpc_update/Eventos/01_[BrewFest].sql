@@ -304,7 +304,6 @@ INSERT INTO `spell_linked_spell` (`spell_trigger`,`spell_effect`,`type`,`comment
 ('-43880','-42146','0','Remove brewfest speed buffs when player dismounted'),
 ('-43880','-43310','0','Remove brewfest speed buffs when player dismounted'),
 ('-43880','-43492','0','Remove brewfest speed buffs when player dismounted'),
-('-43880','-43052','0','Remove brewfest speed buffs when player dismounted'),
 ('-43880','-43332','0','Remove brewfest speed buffs when player dismounted'),
 ('-43880','-43052','0','Remove brewfest speed buffs when player dismounted'),
 ('42994','-42993','0','Switch brewfest speed buffs'),
@@ -813,8 +812,7 @@ INSERT INTO `creature_text` (`entry`,`groupid`,`id`,`text`,`type`,`language`,`pr
 (@ENTRY,2,1,"Down the free brew and pelt the Guzzlers with your mug!",12,0,100,1,0,0,"Ita Thunderbrew");
 
 -- Quest 12491 y 12492 no tienen prerequisito en el 2010
-UPDATE `quest_template` SET `PrevQuestId`=0 WHERE `entry`=12491;
-UPDATE `quest_template` SET `PrevQuestId`=0 WHERE `entry`=12492;
+UPDATE `quest_template` SET `PrevQuestId`=0 WHERE `entry`IN (12491,12492);
 
 -- Fix Vendedores Blix Fixwidget y Ray'ma Horda
 -- Fix Vendedores Belbi Quikswitch y Larkin Thunderbrew Alianza
