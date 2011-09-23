@@ -2935,13 +2935,13 @@ enum HallowendFire
     SPELL_HEADLES_HORSEMAN_QUEST_CREDIT     = 42242,
 };
 
-#define HALLOWSEND_ACTION_FAIL_EVENT   1
-#define HALLOWSEND_ACTION_START_EVENT  2
-#define HALLOWSEND_ACTION_PASS_EVENT   2
-#define HALLOWSEND_ACTION_SAY1         3
-#define HALLOWSEND_ACTION_SAY2         4
-#define HALLOWSEND_ADD_FIRE            1
-#define HALLOWSEND_REMOVE_FIRE         2
+#define ACTION_FAIL_EVENT       1
+#define ACTION_START_EVENT      2
+#define ACTION_PASS_EVENT       2
+#define ACTION_SAY_1            3
+#define ACTION_SAY_2            4
+#define HALLOWEND_FIRE_ADD      1
+#define HALLOWEND_FIRE_REMOVE   2
 
 class npc_hallowend : public CreatureScript
 {
@@ -3020,7 +3020,7 @@ public:
         {
             switch (uiType)
             {
-                case HALLOWSEND_REMOVE_FIRE:
+                case HALLOWEND_FIRE_REMOVE:
                     PostionEventoHallowends[uiData].AlreadyFired = false;
                     bool EventPassed = true;
                     for (uint8 j = 0; j < PostionEventoHallowends[AreaFire].count_in_Area; j++) 
@@ -3035,7 +3035,7 @@ public:
         void EventBegin()
         {
             CountPlayersEvent = PlayersCountRange(100.0f);
-            // if nobody near event not starting
+
             if (!CountPlayersEvent)
                 return;
             EventProgress = true;
@@ -3044,7 +3044,7 @@ public:
                 PostionEventoHallowends[AreaFire + j].AlreadyFired = false;
             for (uint8 i = 0; i < 2; i++)
                 SaidPhrase[i] = false;
-            Fires.DoAction(NPC_HEADLESS_HORSEMAN_FIRE_DND,HALLOWSEND_ACTION_START_EVENT);
+            Fires.DoAction(NPC_HEADLESS_HORSEMAN_FIRE_DND,ACTION_START_EVENT);
             Creature *summon = me->SummonCreature(NPC_SHADE_OF_THE_HORSEMAN,0,0,0)->ToCreature();
             if (summon) 
                 Fires.Summon(summon);
@@ -3054,13 +3054,13 @@ public:
         {
             if (!EventPassed) 
             {
-                Fires.DoAction(NPC_HEADLESS_HORSEMAN_FIRE_DND,HALLOWSEND_ACTION_FAIL_EVENT);
-                Fires.DoAction(NPC_SHADE_OF_THE_HORSEMAN,HALLOWSEND_ACTION_FAIL_EVENT);
+                Fires.DoAction(NPC_HEADLESS_HORSEMAN_FIRE_DND,ACTION_FAIL_EVENT);
+                Fires.DoAction(NPC_SHADE_OF_THE_HORSEMAN,ACTION_FAIL_EVENT);
             }
             else 
             {
                 EventComplete(100.0f);
-                Fires.DoAction(NPC_SHADE_OF_THE_HORSEMAN,HALLOWSEND_ACTION_PASS_EVENT);
+                Fires.DoAction(NPC_SHADE_OF_THE_HORSEMAN,ACTION_PASS_EVENT);
             }
             EventProgress = false;
         }
@@ -3079,27 +3079,177 @@ public:
                 if (!SaidPhrase[0])
                     if (TimerDuration <= 280*IN_MILLISECONDS)
                     {
-                        Fires.DoAction(NPC_SHADE_OF_THE_HORSEMAN,HALLOWSEND_ACTION_SAY1);
+                        Fires.DoAction(NPC_SHADE_OF_THE_HORSEMAN,ACTION_SAY_1);
                         SaidPhrase[0] = true;
                     } else 
                         TimerDuration -= diff;
-                else if (!SaidPhrase[1])
-                    if (TimerDuration <= 130*IN_MILLISECONDS)
-                    {
-                        Fires.DoAction(NPC_SHADE_OF_THE_HORSEMAN,HALLOWSEND_ACTION_SAY2);
-                        SaidPhrase[1] = true;
-                    } else 
-                        TimerDuration -= diff;
                 else 
-                    if (TimerDuration <= diff)
-                    { 
-                        EventEnd();
-                    } else TimerDuration -= diff;
+                    if (!SaidPhrase[1])
+                        if (TimerDuration <= 130*IN_MILLISECONDS)
+                        {
+                            Fires.DoAction(NPC_SHADE_OF_THE_HORSEMAN,ACTION_SAY_2);
+                            SaidPhrase[1] = true;
+                        } else 
+                            TimerDuration -= diff;
+                    else 
+                        if (TimerDuration <= diff)
+                        { 
+                            EventEnd();
+                        } else TimerDuration -= diff;
             }
         }
     }; 
 };
 
+// http://www.wowhead.com/npc=23537
+// Headless Horseman - Fire (DND)
+class npc_headless_horseman_fire : public CreatureScript
+{
+public:
+    npc_headless_horseman_fire() : CreatureScript("npc_headless_horseman_fire") { }
+
+    CreatureAI *GetAI(Creature *creature) const
+    {
+        return new npc_headless_horseman_fireAI(creature);
+    }
+
+    struct npc_headless_horseman_fireAI : public ScriptedAI
+    {
+        npc_headless_horseman_fireAI(Creature* c) : ScriptedAI(c)
+        {
+            RangoFire[0] = 42971;
+            RangoFire[1] = 42074;
+            RangoFire[2] = 42075;
+            Immuned = true;
+            Fire = false;
+        }
+
+        uint32 RangoFire[3];
+        uint32 Ui_ID;
+        uint32 RateFire;
+        uint32 IncreaseFireTimer;
+        bool Fire;
+        bool Immuned;
+        uint8 curRangoFire;
+
+        void SetData(uint32 type,uint32 uiId)
+        {
+            Ui_ID = uiId;
+        }
+
+        uint32 GetData(uint32 /**/)
+        {
+            return Ui_ID;
+        }
+
+        void DoAction(const int32 uiType)
+        {
+            switch (uiType)
+            {
+                case ACTION_FAIL_EVENT:
+                    Immuned = true;
+                    break;
+                case ACTION_START_EVENT:
+                    Immuned = false;
+                    Fire = false;
+                    RateFire = 0;
+                    curRangoFire = 0;
+                    me->RemoveAllAuras();
+                    break;
+            }
+        }
+
+        uint32 PlayersCountRange(float dist) const
+        {
+            std::list<Player*> players;
+            Trinity::AnyPlayerInObjectRangeCheck checker(me, dist);
+            Trinity::PlayerListSearcher<Trinity::AnyPlayerInObjectRangeCheck> searcher(me, players, checker);
+            me->VisitNearbyWorldObject(dist, searcher);
+
+            return players.size();
+        }
+
+        Creature * FireNodeNext()
+        {
+           std::list<Creature*> FireNodsList;
+           GetCreatureListWithEntryInGrid(FireNodsList, me, NPC_HEADLESS_HORSEMAN_FIRE_DND, 15.0f);
+           
+           if (!FireNodsList.empty())
+           {
+               FireNodsList.sort(Trinity::ObjectDistanceOrderPred(me));
+
+               for (std::list<Creature*>::const_iterator itr = FireNodsList.begin(); itr != FireNodsList.end(); ++itr)
+                   if (Creature* pNodeFire = *itr) 
+                       if (!PostionEventoHallowends[pNodeFire->AI()->GetData(0)].AlreadyFired)
+                           return pNodeFire;
+           }
+           return NULL;
+        }
+
+        void SpellHit(Unit* caster, const SpellEntry* spell)
+        {
+            if (spell->Id == 42339 && Fire && !Immuned) 
+            {
+                if (PlayersCountRange(5.0f))
+                    return;
+                me->CastSpell(me,42348,true);
+                me->RemoveAura(RangoFire[curRangoFire]);
+                if (curRangoFire) 
+                {
+                    curRangoFire--;
+                    me->AddAura(RangoFire[curRangoFire],me);
+                }
+                else 
+                {
+                    if (Unit * pEventKeeper =  me->ToTempSummon()->GetSummoner())
+                        pEventKeeper->ToCreature()->AI()->SetData(HALLOWEND_FIRE_REMOVE,Ui_ID);
+                    Fire = false;
+                }
+                return;
+            }
+            if (spell->Id == 42132) 
+            {
+                me->AddAura(RangoFire[0],me);
+                PostionEventoHallowends[Ui_ID].AlreadyFired = true;
+            }
+        }
+   
+        void UpdateAI(const uint32 diff) 
+        {
+            if (me->HasAura(RangoFire[0]) || Fire)
+            {
+                if (me->HasAura(RangoFire[0]) && !Fire)
+                {
+                    if (!RateFire)
+                        if (Unit * Owner = me->ToTempSummon()->GetSummoner())
+                            RateFire = Owner->ToCreature()->AI()->GetData(0);
+                        else 
+                            return;
+                    if (!RateFire)
+                        return;
+                    Fire = true;
+                    IncreaseFireTimer = 10000 / RateFire;
+                } else
+                    if (IncreaseFireTimer <= diff)
+                    {
+                        if (curRangoFire < 2)
+                        {
+                            me->RemoveAura(RangoFire[curRangoFire]);
+                            curRangoFire++;
+                            me->AddAura(RangoFire[curRangoFire],me);
+                        } else
+                            if (Creature * nextFireNode = FireNodeNext())
+                            {
+                                nextFireNode->AddAura(RangoFire[0],nextFireNode);
+                                PostionEventoHallowends[nextFireNode->AI()->GetData(0)].AlreadyFired = true;
+                            }
+                            IncreaseFireTimer = 10000 / RateFire;
+                    } else
+                        IncreaseFireTimer -= diff;
+            }
+        }
+    };
+};
 
 void AddSC_npcs_special()
 {
@@ -3133,5 +3283,6 @@ void AddSC_npcs_special()
     new npc_experience;
     new npc_kali_remik;
     new npc_hallowend(); 
+    new npc_headless_horseman_fire();
 }
 
