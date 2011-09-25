@@ -3135,6 +3135,7 @@ public:
 
             // El evento comienza cada 1/4 de hora. si durante este proceso no hay nadie cerca (10 segs), el evento no comenzara
             // Datos de como funciona Time.  http://www.cs.cf.ac.uk/Dave/C/node21.html   http://pubs.opengroup.org/onlinepubs/009604499/functions/time.html
+            // ejemplo una hora son 60 minutos queremos que empieze cada 15 minutos se divide en 4 (60/4) y esto esta en segundos por ende se multiplica por 60 ((60/4)*60)
             if (!EventProgress && (time(NULL)%900 < 5 || (900 - time(NULL)%900) < 5))
                 EventBegin();
 
