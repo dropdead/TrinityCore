@@ -2733,7 +2733,7 @@ public:
 struct PostionEventoHallowend
 {
     uint32 Area;
-    uint8 count_in_Area;
+    uint8 Area_Count;
     bool AlreadyFired;
     Position SpawnPosition;
 } 
@@ -2989,6 +2989,7 @@ enum HallowendFire
     NPC_HEADLESS_HORSEMAN_FIRE_DND          = 23537,
     NPC_SHADE_OF_THE_HORSEMAN               = 23543,
     SPELL_HEADLES_HORSEMAN_QUEST_CREDIT     = 42242,
+    SPELL_HEADLESS_HORSEMAN_START_FIRE      = 42132,
 };
 
 #define ACTION_FAIL_EVENT       1
@@ -3020,7 +3021,7 @@ public:
             me->SetVisible(false);
             me->SetReactState(REACT_PASSIVE);
             me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
-            for (uint8 j = 0; j < PostionEventoHallowends[AreaFire].count_in_Area; j++)
+            for (uint8 j = 0; j < PostionEventoHallowends[AreaFire].Area_Count; j++)
             {
                 Creature *summon = me->SummonCreature(NPC_HEADLESS_HORSEMAN_FIRE_DND,PostionEventoHallowends[AreaFire + j].SpawnPosition)->ToCreature();
                 if (summon)
@@ -3079,7 +3080,7 @@ public:
                 case HALLOWEND_FIRE_REMOVE:
                     PostionEventoHallowends[uiData].AlreadyFired = false;
                     bool EventPassed = true;
-                    for (uint8 j = 0; j < PostionEventoHallowends[AreaFire].count_in_Area; j++) 
+                    for (uint8 j = 0; j < PostionEventoHallowends[AreaFire].Area_Count; j++) 
                         if (PostionEventoHallowends[AreaFire + j].AlreadyFired)
                             EventPassed = false;
                     if (EventPassed)
@@ -3096,7 +3097,7 @@ public:
                 return;
             EventProgress = true;
             TimerDuration = 400*IN_MILLISECONDS;
-            for (uint8 j = 0; j < PostionEventoHallowends[AreaFire].count_in_Area; j++) 
+            for (uint8 j = 0; j < PostionEventoHallowends[AreaFire].Area_Count; j++) 
                 PostionEventoHallowends[AreaFire + j].AlreadyFired = false;
             for (uint8 i = 0; i < 2; i++)
                 SaidPhrase[i] = false;
@@ -3307,6 +3308,191 @@ public:
     };
 };
 
+// http://www.wowhead.com/npc=23543
+// Shade of the Horseman
+struct WayShadeOfTheHorseman
+{
+    uint32 area;
+    bool CastPoint;
+    Position waypoint;
+} 
+
+WayShadeOfTheHorsemans[] =
+{
+    { { 87 }, { false }, { -9449.220703f, 99.542000f, 80.433723f, 0.0f } },
+    { { 87 }, { false }, { -9487.250977f, 96.086182f, 76.224045f, 0.0f } },
+    { { 87 }, { false }, { -9505.733398f, 85.762619f, 78.615189f, 0.0f } },
+    { { 87 }, { false }, { -9515.541016f, 69.045929f, 78.518990f, 0.0f } },
+    { { 87 }, { false }, { -9506.210938f, 49.220688f, 74.766258f, 0.0f } },
+    { { 87 }, { false }, { -9493.707031f, 52.980251f, 73.841759f, 0.0f } },
+    { { 87 }, { false }, { -9466.496094f, 59.418045f, 68.635506f, 0.0f } },
+    { { 87 }, { true }, { -9451.565430f, 60.701469f, 69.817856f, 0.0f } },
+    { { 87 }, { false }, { -9433.534180f, 56.966469f, 69.535995f, 0.0f } },
+    { { 87 }, { false }, { -9426.815430f, 37.612507f, 69.721375f, 0.0f } },
+    { { 87 }, { false }, { -9428.989258f, 20.016560f, 71.739769f, 0.0f } },
+    { { 131 }, { false }, { -5549.735352f, -515.127075f, 417.435242f, 0.0f } },
+    { { 131 }, { false }, { -5563.625977f, -494.025787f, 408.276031f, 0.0f } },
+    { { 131 }, { false }, { -5576.229492f, -484.620575f, 407.339783f, 0.0f } },
+    { { 131 }, { false }, { -5598.328613f, -481.467041f, 405.901550f, 0.0f } },
+    { { 131 }, { false }, { -5618.585449f, -484.472595f, 405.008942f, 0.0f } },
+    { { 131 }, { false }, { -5638.980469f, -484.686829f, 403.672089f, 0.0f } },
+    { { 131 }, { false }, { -5653.769531f, -490.112793f, 404.059021f, 0.0f } },
+    { { 131 }, { false }, { -5648.979492f, -507.761230f, 413.465271f, 0.0f } },
+    { { 131 }, { false }, { -5633.484863f, -515.791504f, 415.236389f, 0.0f } },
+    { { 131 }, { false }, { -5619.904297f, -504.694641f, 412.783020f, 0.0f } },
+    { { 131 }, { true }, { -5599.156738f, -492.679260f, 408.886597f, 0.0f } },
+    { { 131 }, { false }, { -5581.895020f, -482.131866f, 411.817047f, 0.0f } },
+    { { 131 }, { false }, { -5551.732910f, -464.940369f, 418.337616f, 0.0f } },
+    { { 3576 }, { false }, { -4181.044922f, -12545.703125f, 58.406044f, 0.0f } },
+    { { 3576 }, { false }, { -4184.859863f, -12545.989258f, 66.531494f, 0.0f } },
+    { { 3576 }, { false }, { -4162.623535f, -12534.581055f, 60.958271f, 0.0f } },
+    { { 3576 }, { false }, { -4138.957031f, -12509.273438f, 58.346157f, 0.0f } },
+    { { 3576 }, { false }, { -4145.405762f, -12485.465820f, 61.571053f, 0.0f } },
+    { { 3576 }, { false }, { -4170.041016f, -12472.727539f, 62.661823f, 0.0f } },
+    { { 3576 }, { false }, { -4177.905273f, -12487.194336f, 60.646717f, 0.0f } },
+    { { 3576 }, { true }, { -4179.975098f, -12502.522461f, 55.405643f, 0.0f } },
+    { { 3576 }, { false }, { -4187.343750f, -12508.174805f, 56.180138f, 0.0f } },
+    { { 3576 }, { false }, { -4208.107422f, -12512.329102f, 59.904762f, 0.0f } },
+    { { 362 }, { false }, { 275.410431f, -4664.126465f, 31.811525f, 0.0f } },
+    { { 362 }, { false }, { 289.195679f, -4688.268066f, 28.616646f, 0.0f } },
+    { { 362 }, { true }, { 313.071777f, -4734.405762f, 27.163692f, 0.0f } },
+    { { 362 }, { false }, { 336.558136f, -4735.292480f, 25.536400f, 0.0f } },
+    { { 362 }, { false }, { 364.464661f, -4734.240723f, 23.702780f, 0.0f } },
+    { { 159 }, { false }, { 2288.239014f, 370.882111f, 52.932304f, 0.0f } },
+    { { 159 }, { false }, { 2283.253174f, 357.807556f, 52.963966f, 0.0f } },
+    { { 159 }, { false }, { 2266.459473f, 319.605682f, 52.030453f, 0.0f } },
+    { { 159 }, { true }, { 2247.472656f, 284.688538f, 47.141811f, 0.0f } },
+    { { 159 }, { false }, { 2241.526123f, 277.526276f, 47.969597f, 0.0f } },
+    { { 159 }, { false }, { 2201.554688f, 251.503479f, 52.721680f, 0.0f } },
+    { { 3665 }, { false }, { 9553.414063f, -6814.344727f, 48.652557f, 0.0f } },
+    { { 3665 }, { false }, { 9545.339844f, -6787.827637f, 44.812103f, 0.0f } },
+    { { 3665 }, { false }, { 9524.579102f, -6766.849609f, 41.753448f, 0.0f } },
+    { { 3665 }, { false }, { 9502.037109f, -6770.908203f, 40.224274f, 0.0f } },
+    { { 3665 }, { false }, { 9486.791992f, -6789.646973f, 38.460819f, 0.0f } },
+    { { 3665 }, { true }, { 9505.909180f, -6822.906250f, 36.336525f, 0.0f } },
+    { { 3665 }, { false }, { 9530.319336f, -6826.905273f, 33.300465f, 0.0f } },
+    { { 3665 }, { false }, { 9546.786133f, -6818.094727f, 34.542740f, 0.0f } },
+    { { 3665 }, { false }, { 9550.537109f, -6816.340332f, 34.288609f, 0.0f } },
+    { { 0 }, { false }, { 0.0f, 0.0f, 0.0f, 0.0f } }
+};
+
+class npc_shade_of_the_horseman : public CreatureScript
+{
+public:
+    npc_shade_of_the_horseman() : CreatureScript("npc_shade_of_the_horseman") { }
+
+    CreatureAI *GetAI(Creature *creature) const
+    {
+        return new npc_shade_of_the_horsemanAI(creature);
+    }
+    
+    struct npc_shade_of_the_horsemanAI : public ScriptedAI
+    {
+        npc_shade_of_the_horsemanAI(Creature* c) : ScriptedAI(c)
+        {
+            PointFisrtArea = 0;
+            area = me->GetAreaId();
+            while (WayShadeOfTheHorsemans[PointFisrtArea].area && WayShadeOfTheHorsemans[PointFisrtArea].area != area)
+                PointFisrtArea++;
+            TimerEventUI = 400*IN_MILLISECONDS;
+            wp_reached = true;
+            FlyMode();
+            MovementFinished = false;
+        }
+
+        uint32 TimerEventUI;
+        uint32 CountFire;
+        uint32 PointCur;
+        uint32 area;
+        uint32 PointFisrtArea;
+        bool wp_reached;
+        bool MovementFinished;
+
+        void FlyMode()
+        {
+            me->SetVisible(false);
+            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+            me->AddUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT | MOVEMENTFLAG_LEVITATING);
+            me->Mount(25159);
+            me->SetSpeed(MOVE_WALK,5.0f,true);
+            PointCur = 0;
+        }
+
+        void DoAction(const int32 type)
+        {
+            switch (type)
+            {
+                case ACTION_FAIL_EVENT:
+                    me->PlayDirectSound(11967);
+                    me->DisappearAndDie();
+                    break;
+                case ACTION_PASS_EVENT:
+                    me->PlayDirectSound(11968);
+                    me->DisappearAndDie();
+                    break;
+                case ACTION_SAY_1:
+                    me->PlayDirectSound(12570);
+                    break;
+                case ACTION_SAY_2:
+                    me->PlayDirectSound(12571);
+                    break;
+            }
+        }
+
+        void CreateFires()
+        {
+            std::list<Creature*> FireNodsList;
+            FireNodsList.clear();
+            if (Unit * Owner = me->ToTempSummon()->GetSummoner())
+                CountFire = Owner->ToCreature()->AI()->GetData(0);
+            GetCreatureListWithEntryInGrid(FireNodsList, me, NPC_HEADLESS_HORSEMAN_FIRE_DND, 150.0f);
+            uint32 CountFireer = 0;
+            if (!FireNodsList.empty())
+            {
+                while (CountFireer <= CountFire)
+                {
+                    std::list<Creature*>::iterator itr = FireNodsList.begin();
+                    std::advance(itr, urand(0, FireNodsList.size()-1));
+                    me->CastSpell((*itr),SPELL_HEADLESS_HORSEMAN_START_FIRE,true);
+                    CountFireer++;
+                    FireNodsList.erase(itr);
+                }
+            }
+        }
+
+        void MovementInform(uint32 type, uint32 id)
+        {
+            if (type != POINT_MOTION_TYPE)
+                return;
+            wp_reached = true;
+            if (id == 0) 
+                me->SetVisible(true);
+
+            if (WayShadeOfTheHorsemans[PointFisrtArea + PointCur].CastPoint) {
+                CreateFires();
+                me->PlayDirectSound(11966);
+            }
+
+            PointCur++;
+            if (WayShadeOfTheHorsemans[PointFisrtArea + PointCur].area != area) 
+            {
+                MovementFinished = true;
+                me->SetVisible(false);
+            }
+        }
+
+        void UpdateAI(const uint32 diff) 
+        {
+            if (wp_reached && !MovementFinished)
+            {
+                wp_reached = false;
+                me->GetMotionMaster()->Clear(false);
+                me->GetMotionMaster()->MovePoint(PointCur,WayShadeOfTheHorsemans[PointFisrtArea + PointCur].waypoint);
+            }
+        }
+    };
+};
+
 void AddSC_npcs_special()
 {
     new npc_air_force_bots;
@@ -3340,5 +3526,6 @@ void AddSC_npcs_special()
     new npc_kali_remik;
     new npc_hallowend(); 
     new npc_headless_horseman_fire();
+    new npc_shade_of_the_horseman();
 }
 
