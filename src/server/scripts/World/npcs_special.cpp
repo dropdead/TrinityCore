@@ -2990,6 +2990,12 @@ enum HallowendFire
     NPC_SHADE_OF_THE_HORSEMAN               = 23543,
     SPELL_HEADLES_HORSEMAN_QUEST_CREDIT     = 42242,
     SPELL_HEADLESS_HORSEMAN_START_FIRE      = 42132,
+    SPELL_BUCKET_LANDS                      = 42339,
+    SPELL_HEADLESS_HORSEMAN_FIRE_EXTINGUISH = 42348,
+    // RangoFire
+    SPELL_HEADLESS_HORSEMAN_BURNING         = 42971,
+    SPELL_HEADLESS_HORSEMAN_FIRE            = 42074,
+    SPELL_HEADLESS_HORSEMAN_VISUAL_FIRE     = 42075,
 };
 
 #define ACTION_FAIL_EVENT       1
@@ -3128,6 +3134,7 @@ public:
                 return;
 
             // El evento comienza cada 1/4 de hora. si durante este proceso no hay nadie cerca (10 segs), el evento no comenzara
+            // Datos de como funciona Time.  http://www.cs.cf.ac.uk/Dave/C/node21.html   http://pubs.opengroup.org/onlinepubs/009604499/functions/time.html
             if (!EventProgress && (time(NULL)%900 < 5 || (900 - time(NULL)%900) < 5))
                 EventBegin();
 
@@ -3174,9 +3181,9 @@ public:
     {
         npc_headless_horseman_fireAI(Creature* c) : ScriptedAI(c)
         {
-            RangoFire[0] = 42971;
-            RangoFire[1] = 42074;
-            RangoFire[2] = 42075;
+            RangoFire[0] = SPELL_HEADLESS_HORSEMAN_BURNING;
+            RangoFire[1] = SPELL_HEADLESS_HORSEMAN_FIRE;
+            RangoFire[2] = SPELL_HEADLESS_HORSEMAN_VISUAL_FIRE;
             Immuned = true;
             Fire = false;
         }
@@ -3245,11 +3252,11 @@ public:
 
         void SpellHit(Unit* caster, const SpellEntry* spell)
         {
-            if (spell->Id == 42339 && Fire && !Immuned) 
+            if (spell->Id == SPELL_BUCKET_LANDS && Fire && !Immuned) 
             {
                 if (PlayersCountRange(5.0f))
                     return;
-                me->CastSpell(me,42348,true);
+                me->CastSpell(me,SPELL_HEADLESS_HORSEMAN_FIRE_EXTINGUISH,true);
                 me->RemoveAura(RangoFire[curRangoFire]);
                 if (curRangoFire) 
                 {
@@ -3264,7 +3271,7 @@ public:
                 }
                 return;
             }
-            if (spell->Id == 42132) 
+            if (spell->Id == SPELL_HEADLESS_HORSEMAN_START_FIRE) 
             {
                 me->AddAura(RangoFire[0],me);
                 PostionEventoHallowends[Ui_ID].AlreadyFired = true;
@@ -3310,14 +3317,15 @@ public:
 
 // http://www.wowhead.com/npc=23543
 // Shade of the Horseman
-struct WayShadeOfTheHorseman
+
+struct WaypointsShadeOfTheHorsemans
 {
     uint32 area;
     bool CastPoint;
     Position waypoint;
 } 
 
-WayShadeOfTheHorsemans[] =
+WaypointsShadeOfTheHorsemans[] =
 {
     { { 87 }, { false }, { -9449.220703f, 99.542000f, 80.433723f, 0.0f } },
     { { 87 }, { false }, { -9487.250977f, 96.086182f, 76.224045f, 0.0f } },
@@ -3392,7 +3400,7 @@ public:
         {
             PointFisrtArea = 0;
             area = me->GetAreaId();
-            while (WayShadeOfTheHorsemans[PointFisrtArea].area && WayShadeOfTheHorsemans[PointFisrtArea].area != area)
+            while (WaypointsShadeOfTheHorsemans[PointFisrtArea].area && WaypointsShadeOfTheHorsemans[PointFisrtArea].area != area)
                 PointFisrtArea++;
             TimerEventUI = 400*IN_MILLISECONDS;
             wp_reached = true;
@@ -3468,13 +3476,13 @@ public:
             if (id == 0) 
                 me->SetVisible(true);
 
-            if (WayShadeOfTheHorsemans[PointFisrtArea + PointCur].CastPoint) {
+            if (WaypointsShadeOfTheHorsemans[PointFisrtArea + PointCur].CastPoint) {
                 CreateFires();
                 me->PlayDirectSound(11966);
             }
 
             PointCur++;
-            if (WayShadeOfTheHorsemans[PointFisrtArea + PointCur].area != area) 
+            if (WaypointsShadeOfTheHorsemans[PointFisrtArea + PointCur].area != area) 
             {
                 MovementFinished = true;
                 me->SetVisible(false);
@@ -3487,7 +3495,7 @@ public:
             {
                 wp_reached = false;
                 me->GetMotionMaster()->Clear(false);
-                me->GetMotionMaster()->MovePoint(PointCur,WayShadeOfTheHorsemans[PointFisrtArea + PointCur].waypoint);
+                me->GetMotionMaster()->MovePoint(PointCur,WaypointsShadeOfTheHorsemans[PointFisrtArea + PointCur].waypoint);
             }
         }
     };
