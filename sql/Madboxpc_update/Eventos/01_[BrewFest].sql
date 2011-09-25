@@ -296,7 +296,7 @@ UPDATE `creature_template` SET `scale`='0.01',`AIName`='',`flags_extra`='0',`Scr
 UPDATE `quest_template` SET `PrevQuestId`='0' WHERE (`entry`='12193');
 
 -- Ram Barrel Run Quest
-DELETE FROM `spell_linked_spell` WHERE `spell_trigger` IN (-43880, 42994, 42993, 42992, 43310, 43332, -43332);
+DELETE FROM `spell_linked_spell` WHERE `spell_trigger` IN (-43880, -43883, 42994, 42993, 42992, 43310, 43332, -43332);
 INSERT INTO `spell_linked_spell` (`spell_trigger`,`spell_effect`,`type`,`comment`) VALUES 
 ('-43880','-42994','0','Remove brewfest speed buffs when player dismounted'),
 ('-43880','-42993','0','Remove brewfest speed buffs when player dismounted'),
@@ -306,6 +306,14 @@ INSERT INTO `spell_linked_spell` (`spell_trigger`,`spell_effect`,`type`,`comment
 ('-43880','-43492','0','Remove brewfest speed buffs when player dismounted'),
 ('-43880','-43332','0','Remove brewfest speed buffs when player dismounted'),
 ('-43880','-43052','0','Remove brewfest speed buffs when player dismounted'),
+('-43883','-42994','0','Remove brewfest speed buffs when player dismounted'),
+('-43883','-42993','0','Remove brewfest speed buffs when player dismounted'),
+('-43883','-42992','0','Remove brewfest speed buffs when player dismounted'),
+('-43883','-42146','0','Remove brewfest speed buffs when player dismounted'),
+('-43883','-43310','0','Remove brewfest speed buffs when player dismounted'),
+('-43883','-43492','0','Remove brewfest speed buffs when player dismounted'),
+('-43883','-43332','0','Remove brewfest speed buffs when player dismounted'),
+('-43883','-43052','0','Remove brewfest speed buffs when player dismounted'),
 ('42994','-42993','0','Switch brewfest speed buffs'),
 ('42994','-42992','0','Switch brewfest speed buffs'),
 ('42994','-43310','0','Switch brewfest speed buffs'),
@@ -411,11 +419,15 @@ SET @GUID := 189989;
 DELETE FROM `gameobject` WHERE `guid` IN (@GUID,@GUID+1);
 INSERT INTO `gameobject` (`guid`,`id`,`map`,`spawnMask`,`phaseMask`,`position_x`,`position_y`,`position_z`,`orientation`,`rotation0`,`rotation1`,`rotation2`,`rotation3`,`spawntimesecs`,`animprogress`,`state`) VALUES
 (@GUID,189989,0,1,1,-5154.36,-609.284,398.452,2.13369,0,0,0.875682,0.482887,300,0,1),
-(@GUID+1,189989,1,1,1,1198.66,-4297.37,21.3811,4.92821,0,0,0.626838,-0.77915,300,0,1);
+(@GUID+1,189990,1,1,1,1198.66,-4297.37,21.3811,4.92821,0,0,0.626838,-0.77915,300,0,1);
 DELETE FROM `game_event_gameobject` WHERE `guid` IN (@GUID,@GUID+1);
 INSERT INTO `game_event_gameobject` (`eventEntry`,`guid`) VALUES
 (24, @GUID),
 (24, @GUID+1);
+DELETE FROM `gameobject_questrelation` WHERE `quest` IN (12020,12192);
+INSERT INTO `gameobject_questrelation` (`id`,`quest`) VALUES
+(189989,12020),
+(189990,12192);
  
 -- Borrado de Dark Iron Plans (Quest removida)
 DELETE FROM `gameobject` WHERE `guid` IN (11140);
@@ -425,7 +437,7 @@ DELETE FROM `gameobject` WHERE `guid` IN (18015);
 UPDATE `creature` SET `spawntimesecs` = 604800 WHERE `id`  = 23972;
 
 -- Posible Fix Reward DF Core Direbrew
-DELETE FROM `instance_encounters WHERE `entry`=900;
+DELETE FROM `instance_encounters` WHERE `entry`=900;
 INSERT INTO `instance_encounters` (`entry`, `creditType`, `creditEntry`, `lastEncounterDungeon`, `comment`) 
  VALUES ('900','0','23872','287','Coren Direbrew');-- Entry es incremental fue seleccionado por la ultima entrada a este campo.
  
@@ -888,10 +900,23 @@ INSERT INTO `npc_vendor` (`entry`,`slot`,`item`,`ExtendedCost`) VALUES
 
 -- Add la quest Catch the Wild Wolpertinger! al Npc Horda
 -- Fix Quest Say, There Wouldn't Happen to be a Souvenir This Year, Would There? Alianza
+-- Delete Quest A Visit To The Wonderworks from Pol Amberstill
 DELETE FROM `creature_involvedrelation` WHERE `quest` IN (11431, 12193);
 INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES
 (24657, 11431),
 (23710, 12193);
-DELETE FROM `creature_questrelation` WHERE `quest` IN (11431);
+DELETE FROM `creature_questrelation` WHERE `quest` IN (11431,13938);
 INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES
 (24657, 11431);
+
+-- Add Larkin Thunderbrew and Ray'ma
+SET @GUID := 2420210;
+DELETE FROM `creature` WHERE `guid` IN (@GUID,@GUID+1);
+INSERT INTO `creature` 
+(`guid`,`id`,`map`,`spawnMask`,`phaseMask`,`modelid`,`equipment_id`,`position_x`,`position_y`,`position_z`,`orientation`,`spawntimesecs`,`spawndist`,`currentwaypoint`,`curhealth`,`curmana`,`MovementType`) VALUES
+(@GUID,27478,0,1,1,0,356,-4849.77,-862.706,501.914,4.82484,300,0,0,2215,0,0),
+(@GUID+1,27489,1,1,1,0,0,1473.62,-4207.1,43.1863,4.42707,300,0,0,2215,0,0);
+DELETE FROM `game_event_creature` WHERE `guid` IN (@GUID,@GUID+1);
+INSERT INTO `game_event_creature` (`eventEntry`,`guid`) VALUES
+(24, @GUID),
+(24, @GUID+1);
