@@ -25,6 +25,7 @@ VALUES ('0','42322','6');
 -- CONDITION_SOURCE_TYPE_SPELL_SCRIPT_TARGET            = 13,
 -- CONDITION_SPELL_SCRIPT_TARGET     = 18, 
 -- Añadida correcta condicion para cubeta de agua :) (Bucket Lands)
+DELETE FROM `conditions` WHERE `SourceEntry`=42339;
 INSERT INTO `conditions` (`SourceTypeOrReferenceId`,`SourceGroup`,`SourceEntry`,`ElseGroup`,`ConditionTypeOrReference`,`ConditionValue1`,`ConditionValue2`,`ConditionValue3`,`ErrorTextId`,`ScriptName`,`Comment`) VALUES
 VALUES
 (13, 0, 42339, 1, 18, 1, 0, 0, 0, "", "Bucket Lands"),
