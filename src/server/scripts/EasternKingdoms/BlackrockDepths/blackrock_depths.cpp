@@ -36,11 +36,15 @@ npc_tobias_seecher
 npc_rocknot
 EndContentData */
 
+
 #include "ScriptPCH.h"
 #include "ScriptedEscortAI.h"
 #include "blackrock_depths.h"
 #include "LFGMgr.h"
 #include "SpellAuraEffects.h"
+#include "ScriptMgr.h"
+#include "ObjectMgr.h"
+#include "World.h"
 
 /*######
 +## go_shadowforge_brazier
@@ -2079,7 +2083,8 @@ enum BrewfestKegReceiver
     SPELL_CREATE_TICKETS            = 44501,
     QUEST_THERE_AND_BACK_AGAIN_A    = 11122,
     QUEST_THERE_AND_BACK_AGAIN_H    = 11412,
-    NPC_BREWFEST_DELIVERY_BUNNY     = 24337   
+    NPC_BREWFEST_DELIVERY_BUNNY     = 24337,
+    ACHIEV_BREW_OF_THE_MONTH        = 2796
 };
 
 class npc_brewfest_keg_receiver : public CreatureScript
@@ -2190,6 +2195,303 @@ public:
     }
 };
 
+/*
+1. Walk to one keg. Arrived at keg casts a spell and repeats that spell every 5 seconds
+2. ALWAYS run a localize check on spawn. Blizzard used spells for this. When they spawn at Durotar they move to diferent kegs than at Dun Morogh.
+3. On spellhit of spell that is yet to be scripted by QAston (don't bother - missing support in core) we should EMOTE death
+4. If players gets within 3 yards cast Knockback
+*/
+ 
+enum DarkIronGuzzler
+{
+    NPC_DARK_IRON_GUZZLER  = 23709,
+ 
+    NPC_FESTIVE_KEG_1      = 23702, // Thunderbrew Festive Keg
+    NPC_FESTIVE_KEG_2      = 23700, // Barleybrew Festive Keg
+    NPC_FESTIVE_KEG_3      = 23706, // Gordok Festive Keg
+    NPC_FESTIVE_KEG_4      = 24373, // T'chalis's Festive Keg
+    NPC_FESTIVE_KEG_5      = 24372, // Drohn's Festive Keg
+ 
+    SPELL_SPAWN                 = 43668,
+    SPELL_ORG                   = 43669,
+    SPELL_IF                    = 43670,
+    SPELL_GO_TO_NEW_TARGET      = 42498,
+    SPELL_ATTACK_KEG            = 42393,
+    SPELL_DRINK                 = 42436,
+    SPELL_RETREAT               = 42341,
+    SPELL_KNOCKBACK             = 42299,
+    SPELL_KNOCKBACK_AURA        = 42676,
+};
+ 
+class npc_dark_iron_guzzler : public CreatureScript
+{
+public:
+    npc_dark_iron_guzzler() : CreatureScript("npc_dark_iron_guzzler") { }
+ 
+    CreatureAI *GetAI(Creature* creature) const
+    {
+        return new npc_dark_iron_guzzlerAI(creature);
+    }
+ 
+    struct npc_dark_iron_guzzlerAI : public ScriptedAI
+    {
+        npc_dark_iron_guzzlerAI(Creature* creature) : ScriptedAI(creature) { }
+ 
+        bool atKeg;
+        bool barleyDead;
+        bool thunderDead;        
+        bool gordokDead;
+        bool drohnDead;
+        bool tchaliDead;
+        uint32 AttackKegTimer;
+ 
+        void Reset()
+        {
+            AttackKegTimer = 5000;
+            me->AddUnitMovementFlag(MOVEMENTFLAG_WALKING);
+        }
+ 
+        // These values are set through SAI - when a Festive Keg dies it will set data to all Dark Iron Guzzlers within 3 yards (the killers)
+        void SetData(uint32 type, uint32 data)
+        {
+            if (type == 10 && data == 10)
+            {
+                DoCast(me, SPELL_GO_TO_NEW_TARGET);
+                thunderDead = true;
+            }
+ 
+            if (type == 11 && data == 11)
+            {
+                DoCast(me, SPELL_GO_TO_NEW_TARGET);
+                barleyDead = true;
+            }
+ 
+            if (type == 12 && data == 12)
+            {
+                DoCast(me, SPELL_GO_TO_NEW_TARGET);
+                gordokDead = true;
+            }
+ 
+            if (type == 13 && data == 13)
+            {
+                DoCast(me, SPELL_GO_TO_NEW_TARGET);
+                drohnDead = true;
+            }
+ 
+            if (type == 14 && data == 14)
+            {
+                DoCast(me, SPELL_GO_TO_NEW_TARGET);
+                tchaliDead = true;
+            }
+        }
+ 
+        void KilledUnit(Unit* victim)
+        {
+            switch (victim->GetEntry())
+            {
+                case NPC_FESTIVE_KEG_1:
+                case NPC_FESTIVE_KEG_2:
+                case NPC_FESTIVE_KEG_3:
+                case NPC_FESTIVE_KEG_4:
+                case NPC_FESTIVE_KEG_5:
+                    DoCast(me, SPELL_GO_TO_NEW_TARGET);
+                break;
+            default:
+                break;
+            }
+ 
+            // If the kill is not a festive keg we shouldn't cast the spell
+            /*if (victim->GetEntry() != NPC_FESTIVE_KEG_1 || victim->GetEntry() != NPC_FESTIVE_KEG_2 || victim->GetEntry() != NPC_FESTIVE_KEG_3 ||
+                victim->GetEntry() != NPC_FESTIVE_KEG_4 || victim->GetEntry() != NPC_FESTIVE_KEG_5)
+                return;*/
+        }
+ 
+        void IsSummonedBy(Unit* summoner)
+        {
+            // Move forward only on spawn
+            me->GetMotionMaster()->MovePoint(1, me->GetPositionX()+5, me->GetPositionY(), me->GetPositionZ());
+        }
+       
+        // As you can see here we do not have to use a spellscript for this
+        void SpellHit(Unit* caster, const SpellInfo* spell)
+        {
+            if (spell->Id == SPELL_DRINK)
+            {
+                // Fake death - it's only visual!
+                me->SetUInt32Value(UNIT_FIELD_BYTES_1, UNIT_STAND_STATE_DEAD);
+ 
+                // Time based on information from videos
+                me->ForcedDespawn(7000);
+            }
+ 
+            // Retreat - run back
+            if (spell->Id == SPELL_RETREAT)
+            {
+                if (me->GetAreaId() == 1296)
+                {
+                    me->GetMotionMaster()->MovePoint(2, 1197.63f, -4293.571f, 21.243f);
+                }
+                else if (me->GetAreaId() == 1)
+                {
+                     me->GetMotionMaster()->MovePoint(3, -5152.3f, -603.529f, 398.356f);
+                }
+            }
+ 
+            if (spell->Id == SPELL_GO_TO_NEW_TARGET)
+            {
+                // If we're at Durotar we target different kegs than the ones at Dun Morogh
+                if (me->GetAreaId() == 1296)
+                {
+                    if (!drohnDead && !gordokDead && !tchaliDead)
+                    {
+                        switch (urand(0, 2))
+                        {
+                            case 0: // Gordok Festive Keg                            
+                                me->GetMotionMaster()->MovePoint(4, 1220.86f, -4297.37f, 21.192f);
+                                break;
+                            case 1: // Drohn's Festive Keg                            
+                                me->GetMotionMaster()->MovePoint(5, 1185.98f, -4312.98f, 21.294f);
+                                break;
+                            case 2: // Ti'chali's Festive Keg                            
+                                me->GetMotionMaster()->MovePoint(6, 1184.12f, -4275.21f, 21.191f);
+                                break;
+                        }
+                    }
+                    else if (drohnDead)
+                    {
+                        switch (urand(0, 1))
+                        {
+                            case 0: // Gordok Festive Keg                            
+                                me->GetMotionMaster()->MovePoint(4, 1220.86f, -4297.37f, 21.192f);
+                                break;
+                            case 1: // Ti'chali's Festive Keg                            
+                                me->GetMotionMaster()->MovePoint(6, 1184.12f, -4275.21f, 21.191f);
+                                break;
+                        }
+                    }
+                    else if (gordokDead)
+                    {
+                        switch (urand(0, 1))
+                        {
+                            case 0: // Drohn's Festive Keg                            
+                                me->GetMotionMaster()->MovePoint(5, 1185.98f, -4312.98f, 21.294f);
+                                break;
+                            case 1: // Ti'chali's Festive Keg                            
+                                me->GetMotionMaster()->MovePoint(6, 1184.12f, -4275.21f, 21.191f);
+                                break;
+                        }
+                    }
+                    else if (tchaliDead)
+                    {
+                        switch (urand(0, 1))
+                        {
+                            case 0: // Drohn's Festive Keg                            
+                                me->GetMotionMaster()->MovePoint(5, 1185.98f, -4312.98f, 21.294f);
+                                break;
+                            case 1: // Gordok Festive Keg                            
+                                me->GetMotionMaster()->MovePoint(4, 1220.86f, -4297.37f, 21.192f);
+                                break;
+                        }
+                    }
+                }
+                // If we're at Dun Morogh we target different kegs than the ones at Durotar
+                else if (me->GetAreaId() == 1)
+                {
+                    if (!barleyDead && !gordokDead && !thunderDead)
+                    {
+                        switch (urand(0, 2))
+                        {
+                            case 0: // Barleybrew Festive Keg                            
+                                me->GetMotionMaster()->MovePoint(7, -5183.67f, -599.58f, 397.177f);
+                                break;
+                            case 1: // Thunderbrew Festive Keg                            
+                                me->GetMotionMaster()->MovePoint(8, -5159.53f, -629.52f, 397.213f);
+                                break;
+                            case 2: // Gordok Festive Keg                            
+                                me->GetMotionMaster()->MovePoint(9, -5148.01f, -578.34f, 397.177f);
+                                break;
+                        }
+                    }
+                    else if (barleyDead)
+                    {
+                        switch (urand(0, 1))
+                        {
+                            case 0: // Thunderbrew Festive Keg                            
+                                me->GetMotionMaster()->MovePoint(8, -5159.53f, -629.52f, 397.213f);
+                                break;
+                            case 1: // Gordok Festive Keg                            
+                                me->GetMotionMaster()->MovePoint(9, -5148.01f, -578.34f, 397.177f);
+                                break;
+                        }
+                    }
+                    else if (gordokDead)
+                    {
+                        switch (urand(0, 1))
+                        {
+                            case 0: // Thunderbrew Festive Keg                            
+                                me->GetMotionMaster()->MovePoint(8, -5159.53f, -629.52f, 397.213f);
+                                break;
+                            case 1: // Barleybrew Festive Keg                            
+                                me->GetMotionMaster()->MovePoint(7, -5183.67f, -599.58f, 397.177f);
+                                break;
+                        }
+                    }
+                    else if (thunderDead)
+                    {
+                        switch (urand(0, 1))
+                        {
+                            case 0: // Gordok Festive Keg                            
+                                me->GetMotionMaster()->MovePoint(9, -5148.01f, -578.34f, 397.177f);
+                                break;
+                            case 1: // Barleybrew Festive Keg                            
+                                me->GetMotionMaster()->MovePoint(7, -5183.67f, -599.58f, 397.177f);
+                                break;
+                        }
+                    }
+                }
+                atKeg = false;
+            }
+        }
+ 
+        void MovementInform(uint32 Type, uint32 PointId)
+        {
+            if (Type != POINT_MOTION_TYPE)
+                return;
+ 
+            // After moving forward on spawn we should move to new target
+            if (PointId == 1)
+                DoCast(me, SPELL_GO_TO_NEW_TARGET);
+ 
+            // Arrived at the retreat spot, we should despawn
+            if (PointId == 2 || PointId == 3)
+                me->ForcedDespawn(1000);
+ 
+            // Arrived at the new keg - the spell has conditions in database
+            if (PointId == 4 || PointId == 5 || PointId == 6 || PointId == 7 || PointId == 8 || PointId == 9)
+            {
+                DoCast(SPELL_ATTACK_KEG);
+                atKeg = true;
+            }
+        }
+ 
+        void UpdateAI(const uint32 diff)
+        {
+            if (!IsHolidayActive(HOLIDAY_BREWFEST))
+                return;
+ 
+            // Only happens if we're at keg
+            if (atKeg)
+            {
+                if (AttackKegTimer <= diff)
+                {
+                    DoCast(SPELL_ATTACK_KEG);
+                    AttackKegTimer = 5000;
+                } else AttackKegTimer -= diff;
+            }
+        }
+    };
+};
+
 void AddSC_blackrock_depths()
 {
     new go_shadowforge_brazier();
@@ -2214,4 +2516,5 @@ void AddSC_blackrock_depths()
     new npc_brewfest_keg_thrower;
     new npc_brewfest_keg_receiver;
     new npc_brewfest_ram_master;
+    new npc_dark_iron_guzzler;
 }
