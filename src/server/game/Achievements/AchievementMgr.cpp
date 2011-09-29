@@ -2017,6 +2017,13 @@ void AchievementMgr::CompletedAchievement(AchievementEntry const* achievement)
 
     if (achievement->flags & ACHIEVEMENT_FLAG_COUNTER || HasAchieved(achievement))
         return;
+    
+
+    if (achievement->flags & (ACHIEVEMENT_FLAG_REALM_FIRST_REACH | ACHIEVEMENT_FLAG_REALM_FIRST_KILL))
+    {
+        if (sAchievementMgr->IsRealmCompleted(achievement))
+            return;
+    }
 
     SendAchievementEarned(achievement);
     CompletedAchievementData& ca =  m_completedAchievements[achievement->ID];
@@ -2172,6 +2179,15 @@ bool AchievementMgr::CanUpdateCriteria(AchievementCriteriaEntry const* criteria,
         return false;
 
     return true;
+}
+
+void AchievementMgr::RemoveAchievement(uint32 entry)
+{
+    AchievementCriteriaEntryList const* achievementCriteriaList = sAchievementMgr->GetAchievementCriteriaByAchievement(entry);
+    for (AchievementCriteriaEntryList::const_iterator i = achievementCriteriaList->begin(); i!=achievementCriteriaList->end(); ++i)
+    {
+        RemoveCriteriaProgress(*i);
+    }
 }
 
 //==========================================================
