@@ -21,8 +21,7 @@
 enum Spells
 {
     SPELL_CORRUPTING_BLIGHT                     = 60588,
-    SPELL_VOID_STRIKE                           = 60590,
-    SPELL_CHANNEL_VISUAL                        = 31387
+    SPELL_VOID_STRIKE                           = 60590
 };
 
 enum Yells
@@ -36,7 +35,6 @@ enum Achievements
 {
     ACHIEV_CULLING_OF_TIME                      = 1817
 };
-
 class boss_infinite_corruptor : public CreatureScript
 {
 public:

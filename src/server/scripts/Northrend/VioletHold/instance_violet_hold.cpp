@@ -230,7 +230,7 @@ public:
 
         void OnCreatureCreate(Creature* creature)
         {
-            switch(creature->GetEntry())
+            switch (creature->GetEntry())
             {
                 case CREATURE_XEVOZZ:
                     uiXevozz = creature->GetGUID();
@@ -275,7 +275,7 @@ public:
 
         void OnGameObjectCreate(GameObject* go)
         {
-            switch(go->GetEntry())
+            switch (go->GetEntry())
             {
                 case GO_EREKEM_GUARD_1_DOOR:
                     uiErekemLeftGuardCell = go->GetGUID();
@@ -313,7 +313,7 @@ public:
 
         void SetData(uint32 type, uint32 data)
         {
-            switch(type)
+            switch (type)
             {
                 case DATA_1ST_BOSS_EVENT:
                     if(m_auiEncounter[0] != DONE)
@@ -361,13 +361,13 @@ public:
                     NpcAtDoorCastingList.push_back(data);
                     break;
                 case DATA_NPC_PRESENCE_AT_DOOR_REMOVE:
-                    if(!NpcAtDoorCastingList.empty())
+                    if (!NpcAtDoorCastingList.empty())
                         NpcAtDoorCastingList.pop_back();
                     break;
                 case DATA_MAIN_DOOR:
                     if (GameObject* pMainDoor = instance->GetGameObject(uiMainDoor))
                     {
-                        switch(data)
+                        switch (data)
                         {
                             case GO_STATE_ACTIVE:
                                 pMainDoor->SetGoState(GO_STATE_ACTIVE);
@@ -382,7 +382,7 @@ public:
                     }
                     break;
                 case DATA_START_BOSS_ENCOUNTER:
-                    switch(uiWaveCount)
+                    switch (uiWaveCount)
                     {
                         case 6:
                             StartBossEncounter(uiFirstBoss);
@@ -411,7 +411,7 @@ public:
 
         void SetData64(uint32 type, uint64 data)
         {
-            switch(type)
+            switch (type)
             {
                 case DATA_ADD_TRASH_MOB:
                     trashMobs.insert(data);
@@ -424,7 +424,7 @@ public:
 
         uint32 GetData(uint32 type)
         {
-            switch(type)
+            switch (type)
             {
                 case DATA_1ST_BOSS_EVENT:           return m_auiEncounter[0];
                 case DATA_2ND_BOSS_EVENT:           return m_auiEncounter[1];
@@ -444,7 +444,7 @@ public:
 
         uint64 GetData64(uint32 identifier)
         {
-            switch(identifier)
+            switch (identifier)
             {
                 case DATA_MORAGG:                   return uiMoragg;
                 case DATA_EREKEM:                   return uiErekem;
@@ -476,7 +476,7 @@ public:
         {
             SetData(DATA_PORTAL_LOCATION, (GetData(DATA_PORTAL_LOCATION) + urand(1, 5))%6);
             if (Creature* pSinclari = instance->GetCreature(uiSinclari))
-                if(Creature* portal = pSinclari->SummonCreature(CREATURE_TELEPORTATION_PORTAL, PortalLocation[GetData(DATA_PORTAL_LOCATION)], TEMPSUMMON_CORPSE_DESPAWN))
+                if (Creature* portal = pSinclari->SummonCreature(CREATURE_TELEPORTATION_PORTAL, PortalLocation[GetData(DATA_PORTAL_LOCATION)], TEMPSUMMON_CORPSE_DESPAWN))
                     uiTeleportationPortal = portal->GetGUID();
         }
 
@@ -484,7 +484,7 @@ public:
         {
             Creature* pBoss = NULL;
 
-            switch(uiBoss)
+            switch (uiBoss)
             {
                 case BOSS_MORAGG:
                     HandleGameObject(uiMoraggCell, bForceRespawn);
@@ -571,14 +571,14 @@ public:
             DoUpdateWorldState(WORLD_STATE_VH, 1);
             DoUpdateWorldState(WORLD_STATE_VH_WAVE_COUNT, uiWaveCount);
 
-            switch(uiWaveCount)
+            switch (uiWaveCount)
             {
                 case 6:
                     if (uiFirstBoss == 0)
                         uiFirstBoss = urand(1, 6);
                     if (Creature* pSinclari = instance->GetCreature(uiSinclari))
                     {
-                        if(Creature* pPortal = pSinclari->SummonCreature(CREATURE_TELEPORTATION_PORTAL, MiddleRoomPortalSaboLocation, TEMPSUMMON_CORPSE_DESPAWN))
+                        if (Creature* pPortal = pSinclari->SummonCreature(CREATURE_TELEPORTATION_PORTAL, MiddleRoomPortalSaboLocation, TEMPSUMMON_CORPSE_DESPAWN))
                             uiSaboteurPortal = pPortal->GetGUID();
                         if (Creature* pAzureSaboteur = pSinclari->SummonCreature(CREATURE_SABOTEOUR, MiddleRoomLocation, TEMPSUMMON_DEAD_DESPAWN))
                             pAzureSaboteur->CastSpell(pAzureSaboteur, SABOTEUR_SHIELD_EFFECT, false);
@@ -592,7 +592,7 @@ public:
                         } while (uiSecondBoss == uiFirstBoss);
                     if (Creature* pSinclari = instance->GetCreature(uiSinclari))
                     {
-                        if(Creature* pPortal = pSinclari->SummonCreature(CREATURE_TELEPORTATION_PORTAL, MiddleRoomPortalSaboLocation, TEMPSUMMON_CORPSE_DESPAWN))
+                        if (Creature* pPortal = pSinclari->SummonCreature(CREATURE_TELEPORTATION_PORTAL, MiddleRoomPortalSaboLocation, TEMPSUMMON_CORPSE_DESPAWN))
                             uiSaboteurPortal = pPortal->GetGUID();
                         if (Creature* pAzureSaboteur = pSinclari->SummonCreature(CREATURE_SABOTEOUR, MiddleRoomLocation, TEMPSUMMON_DEAD_DESPAWN))
                             pAzureSaboteur->CastSpell(pAzureSaboteur, SABOTEUR_SHIELD_EFFECT, false);
@@ -739,7 +739,7 @@ public:
             {
                 if (uiCyanigosaEventTimer <= diff)
                 {
-                    switch(uiCyanigosaEventPhase)
+                    switch (uiCyanigosaEventPhase)
                     {
                         case 1:
                             pCyanigosa->CastSpell(pCyanigosa, CYANIGOSA_BLUE_AURA, false);
@@ -772,9 +772,9 @@ public:
             if (GetData(DATA_NPC_PRESENCE_AT_DOOR) && uiMainEventPhase == IN_PROGRESS)
             {
                 // if door integrity is > 0 then decrase it's integrity state
-                if(GetData(DATA_DOOR_INTEGRITY))
+                if (GetData(DATA_DOOR_INTEGRITY))
                 {
-                    if(uiDoorSpellTimer < diff)
+                    if (uiDoorSpellTimer < diff)
                     {
                         SetData(DATA_DOOR_INTEGRITY, GetData(DATA_DOOR_INTEGRITY)-1);
                         uiDoorSpellTimer =2000;

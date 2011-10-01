@@ -117,7 +117,7 @@ enum eEnums
     SPELL_FLAME_TSUNAMI_COMBINE_AURA            = 57492,
     SPELL_FLAME_TSUNAMI                         = 57494,    // the visual dummy
     SPELL_FLAME_TSUNAMI_LEAP                    = 60241,    // SPELL_EFFECT_138 some leap effect, causing caster to move in direction
-    
+
     SPELL_FLAME_TSUNAMI_DMG_AURA                = 57491,    // periodic damage, npc has this aura
     SPELL_FLAME_TSUNAMI_BUFF                    = 60430,
 
@@ -588,7 +588,7 @@ public:
                 (*itr)->CastSpell((*itr), SPELL_LAVA_STRIKE_TRIGGER, true);
                 m_guidFireCyclone = (*itr)->GetGUID();
             }
-            
+
             if(Creature* LavaCyclon = Creature::GetCreature((*me),m_guidFireCyclone))
             {
                 if(summon)
@@ -932,9 +932,9 @@ struct dummy_dragonAI : public ScriptedAI
         //    }
         //}
     }
-    
+
     GameObject* DoSpawnGameobject(uint32 uiId, float fX, float fY, float fZ, float fAngle, uint32 uiDespawntime)
-    {   
+    {
         return me->SummonGameObject(uiId, me->GetPositionX()+fX, me->GetPositionY()+fY, me->GetPositionZ()+fZ, fAngle, 0,0,0,0, uiDespawntime);
     }
 
@@ -1530,7 +1530,7 @@ public:
             }
 
             me->SetPhaseMask(16,true);
-            
+
             //me->AddAura(SPELL_TWILIGHT_SHIFT_ENTER,me);
         }
 

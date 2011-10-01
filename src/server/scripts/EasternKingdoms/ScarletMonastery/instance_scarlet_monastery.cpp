@@ -152,16 +152,17 @@ public:
         {
             switch(type)
             {
-                case TYPE_MOGRAINE_AND_WHITE_EVENT:
-                    return m_auiEncounter[0];
-                case DATA_HORSEMAN_EVENT:
-                    return m_auiEncounter[1];
-                case DATA_HORSEMAN_PHASE:
-                    return HorsemanPhase;
-                default: return 0;
+            case TYPE_MOGRAINE_AND_WHITE_EVENT:
+                return m_auiEncounter[0];
+            case DATA_HORSEMAN_EVENT:
+                return m_auiEncounter[1];
+            case DATA_HORSEMAN_PHASE:
+                return HorsemanPhase;
+            default: return 0;
             }
         }
     };
+
 };
 
 void AddSC_instance_scarlet_monastery()

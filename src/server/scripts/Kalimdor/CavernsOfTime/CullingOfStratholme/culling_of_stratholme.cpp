@@ -1365,7 +1365,7 @@ class npc_crate_helper : public CreatureScript
                _marked = false;
            }
 
-            void SpellHit(Unit* /*caster*/, SpellInfo const* spell)
+           void SpellHit(Unit* /*caster*/, SpellInfo const* spell)
            {
                if (spell->Id == SPELL_ARCANE_DISRUPTION && !_marked)
                {

@@ -1,20 +1,20 @@
 /*
- * Copyright (C) 2008-2011 TrinityCore <http://www.trinitycore.org/>
- * Copyright (C) 2006-2009 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
- *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the
- * Free Software Foundation; either version 2 of the License, or (at your
- * option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
- * more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program. If not, see <http://www.gnu.org/licenses/>.
- */
+* Copyright (C) 2008-2011 TrinityCore <http://www.trinitycore.org/>
+* Copyright (C) 2006-2009 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
+*
+* This program is free software; you can redistribute it and/or modify it
+* under the terms of the GNU General Public License as published by the
+* Free Software Foundation; either version 2 of the License, or (at your
+* option) any later version.
+*
+* This program is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+* more details.
+*
+* You should have received a copy of the GNU General Public License along
+* with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
 
 /* ScriptData
 SDName: Icecrown
@@ -43,15 +43,15 @@ EndContentData */
 
 enum eArete
 {
-    GOSSIP_TEXTID_ARETE1        = 13525,
-    GOSSIP_TEXTID_ARETE2        = 13526,
-    GOSSIP_TEXTID_ARETE3        = 13527,
-    GOSSIP_TEXTID_ARETE4        = 13528,
-    GOSSIP_TEXTID_ARETE5        = 13529,
-    GOSSIP_TEXTID_ARETE6        = 13530,
-    GOSSIP_TEXTID_ARETE7        = 13531,
+    GOSSIP_TEXTID_ARETE1 = 13525,
+    GOSSIP_TEXTID_ARETE2 = 13526,
+    GOSSIP_TEXTID_ARETE3 = 13527,
+    GOSSIP_TEXTID_ARETE4 = 13528,
+    GOSSIP_TEXTID_ARETE5 = 13529,
+    GOSSIP_TEXTID_ARETE6 = 13530,
+    GOSSIP_TEXTID_ARETE7 = 13531,
 
-    QUEST_THE_STORY_THUS_FAR    = 12807
+    QUEST_THE_STORY_THUS_FAR = 12807
 };
 
 class npc_arete : public CreatureScript
@@ -120,11 +120,11 @@ public:
 
 enum ealorah_and_grimmin
 {
-    SPELL_CHAIN                     = 68341,
-    NPC_FJOLA_LIGHTBANE             = 36065,
-    NPC_EYDIS_DARKBANE              = 36066,
-    NPC_PRIESTESS_ALORAH            = 36101,
-    NPC_PRIEST_GRIMMIN              = 36102
+    SPELL_CHAIN = 68341,
+    NPC_FJOLA_LIGHTBANE = 36065,
+    NPC_EYDIS_DARKBANE = 36066,
+    NPC_PRIESTESS_ALORAH = 36101,
+    NPC_PRIEST_GRIMMIN = 36102
 };
 
 class npc_alorah_and_grimmin : public CreatureScript
@@ -179,11 +179,11 @@ public:
 
 enum eGuardianPavilion
 {
-    SPELL_TRESPASSER_H                            = 63987,
-    AREA_SUNREAVER_PAVILION                       = 4676,
+    SPELL_TRESPASSER_H = 63987,
+    AREA_SUNREAVER_PAVILION = 4676,
 
-    AREA_SILVER_COVENANT_PAVILION                 = 4677,
-    SPELL_TRESPASSER_A                            = 63986,
+    AREA_SILVER_COVENANT_PAVILION = 4677,
+    SPELL_TRESPASSER_A = 63986,
 };
 
 class npc_guardian_pavilion : public CreatureScript
@@ -227,16 +227,16 @@ public:
 
 enum TheOcularSpells
 {
-    SPELL_THE_OCULAR_TRANSFORM                              = 55162,
-    SPELL_DEATHLY_STARE                                     = 55269,
-    SPELL_ITS_ALL_FUN_AND_GAMES_THE_OCULAR_ON_DEATH         = 55288,
-    SPELL_ITS_ALL_FUN_AND_GAMES_THE_OCULAR_KILL_CREDIT      = 55289
+    SPELL_THE_OCULAR_TRANSFORM = 55162,
+    SPELL_DEATHLY_STARE = 55269,
+    SPELL_ITS_ALL_FUN_AND_GAMES_THE_OCULAR_ON_DEATH = 55288,
+    SPELL_ITS_ALL_FUN_AND_GAMES_THE_OCULAR_KILL_CREDIT = 55289
 };
 
 enum ReqCreatures
 {
-   NPC_THE_OCULAR                                  = 29747,
-   NPC_THE_OCULAR_DESTROYED_KILL_CREDIT_BUNNY      = 29803
+   NPC_THE_OCULAR = 29747,
+   NPC_THE_OCULAR_DESTROYED_KILL_CREDIT_BUNNY = 29803
 };
 
 class npc_the_ocular : public CreatureScript
@@ -295,16 +295,16 @@ public:
 
 enum eGeneralLightsbaneSpells
 {
-    SPELL_CLEAVE                = 15284,
-    SPELL_DEATH_AND_DECAY       = 60160,
-    SPELL_PLAGUE_STRIKE         = 60186,
+    SPELL_CLEAVE = 15284,
+    SPELL_DEATH_AND_DECAY = 60160,
+    SPELL_PLAGUE_STRIKE = 60186,
 };
 
 enum eNpcs
 {
-    ENTRY_VILE                  = 29860,
-    ENTRY_THE_LEAPER            = 29859,
-    ENTRY_LADY_NIGHTSWOOD       = 29858,
+    ENTRY_VILE = 29860,
+    ENTRY_THE_LEAPER = 29859,
+    ENTRY_LADY_NIGHTSWOOD = 29858,
 };
 
 class npc_general_lightsbane : public CreatureScript
@@ -398,34 +398,34 @@ public:
 
 enum eFreeYourMindNPCSpells
 {
-    SPELL_SOVEREIGN_ROD             = 29070,
-    SPELL_SOVEREIGN_ROD_TRIGGERED   = 29071,
+    SPELL_SOVEREIGN_ROD = 29070,
+    SPELL_SOVEREIGN_ROD_TRIGGERED = 29071,
     // Vile Abilities
-    SPELL_VILE_ENRAGE               = 56646,    // <50% HP ?
-    SPELL_VILE_BACKHAND             =  6253,
+    SPELL_VILE_ENRAGE = 56646, // <50% HP ?
+    SPELL_VILE_BACKHAND = 6253,
     // Lady Nightswood Abilities
-    SPELL_BANSHEE_CURSE             = 5884,
-    SPELL_BANSHEE_SHRIEK            = 16838,
+    SPELL_BANSHEE_CURSE = 5884,
+    SPELL_BANSHEE_SHRIEK = 16838,
     // The Leaper Abilities
-    SPELL_LEAPER_SNISTER_STRIKE     = 60195,
-    SPELL_LEAPER_HUNGER_FOR_BLOOD   = 60177,
+    SPELL_LEAPER_SNISTER_STRIKE = 60195,
+    SPELL_LEAPER_HUNGER_FOR_BLOOD = 60177,
 };
 
 enum eFreeYourMindNPCEntrys
 {
-    ENTRY_FYM_VILE          = 29769,
-    ENTRY_FYM_LADY          = 29770,
-    ENTRY_FYM_LEAPER        = 29840
+    ENTRY_FYM_VILE = 29769,
+    ENTRY_FYM_LADY = 29770,
+    ENTRY_FYM_LEAPER = 29840
 };
 
-#define SAY_VILE_AGGRO              "Crush... maim... DESTROY!"
-#define SAY_VILE_FREED              "Vile free? Vile love %n"
+#define SAY_VILE_AGGRO "Crush... maim... DESTROY!"
+#define SAY_VILE_FREED "Vile free? Vile love %n"
 
-#define SAY_LADY_NIGHTSWOOD_AGGRO   "Who intrudes upon my ritual?"
-#define SAY_LADY_NIGHTSWOOD_FREED   " You dare? Where is Baron Sliver? I would have words with him!"
+#define SAY_LADY_NIGHTSWOOD_AGGRO "Who intrudes upon my ritual?"
+#define SAY_LADY_NIGHTSWOOD_FREED " You dare? Where is Baron Sliver? I would have words with him!"
 
-#define SAY_THE_LEAPER_AGGRO        "Mrrfrmrfrmrrrrr!"
-#define SAY_THE_LEAPER_FREED        "Mrmrmmrmrmrmrm... mrmrmrmr?!"
+#define SAY_THE_LEAPER_AGGRO "Mrrfrmrfrmrrrrr!"
+#define SAY_THE_LEAPER_FREED "Mrmrmmrmrmrmrm... mrmrmrmr?!"
 
 class npc_free_your_mind : public CreatureScript
 {
@@ -569,26 +569,26 @@ public:
 
 enum eEntrysSlaveToSaronite
 {
-    QUEST_SLAVES_TO_SARONITE_ALLIANCE       = 13300,
-    QUEST_SLAVES_TO_SARONITE_HORDE          = 13302,
+    QUEST_SLAVES_TO_SARONITE_ALLIANCE = 13300,
+    QUEST_SLAVES_TO_SARONITE_HORDE = 13302,
 
-    ENTRY_SLAVE_QUEST_CREDIT                = 31866,
+    ENTRY_SLAVE_QUEST_CREDIT = 31866,
 
-    SPELL_SLAVE_ENRAGE                      = 8599,
-    SPELL_HEAD_CRACK                        = 3148,
+    SPELL_SLAVE_ENRAGE = 8599,
+    SPELL_HEAD_CRACK = 3148,
 
-    ACTION_ENRAGED                          = 0,
-    ACTION_INSANE                           = 1,
-    ACTION_FREED                            = 2,
+    ACTION_ENRAGED = 0,
+    ACTION_INSANE = 1,
+    ACTION_FREED = 2,
 };
 
 const Position FreedPos[2] =
 {
-    { 7030.0f,  1862.0f, 533.2f, 0.0f },
-    { 6947.0f,  2027.0f, 519.7f, 0.0f }
+    { 7030.0f, 1862.0f, 533.2f, 0.0f },
+    { 6947.0f, 2027.0f, 519.7f, 0.0f }
 };
 
-#define GOSSIP_OPTION_FREE  "Go on, you're free. Get out of here!"
+#define GOSSIP_OPTION_FREE "Go on, you're free. Get out of here!"
 
 #define SAY_SLAVE_AGGRO_1 "AHAHAHAHA... you'll join us soon enough!"
 #define SAY_SLAVE_AGGRO_2 "I don't want to leave! I want to stay here!"
@@ -770,8 +770,8 @@ public:
 
 enum eVerethTheCunning
 {
-    NPC_GEIST_RETURN_BUNNY_KC   = 31049,
-    NPC_LITHE_STALKER           = 30894,
+    NPC_GEIST_RETURN_BUNNY_KC = 31049,
+    NPC_LITHE_STALKER = 30894,
     SPELL_SUBDUED_LITHE_STALKER = 58151,
 };
 

@@ -157,7 +157,14 @@ class boss_bjarngrim : public CreatureScript
                     _instance->SetData(TYPE_BJARNGRIM, DONE);
             }
 
+<<<<<<< HEAD
             void RemoveStance(uint8 stance)
+=======
+        //TODO: remove when removal is done by the core
+        void DoRemoveStanceAura(uint8 uiStance)
+        {
+            switch (uiStance)
+>>>>>>> 269274f34754abfe5f36781b090b956f15474076
             {
                 switch (stance)
                 {
@@ -191,7 +198,13 @@ class boss_bjarngrim : public CreatureScript
 
                 _stance = tempStance;
 
+<<<<<<< HEAD
                 switch (_stance)
+=======
+                m_uiStance = uiTempStance;
+
+                switch (m_uiStance)
+>>>>>>> 269274f34754abfe5f36781b090b956f15474076
                 {
                     case STANCE_DEFENSIVE:
                         DoScriptText(SAY_DEFENSIVE_STANCE, me);
@@ -228,7 +241,11 @@ class boss_bjarngrim : public CreatureScript
                 return 0;
             }
 
+<<<<<<< HEAD
             void UpdateAI(uint32 const diff)
+=======
+            switch (m_uiStance)
+>>>>>>> 269274f34754abfe5f36781b090b956f15474076
             {
                 if (!UpdateVictim())
                     return;
