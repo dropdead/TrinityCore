@@ -34,11 +34,13 @@ UPDATE `creature_onkill_reputation` SET `RewOnKillRepValue1` = 1 WHERE `creature
 37665,
 37666,
 37782,
-38125);
+38125,
+38258);
 
 /*
 -- revert
 UPDATE `creature_onkill_reputation` SET `RewOnKillRepValue1` = 450 WHERE `creature_id` = 37126;
+UPDATE `creature_onkill_reputation` SET `RewOnKillRepValue1` = 450 WHERE `creature_id` = 38258;
 UPDATE `creature_onkill_reputation` SET `RewOnKillRepValue1` = 75 WHERE `creature_id` = 37007;
 UPDATE `creature_onkill_reputation` SET `RewOnKillRepValue1` = 25 WHERE `creature_id` IN 
 (36724,
