@@ -341,8 +341,11 @@ class boss_valithria_dreamwalker : public CreatureScript
                     DoCast(me, SPELL_ACHIEVEMENT_CHECK);
                     DoCastAOE(SPELL_DREAMWALKERS_RAGE);
                     _events.ScheduleEvent(EVENT_DREAM_SLIP, 3500);
+                    /*
+                    Esto causa el exploit del loot infinito del chest. comentado y añadida mejor solucion.
                     if (Creature* lichKing = ObjectAccessor::GetCreature(*me, _instance->GetData64(DATA_VALITHRIA_LICH_KING)))
                         lichKing->AI()->EnterEvadeMode();
+                        */
                 }
                 else if (!_over75PercentTalkDone && me->HealthAbovePctHealed(75, heal))
                 {
