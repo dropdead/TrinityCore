@@ -207,6 +207,7 @@ class boss_sindragosa : public CreatureScript
             {
                 BossAI::JustDied(killer);
                 Talk(SAY_DEATH);
+                summons.DespawnAll();
             }
 
             void EnterCombat(Unit* victim)
