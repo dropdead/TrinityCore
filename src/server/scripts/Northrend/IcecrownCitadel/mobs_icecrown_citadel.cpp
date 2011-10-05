@@ -71,8 +71,7 @@ public:
         mob_icecrown_citadel_Deathbound_WardAI(Creature *c) : mobs_icecrown_citadelAI(c) 
         { 
             // Estas flags en la DB
-            me->RemoveFlag(UNIT_DYNAMIC_FLAGS, UNIT_FLAG_UNK_15);
-            me->RemoveFlag(UNIT_DYNAMIC_FLAGS, UNIT_FLAG_UNK_6);
+            me->RemoveFlag(UNIT_DYNAMIC_FLAGS, UNIT_FLAG_UNK_15 | UNIT_FLAG_UNK_6);
         }
 
         uint32 Disrupting_Shout;
