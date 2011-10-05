@@ -2698,7 +2698,7 @@ public:
         return true;
     }
 };
-/*
+
 enum hallowen
 {
     QUEST_INCOMING_GUMDROP  = 8358,
@@ -3502,7 +3502,7 @@ public:
         }
     };
 };
-*/
+
 
 void AddSC_npcs_special()
 {
@@ -3534,9 +3534,9 @@ void AddSC_npcs_special()
     new npc_locksmith;
     new npc_tabard_vendor;
     new npc_experience;
-    /*new npc_kali_remik;
+    new npc_kali_remik;
     new npc_hallowend(); 
     new npc_headless_horseman_fire();
-    new npc_shade_of_the_horseman();*/
+    new npc_shade_of_the_horseman();
 }
 
