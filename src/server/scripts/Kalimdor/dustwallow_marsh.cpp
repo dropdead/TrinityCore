@@ -825,39 +825,31 @@ class spell_energize_aoe : public SpellScriptLoader
 
 
 /*######
-## Prisoners of the Grimtotems
-## http://www.wowhead.com/quest=11145/deprecated-prisoners-of-the-grimtotems
+## go_blackhoof_cage
 ######*/
 
-enum QuestPrisonersOfTheGrimTotems
+enum PrisonersOfTheGrimTotems
 {
-    NPC_THERAMORE_PRISONER              = 23720,
-    QUEST_PRISIONERS_OF_THE_GRIM_TOTEMS = 11145,    
+    NPC_THERAMORE_PRISONER                          = 23720,
+    SAY_FREE                                        = 0,
 };
 
-class go_Prisoners_Of_The_Grim_Totems_cage : public GameObjectScript
+class go_blackhoof_cage : public GameObjectScript
 {
 public:
-    go_Prisoners_Of_The_Grim_Totems_cage() : GameObjectScript("go_Prisoners_Of_The_Grim_Totems_cage") { }
+    go_blackhoof_cage() : GameObjectScript("go_blackhoof_cage") { }
 
-    bool OnGossipHello(Player* player, GameObject* pGO)
+    bool OnGossipHello(Player* player, GameObject* go)
     {
-        if (player->GetQuestStatus(QUEST_PRISIONERS_OF_THE_GRIM_TOTEMS) != QUEST_STATUS_INCOMPLETE)
-            return true;
-
-        Creature* pPrisoner = pGO->FindNearestCreature(NPC_THERAMORE_PRISONER, 2.0f);
-
-        if (pPrisoner)
+        if (Creature* prisoner = go->FindNearestCreature(NPC_THERAMORE_PRISONER, 1.0f))
         {
-            pGO->UseDoorOrButton();
-        }
+            go->UseDoorOrButton();
+            if (player)
+                player->KilledMonsterCredit(NPC_THERAMORE_PRISONER, 0);
 
-        Quest const* qInfo = sObjectMgr->GetQuestTemplate(QUEST_PRISIONERS_OF_THE_GRIM_TOTEMS);
+            prisoner->AI()->Talk(SAY_FREE); // We also emote cry here (handled in creature_text.emote)
+            prisoner->ForcedDespawn(6000);
 
-        if (qInfo)
-        {
-            player->KilledMonsterCredit(qInfo->ReqCreatureOrGOId[0], 0);
-            pPrisoner->DisappearAndDie();
         }
         return true;
     }
@@ -922,6 +914,7 @@ public:
     };
 };
 
+
 void AddSC_dustwallow_marsh()
 {
     new mobs_risen_husk_spirit();
@@ -935,6 +928,6 @@ void AddSC_dustwallow_marsh()
     new spell_ooze_zap();
     new spell_ooze_zap_channel_end();
     new spell_energize_aoe();
-    new go_Prisoners_Of_The_Grim_Totems_cage();
     new npc_smolderwing();
+    new go_blackhoof_cage();
 }
