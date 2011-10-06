@@ -49,10 +49,10 @@ VALUES
 (NULL, 98686, 0, 1, 1, 328, 0, '-9458.17', '56.5453', '56.0296', '1.39003', 300, 0, 0, 42, 0, 0, 0, 0, 0),
 (NULL, 98686, 0, 1, 1, 0, 0, '-5589.21', -486, '397.038', '0.0537012', 300, 0, 0, 42, 0, 0, 0, 0, 0);
 -- Linqueamos trigger solo al evento.
-INSERT INTO `game_event_creature` values 
-((SELECT `guid` FROM `creature` WHERE `id` = 98686 limit 0,1), 12),
-((SELECT `guid` FROM `creature` WHERE `id` = 98686 limit 1,1), 12),
-((SELECT `guid` FROM `creature` WHERE `id` = 98686 limit 2,1), 12),
-((SELECT `guid` FROM `creature` WHERE `id` = 98686 limit 3,1), 12),
-((SELECT `guid` FROM `creature` WHERE `id` = 98686 limit 4,1), 12),
-((SELECT `guid` FROM `creature` WHERE `id` = 98686 limit 5,1), 12);
+INSERT INTO `game_event_creature` VALUES
+(12,(SELECT `guid` FROM `creature` WHERE `id` = 98686 limit 0,1),),
+(12,(SELECT `guid` FROM `creature` WHERE `id` = 98686 limit 0,1),),
+(12,(SELECT `guid` FROM `creature` WHERE `id` = 98686 limit 0,1),),
+(12,(SELECT `guid` FROM `creature` WHERE `id` = 98686 limit 0,1),),
+(12,(SELECT `guid` FROM `creature` WHERE `id` = 98686 limit 0,1),),
+(12,(SELECT `guid` FROM `creature` WHERE `id` = 98686 limit 0,1),);
