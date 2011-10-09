@@ -2969,6 +2969,17 @@ void SpellMgr::LoadDbcDataCorrections()
             case 24259: // Spell Lock 
                 spellInfo->speed = 80;
                 break;
+                // make it capable of crit as magic effect using spell crit chance
+                spellInfo->AttributesEx2 &= ~SPELL_ATTR2_CANT_CRIT;
+                spellInfo->DmgClass = SPELL_DAMAGE_CLASS_MAGIC;
+                spellInfo->SchoolMask = SPELL_SCHOOL_MASK_HOLY;
+                break;
+            case 23881: // Bloodthirst
+                spellInfo->EffectImplicitTargetA[EFFECT_1] = TARGET_UNIT_CASTER;
+                break;
+            case 23885: // Bloodthirst
+                spellInfo->EffectApplyAuraName[EFFECT_0] = SPELL_AURA_PROC_TRIGGER_SPELL_WITH_VALUE;
+                break;
             case 42835: // Spout
                 spellInfo->Effect[0] = 0; // remove damage effect, only anim is needed
                 break;
