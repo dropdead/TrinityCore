@@ -30,10 +30,7 @@ enum Spells
     SPELL_SPRING                                  = 55652
 };
 
-static Position EckSpawnPoint = 
-{ 
-    1643.877930f, 936.278015f, 107.204948f, 0.668432f 
-};
+//static Position EckSpawnPoint = { 1643.877930, 936.278015, 107.204948, 0.668432 };
 
 class boss_eck : public CreatureScript
 {
@@ -94,9 +91,9 @@ public:
                     me->AddThreat(pUnit, 0.1f);
                 }
             }
-            
+
             //needed?
-            if (pVictim && pVictim->isAlive()) 
+            if (pVictim && pVictim->isAlive())
             {
                 AttackStart(pVictim);
                 me->AddThreat(pVictim, 10.0f);
@@ -127,7 +124,7 @@ public:
                 if (target && target->GetTypeId() == TYPEID_PLAYER)
                 {
                     if (me->GetExactDist(target->GetPositionX(), target->GetPositionY(), target->GetPositionZ()) < 35)
-                    { 
+                    {
                         DoCast(target, SPELL_ECK_SPRING);
                         EckResetThread(target); //test
 
@@ -158,8 +155,6 @@ public:
     };
 
 };
-
-#define RANGE_ECK 1000.0f
 
 class npc_ruins_dweller : public CreatureScript
 {
@@ -222,16 +217,13 @@ public:
 
         void JustDied(Unit* /*who*/)
         {
-            if (pInstance)
+          /*  if (pInstance)
             {
-                if (!me->FindNearestCreature(CREATURE_ECK, RANGE_ECK, true))
-                {
-                    pInstance->SetData64(DATA_RUIN_DWELLER_DIED, me->GetGUID());  
-                    if (pInstance->GetData(DATA_ALIVE_RUIN_DWELLERS) == 0)
-                        me->SummonCreature(CREATURE_ECK, EckSpawnPoint, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 300000);
-                }            
-            } 
-        } 
+                pInstance->SetData64(DATA_RUIN_DWELLER_DIED, me->GetGUID());
+                if (pInstance->GetData(DATA_ALIVE_RUIN_DWELLERS) == 0)
+                    me->SummonCreature(CREATURE_ECK, EckSpawnPoint, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 300*IN_MILLISECONDS);
+            } */
+        }
     };
 
 };

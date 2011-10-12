@@ -2729,7 +2729,7 @@ public:
         }
     };
 };
-
+/*
 
 struct PostionEventoHallowend
 {
@@ -3502,7 +3502,7 @@ public:
     };
 };
 
-
+*/
 void AddSC_npcs_special()
 {
     new npc_air_force_bots;
@@ -3534,8 +3534,10 @@ void AddSC_npcs_special()
     new npc_tabard_vendor;
     new npc_experience;
     new npc_kali_remik;
+    /*
     new npc_hallowend(); 
     new npc_headless_horseman_fire();
     new npc_shade_of_the_horseman();
+    */
 }
 

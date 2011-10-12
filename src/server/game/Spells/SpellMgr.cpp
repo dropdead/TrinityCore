@@ -3003,7 +3003,6 @@ void SpellMgr::LoadDbcDataCorrections()
             case 25425: // Shoot
             case 45761: // Shoot
             case 42611: // Shoot
-            case 62374: // Pursued
             case 61588: // Blazing Harpoon
             case 52479: // Gift of the Harvester
                 spellInfo->MaxAffectedTargets = 1;
@@ -3104,11 +3103,18 @@ void SpellMgr::LoadDbcDataCorrections()
             case 48422:
                 spellInfo->Stances = 1 << (FORM_TREE - 1);
                 break;
+            case 51466: // Elemental Oath (Rank 1)
+            case 51470: // Elemental Oath (Rank 2)
+                spellInfo->Effect[EFFECT_1] = SPELL_EFFECT_APPLY_AURA;
+                spellInfo->EffectApplyAuraName[EFFECT_1] = SPELL_AURA_ADD_FLAT_MODIFIER;
+                spellInfo->EffectMiscValue[EFFECT_1] = SPELLMOD_EFFECT2;
+                spellInfo->EffectSpellClassMask[EFFECT_1] = flag96(0x00000000, 0x00004000, 0x00000000);
+                break;
             case 47569: // Improved Shadowform (Rank 1)
                 // with this spell atrribute aura can be stacked several times
                 spellInfo->Attributes &= ~SPELL_ATTR0_NOT_SHAPESHIFT;
                 break;
-            case 64904: //Hymn of Hope
+            case 64904: // Hymn of Hope
                 spellInfo->EffectApplyAuraName[EFFECT_1] = SPELL_AURA_MOD_INCREASE_ENERGY_PERCENT;
                 break;
             case 30421: // Nether Portal - Perseverence
@@ -3193,6 +3199,9 @@ void SpellMgr::LoadDbcDataCorrections()
                 break;
             // ULDUAR SPELLS
             //
+            case 62374: // Pursued (Flame Leviathan)
+                spellInfo->EffectRadiusIndex[0] = 28;   // 50000yd
+                break;
             case 63342: // Focused Eyebeam Summon Trigger (Kologarn)
                 spellInfo->MaxAffectedTargets = 1;
                 break;
@@ -3443,6 +3452,7 @@ void SpellMgr::LoadDbcDataCorrections()
                 break;
             case 75127: // Kill Frostmourne Players
             case 72351: // Fury of Frostmourne
+            case 72431: // Jump (removes Fury of Frostmourne debuff)
             case 72429: // Mass Resurrection
             case 73159: // Play Movie
             case 73582: // Trigger Vile Spirit (Inside, Heroic)
@@ -3455,6 +3465,9 @@ void SpellMgr::LoadDbcDataCorrections()
             case 71809: // Jump
                 spellInfo->rangeIndex = 3;              // 20yd
                 spellInfo->EffectRadiusIndex[0] = 20;   // 25yd
+                break;
+            case 72405: // Broken Frostmourne
+                spellInfo->EffectRadiusIndex[1] = 22;   // 200yd
                 break;
             default:
                 break;

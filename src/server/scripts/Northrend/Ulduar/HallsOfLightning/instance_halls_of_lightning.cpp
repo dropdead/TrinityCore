@@ -53,7 +53,7 @@ public:
         uint64 m_uiIonarGUID;
         uint64 m_uiLokenGUID;
         uint64 m_uiVolkhanGUID;
-        uint64 m_uiVolkhanAnvilGUID;
+	uint64 m_uiVolkhanAnvilGUID;
 
         uint64 m_uiBjarngrimDoorGUID;
         uint64 m_uiVolkhanDoorGUID;
@@ -69,7 +69,7 @@ public:
             m_uiVolkhanGUID          = 0;
             m_uiIonarGUID            = 0;
             m_uiLokenGUID            = 0;
-            m_uiVolkhanAnvilGUID	 = 0;
+		m_uiVolkhanAnvilGUID	 = 0;
 
             m_uiBjarngrimDoorGUID    = 0;
             m_uiVolkhanDoorGUID      = 0;
@@ -80,7 +80,7 @@ public:
 
         void OnCreatureCreate(Creature* creature)
         {
-            switch (creature->GetEntry())
+            switch(creature->GetEntry())
             {
                 case NPC_BJARNGRIM:
                     m_uiGeneralBjarngrimGUID = creature->GetGUID();
@@ -102,7 +102,7 @@ public:
 
         void OnGameObjectCreate(GameObject* go)
         {
-            switch (go->GetEntry())
+            switch(go->GetEntry())
             {
                 case GO_BJARNGRIM_DOOR:
                     m_uiBjarngrimDoorGUID = go->GetGUID();
@@ -140,15 +140,15 @@ public:
 
         void SetData(uint32 uiType, uint32 uiData)
         {
-            switch (uiType)
+            switch(uiType)
             {
                 case TYPE_BJARNGRIM:
                     if (uiData == DONE)
-                    {
+				{
                         DoUseDoorOrButton(m_uiBjarngrimDoorGUID);
-                        GameObject* pGo = instance->GetGameObject(m_uiBjarngrimDoorGUID);
-                        pGo->SetGoState(GO_STATE_ACTIVE);
-                    }
+					GameObject* pGo = instance->GetGameObject(m_uiBjarngrimDoorGUID);
+					pGo->SetGoState(GO_STATE_ACTIVE);
+				}
                     m_auiEncounter[0] = uiData;
                     break;
                 case TYPE_VOLKHAN:
@@ -180,7 +180,7 @@ public:
 
         uint32 GetData(uint32 uiType)
         {
-            switch (uiType)
+            switch(uiType)
             {
                 case TYPE_BJARNGRIM:
                     return m_auiEncounter[0];
@@ -196,7 +196,7 @@ public:
 
         uint64 GetData64(uint32 uiData)
         {
-            switch (uiData)
+            switch(uiData)
             {
                 case DATA_BJARNGRIM:
                     return m_uiGeneralBjarngrimGUID;
@@ -206,8 +206,8 @@ public:
                     return m_uiIonarGUID;
                 case DATA_LOKEN:
                     return m_uiLokenGUID;
-                case DATA_VOLKHAN_ANVIL:
-                    return m_uiVolkhanAnvilGUID;
+			case DATA_VOLKHAN_ANVIL:
+				return m_uiVolkhanAnvilGUID;
             }
             return 0;
         }

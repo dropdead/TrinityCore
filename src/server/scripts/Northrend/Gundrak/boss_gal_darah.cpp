@@ -286,7 +286,7 @@ public:
                 pInstance->SetData(DATA_GAL_DARAH_EVENT, DONE);
             }
         }
- 
+
         void JustSummoned(Creature* pSummon)
         {
             if (Unit* pTarget = SelectTarget(SELECT_TARGET_RANDOM, 0, 100, true))
@@ -334,7 +334,7 @@ public:
             {
                 me->DisappearAndDie();
             } else uiDespawnTimer -= diff;
-        }   
+        }
     };
 
 };

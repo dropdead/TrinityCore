@@ -210,8 +210,8 @@ public:
                     if (temp && temp->isAlive() && (temp->GetDistance2d(me) < 100))
                         temp->CompletedAchievement(achievSnakes);
                 }
-            } 
-     
+            }
+
             if (pInstance)
                 pInstance->SetData(DATA_SLAD_RAN_EVENT, DONE);
         }
@@ -274,10 +274,10 @@ public:
                      if (stackcount >= 4)
                      {
                           pTarget->RemoveAurasDueToSpell(SPELL_GRIP_OF_SLAD_RAN);
-                    
+
                           me->AddUnitState(UNIT_STAT_ROOT); //dont interrupt channelling by moving
                           DoCast(pTarget, SPELL_SNAKE_WRAP);
-                    
+
                           bEnwrapping = true;
                           uiWrapTarget = pTarget->GetGUID();
                      }
@@ -294,12 +294,12 @@ public:
             if (uiGripOfSladRanTimer <= diff)
             {
                 Unit* pTarget = me->getVictim();
-            
+
                 CastGrip(pTarget);
-            
+
                 uiGripOfSladRanTimer = 5*IN_MILLISECONDS;
             } else uiGripOfSladRanTimer -= diff;
-    
+
             if (bEnwrapping)
             {
                 if (uiEnwrapTimer <= diff)
@@ -307,7 +307,7 @@ public:
                     if (Unit* pTarget = Unit::GetUnit((*me), uiWrapTarget))
                     {
                         pTarget->CastSpell(pTarget, SPELL_SNAKE_WRAP_STUN, true);
-                    
+
                         // replace with Unit::GetCreature(*me, pInstance ? pInstance->GetData64(DATA_SLADRAN) : 0) later
                         if (Creature* pSladran = GetClosestCreatureWithEntry(me, CREATURE_SLAD_RAN, 100.0f))
                             CAST_AI(boss_slad_ran::boss_slad_ranAI, pSladran->AI())->GotWrapped(pTarget);
@@ -377,8 +377,8 @@ public:
         mob_snake_wrapAI(Creature *c) : ScriptedAI(c) {}
         uint64 WrapTargetGUID;
         void Reset()
-        { 
-            WrapTargetGUID = 0; 
+        {
+            WrapTargetGUID = 0;
         }
 
         void EnterCombat(Unit* /*who*/) {}

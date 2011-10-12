@@ -68,7 +68,7 @@ class boss_moorabi : public CreatureScript
             boss_moorabiAI(Creature* creature) : ScriptedAI(creature)
             {
                 _instance = creature->GetInstanceScript();
-            
+
                 // make 55098 interruptable
                 SpellInfo* spell = (SpellInfo*)sSpellMgr->GetSpellInfo(SPELL_TRANSFORMATION);
                 if (spell)

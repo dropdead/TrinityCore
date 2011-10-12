@@ -183,7 +183,7 @@ class boss_drakkari_colossus : public CreatureScript
             {
                 if (_instance)
                     _instance->SetData(DATA_DRAKKARI_COLOSSUS_EVENT, IN_PROGRESS);
-           
+
                 me->RemoveAura(SPELL_FREEZE_ANIM);
                 me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_OOC_NOT_ATTACKABLE);
                 _phase = 1;
@@ -295,19 +295,19 @@ class boss_drakkari_elemental : public CreatureScript
             {
                 if (Creature* colossus = Unit::GetCreature(*me, _instance ? _instance->GetData64(DATA_DRAKKARI_COLOSSUS) : 0))
                     colossus->AI()->DoAction(ACTION_UNFREEZE);
-            
+
                 me->SetVisible(false);
                 me->DisappearAndDie();
             }
-       
+
             void EnterCombat(Unit* /*who*/)
             {
-                DoCast(me, DUNGEON_MODE(SPELL_MOJO_VOLLEY, H_SPELL_MOJO_VOLLEY));
+                DoCast(me, DUNGEON_MODE<uint32>(SPELL_MOJO_VOLLEY, H_SPELL_MOJO_VOLLEY));
             }
 
             void JustDied(Unit* /*killer*/)
             {
-                me->RemoveAurasDueToSpell(DUNGEON_MODE(SPELL_MOJO_VOLLEY, H_SPELL_MOJO_VOLLEY));
+                me->RemoveAurasDueToSpell(DUNGEON_MODE<uint32>(SPELL_MOJO_VOLLEY, H_SPELL_MOJO_VOLLEY));
 
                 if (Creature* colossus = Unit::GetCreature(*me, _instance ? _instance->GetData64(DATA_DRAKKARI_COLOSSUS) : 0))
                 {
@@ -328,7 +328,7 @@ class boss_drakkari_elemental : public CreatureScript
                             me->InterruptNonMeleeSpells(true);
                             DoCast(colossus, SPELL_MERGE);
                             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
-                            me->RemoveAurasDueToSpell(DUNGEON_MODE(SPELL_MOJO_VOLLEY, H_SPELL_MOJO_VOLLEY));
+                            me->RemoveAurasDueToSpell(DUNGEON_MODE<uint32>(SPELL_MOJO_VOLLEY, H_SPELL_MOJO_VOLLEY));
                             _merging = true;
                         }
 
@@ -355,7 +355,7 @@ class boss_drakkari_elemental : public CreatureScript
                 {
                     if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100, true))
                     {
-                        DoCast(target, DUNGEON_MODE(SPELL_MOJO_WAVE, H_SPELL_MOJO_WAVE));
+                        DoCast(target, DUNGEON_MODE<uint32>(SPELL_MOJO_WAVE, H_SPELL_MOJO_WAVE));
                         _mojoWaveTimer = urand(10000, 20000);
                     }
                 }
@@ -405,7 +405,7 @@ class npc_living_mojo : public CreatureScript
                 {
                     if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100, true))
                     {
-                        DoCastVictim(DUNGEON_MODE(SPELL_MOJO_WAVE, H_SPELL_MOJO_WAVE));
+                        DoCastVictim(DUNGEON_MODE<uint32>(SPELL_MOJO_WAVE, H_SPELL_MOJO_WAVE));
                         _mojoWaveTimer = 10*IN_MILLISECONDS;
                     }
                 }
@@ -415,7 +415,7 @@ class npc_living_mojo : public CreatureScript
                 if (_mojoPuddleTimer <= diff)
                 {
                     DoCast(H_SPELL_MOJO_VOLLEY_TRIGGERED);
-                    _mojoPuddleTimer = DUNGEON_MODE(20*IN_MILLISECONDS, 10*IN_MILLISECONDS);
+                    _mojoPuddleTimer = DUNGEON_MODE<uint32>(20*IN_MILLISECONDS, 10*IN_MILLISECONDS);
                 }
                 else
                     _mojoPuddleTimer -= diff;
