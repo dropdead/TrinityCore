@@ -1373,3 +1373,6 @@ INSERT INTO `creature` (`id`, `map`, `spawnMask`, `phaseMask`, `modelid`, `equip
 -- ----------------------------------------------------------------------------------------------
 -- ----------------------------------------------------------------------------------------------
 -- ----------------------------------------------------------------------------------------------
+
+-- http://old.wowhead.com/quest=12891 -- segun la info encontrada estos npc deberian todas las fases
+UPDATE creature SET phaseMask = 3 WHERE id IN (29719, 29720);
