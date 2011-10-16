@@ -998,6 +998,18 @@ void Spell::EffectDummy(SpellEffIndex effIndex)
 
                     return;
                 }
+                // Shadowmeld - Fix Autoshoot
+                case 58984:
+                {
+                    m_caster->InterruptSpell(CURRENT_AUTOREPEAT_SPELL); 
+                    m_caster->InterruptSpell(CURRENT_CHANNELED_SPELL);  
+                    m_caster->AttackStop();
+                    m_caster->CombatStop();
+                    if (m_caster->ToPlayer())
+                        m_caster->ToPlayer()->SendAttackSwingCancelAttack();
+                    return;
+                }
+
                 // Demon Broiled Surprise
                 case 43723:
                 {
