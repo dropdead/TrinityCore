@@ -525,7 +525,8 @@ public:
                 case CREATURE_DARK_RUNE_STORMCALLER:
                 case CREATURE_IRON_GOLEM_CUSTODIAN:
                     pSummoned->AddThreat(me, 1.0f);
-                    pSummoned->AI()->AttackStart(me);
+                    if (Unit* pTarget = me->getVictim())
+                        pSummoned->AI()->AttackStart(pTarget);
                     break;
             }
         }
