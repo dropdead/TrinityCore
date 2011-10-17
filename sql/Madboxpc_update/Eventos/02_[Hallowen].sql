@@ -55,3 +55,6 @@ INSERT INTO `game_event_creature` VALUES
 (12,(SELECT `guid` FROM `creature` WHERE `id` = 98686 limit 0,1),),
 (12,(SELECT `guid` FROM `creature` WHERE `id` = 98686 limit 0,1),),
 (12,(SELECT `guid` FROM `creature` WHERE `id` = 98686 limit 0,1),);
+
+-- Script go  http://www.wowhead.com/object=180574
+UPDATE `gameobject_template` SET `ScriptName` = 'go_wickerman_ember' WHERE `entry` =180574;
