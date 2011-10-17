@@ -3504,6 +3504,62 @@ public:
     };
 };
 
+enum WickermanGuardian
+{
+    SPELL_KNOCKDOWN                = 19128,
+    SPELL_STRIKE                   = 18368,
+    SPELL_WICKERMAN_GUARDIAN_EMBER = 25007
+};
+
+class npc_wickerman_guardian : public CreatureScript
+{
+public:
+    npc_wickerman_guardian() : CreatureScript("npc_wickerman_guardian") { }
+
+    CreatureAI *GetAI(Creature *creature) const
+    {
+        return new npc_wickerman_guardianAI(creature);
+    }
+
+    struct npc_wickerman_guardianAI : public ScriptedAI
+    {
+        npc_wickerman_guardianAI(Creature* creature) : ScriptedAI(creature) { }
+ 
+        uint32 KnockdownTimer;
+        uint32 StrikeTimer;
+ 
+        void Reset()
+        {
+            KnockdownTimer = 7000;
+            StrikeTimer = 10000;
+        }
+
+        void UpdateAI(const uint32 diff)
+        {
+            if (!UpdateVictim())
+                return;
+
+            if (KnockdownTimer <= diff)
+            {
+                DoCast(me->getVictim(),SPELL_KNOCKDOWN);
+                KnockdownTimer = 7000;
+            }else KnockdownTimer -= diff;
+
+            if (StrikeTimer <= diff)
+            {
+                DoCast(me->getVictim(),SPELL_STRIKE);
+                StrikeTimer = 10000;
+            }else StrikeTimer -= diff;
+            
+            DoMeleeAttackIfReady();
+        }
+
+        void JustDied(Unit* killer)
+        {
+            DoCast(SPELL_WICKERMAN_GUARDIAN_EMBER);
+        }
+    };
+};
 
 void AddSC_npcs_special()
 {
@@ -3539,5 +3595,6 @@ void AddSC_npcs_special()
     new npc_hallowend(); 
     new npc_headless_horseman_fire();
     new npc_shade_of_the_horseman();
+    new npc_wickerman_guardian;
 }
 

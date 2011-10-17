@@ -58,3 +58,60 @@ INSERT INTO `game_event_creature` VALUES
 
 -- Script go  http://www.wowhead.com/object=180574
 UPDATE `gameobject_template` SET `ScriptName` = 'go_wickerman_ember' WHERE `entry` =180574;
+
+-- Wickerman Festival            
+SET @GUID := 264000;
+DELETE FROM `gameobject` WHERE `guid` IN (@GUID,@GUID+1,@GUID+2,@GUID+3,@GUID+4,@GUID+5,@GUID+6,@GUID+7,@GUID+8,@GUID+9,@GUID+10,@GUID+11);
+INSERT INTO `gameobject` (`guid`, `id`, `map`, `spawnMask`, `phaseMask`, `position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, `spawntimesecs`, `animprogress`, `state`) VALUES
+(@GUID,180405,0,1,1,1746.02,516.679,38.9722,3,0,0,0.706252,0.707961,300,0,1),
+(@GUID+1,180406,0,1,1,1719.52,523.045,36.8884,3.2,0,0,0.728141,0.685427,300,0,1),
+(@GUID+2,180406,0,1,1,1727.75,474.81,63.6354,3.2,0,0,0.732164,0.681128,300,0,1),
+(@GUID+3,180432,0,1,1,1750.14,507.759,38.9864,1.38773,0,0,0.639513,0.76878,300,0,1),
+(@GUID+4,180432,0,1,1,1732.63,474.303,61.6563,1.64613,0,0,0.733233,0.679978,300,0,1),
+(@GUID+5,180432,0,1,1,1712.21,508.029,37.924,1.32648,0,0,0.615674,0.788001,300,0,1),
+(@GUID+6,180433,0,1,1,1731.39,509.227,41.2468,1.38772,0,0,0.639511,0.768782,300,0,1),
+(@GUID+7,180434,0,1,1,1709.99,470.895,61.6553,1.51655,0,0,0.68767,0.726023,300,0,1),
+(@GUID+8,180434,0,1,1,1705.36,520.442,35.0191,1.12151,0,0,0.531827,0.846853,300,0,1),
+(@GUID+9,180434,0,1,1,1731.01,549.066,34.0198,4.63615,0,0,0.73354,-0.679646,300,0,1),
+(@GUID+10,180434,0,1,1,1763.75,516.858,34.6317,5.72079,0,0,0.277505,-0.960724,300,0,1),
+(@GUID+11,180434,0,1,1,1748.86,472.571,61.6563,4.67776,0,0,0.719244,-0.694758,300,0,1);
+DELETE FROM `game_event_gameobject` WHERE `guid` IN (@GUID,@GUID+1,@GUID+2,@GUID+3,@GUID+4,@GUID+5,@GUID+6,@GUID+7,@GUID+8,@GUID+9,@GUID+10,@GUID+11);
+INSERT INTO `game_event_gameobject` VALUES
+(12,@GUID),
+(12,@GUID+1),
+(12,@GUID+2),
+(12,@GUID+3),
+(12,@GUID+4),
+(12,@GUID+5),
+(12,@GUID+6),
+(12,@GUID+7),
+(12,@GUID+8),
+(12,@GUID+9),
+(12,@GUID+10),
+(12,@GUID+11);
+
+SET @GUID := 10200000;
+DELETE FROM `creature` WHERE `guid` IN (@GUID,@GUID+1,@GUID+2,@GUID+3,@GUID+4);
+INSERT INTO `creature` (`guid`, `id`, `map`, `spawnMask`, `phaseMask`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `dynamicflags`) VALUES
+(@GUID,15195,0,1,1,0,0,1722.9,550.575,34.8801,4.57359,300,0,0,45780,0,0,0,0,0),
+(@GUID+1,15195,0,1,1,0,0,1714.36,512.773,37.0569,1.46233,300,0,0,45780,0,0,0,0,0),
+(@GUID+2,15195,0,1,1,0,0,1753.36,510.961,37.3789,1.33431,300,0,0,45780,0,0,0,0,0),
+(@GUID+3,15197,0,1,1,0,0,1733.16,521.039,36.2302,1.38301,300,0,0,15260,0,0,0,0,0),
+(@GUID+4,15199,0,1,1,0,0,-821.925,-537.505,15.2772,3.56202,300,0,0,15260,0,0,0,0,0);
+DELETE FROM `game_event_creature` WHERE `guid` IN (@GUID,@GUID+1,@GUID+2,@GUID+3,@GUID+4);
+INSERT INTO `game_event_creature` VALUES
+(12,@GUID),
+(12,@GUID+1),
+(12,@GUID+2),
+(12,@GUID+3),
+(12,@GUID+4);
+
+DELETE FROM `areatrigger_involvedrelation` WHERE `id` IN (3991);
+INSERT INTO `areatrigger_involvedrelation` (`id`, `quest`) VALUES (3991,1658);
+DELETE FROM `event_scripts` WHERE `id` IN (9417);
+INSERT INTO `event_scripts` (`id`, `delay`, `command`, `datalong`, `datalong2`, `dataint`, `x`, `y`, `z`, `o`) VALUES (9417,0,8,15415,0,0,0,0,0,0);
+DELETE FROM `conditions` WHERE `SourceEntry` IN (24973);
+INSERT INTO `conditions` (`SourceTypeOrReferenceId`,`SourceGroup`,`SourceEntry`,`ElseGroup`,`ConditionTypeOrReference`,`ConditionValue1`,`ConditionValue2`,`ConditionValue3`,`ErrorTextId`,`ScriptName`,`Comment`) VALUES
+(17,0,24973,0,30,180449,2,0,0,'',"Spell Clean Up Stink Bomb - Stink Bomb Cleaner");
+
+UPDATE `creature_template` SET `ScriptName`='npc_wickerman_guardian' WHERE `entry`='15195';
