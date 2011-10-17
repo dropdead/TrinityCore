@@ -2988,6 +2988,7 @@ void SpellMgr::LoadDbcDataCorrections()
                 spellInfo->EffectImplicitTargetA[0] = TARGET_UNIT_CASTER_AREA_PARTY;
                 spellInfo->EffectRadiusIndex[0] = 45;
                 break;
+
             case 44978: case 45001: case 45002: // Wild Magic
             case 45004: case 45006: case 45010: // Wild Magic
             case 31347: // Doom
@@ -3006,6 +3007,9 @@ void SpellMgr::LoadDbcDataCorrections()
             case 61588: // Blazing Harpoon
             case 52479: // Gift of the Harvester
                 spellInfo->MaxAffectedTargets = 1;
+                break;
+            case 42132: // Headless Horseman - Start Fire
+                spellInfo->rangeIndex = 13;
                 break;
             case 41376: // Spite
             case 39992: // Needle Spine
