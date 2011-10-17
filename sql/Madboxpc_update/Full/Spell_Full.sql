@@ -51,3 +51,10 @@ INSERT INTO `spell_dbc` (`Id`,`CastingTimeIndex`,`DurationIndex`,`RangeIndex`,`E
 UPDATE `spell_group` SET `spell_id` = 68066 WHERE `id` = 1091 and `spell_id` = 47930;
 UPDATE `spell_group` SET `spell_id` = 20912 WHERE `id` = 1092 and `spell_id` = 20911;
 
+-- 09[Priest]Shadowfiend
+UPDATE `creature_template_addon` SET `auras`='28305' WHERE `entry`=19668; 
+
+-- 10[Priest]Vampiric_touch
+UPDATE `spell_bonus_data` SET `direct_bonus`='2.4' WHERE `entry`=64085;
+
+
