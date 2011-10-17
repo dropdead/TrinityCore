@@ -483,8 +483,9 @@ UPDATE `battleground_template` SET `Weight` = '2' WHERE `id` = 9;-- Strand of th
 -- ----------------------------------------------------------------------------------------------
 -- ----------------------------------------------------------------------------------------------
 
--- Inmunidades para vehiculos en SOTA
+-- Inmunidades para vehiculos en SOTA - exploit de heal
 UPDATE `creature_template` SET `mechanic_immune_mask` = 2144337919 WHERE `entry` IN (28781, 32796);
+UPDATE `creature_template` SET `RegenHealth` = 0 WHERE `entry` IN (28781, 32659,32796);
 
 -- ----------------------------------------------------------------------------------------------
 -- ----------------------------------------------------------------------------------------------
