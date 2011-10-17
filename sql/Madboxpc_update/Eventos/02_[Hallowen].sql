@@ -57,6 +57,9 @@ INSERT INTO `game_event_creature` VALUES
 (12,(SELECT `guid` FROM `creature` WHERE `id` = 98686 limit 0,1),);
 
 -- Script go  http://www.wowhead.com/object=180574
+DELETE FROM `gameobject_template` WHERE `entry` =180574;
+INSERT INTO `gameobject_template` (`entry`, `type`, `displayId`, `name`, `IconName`, `castBarCaption`, `unk1`, `faction`, `flags`, `size`, `questItem1`, `questItem2`, `questItem3`, `questItem4`, `questItem5`, `questItem6`, `data0`, `data1`, `data2`, `data3`, `data4`, `data5`, `data6`, `data7`, `data8`, `data9`, `data10`, `data11`, `data12`, `data13`, `data14`, `data15`, `data16`, `data17`,`data18`, `data19`, `data20`, `data21`, `data22`, `data23`, `AIName`, `ScriptName`, `WDBVerified`) values
+('180574','2','6421','Wickerman Guardian Ember','','Using','','84','0','5','0','0','0','0','0','0','43','0','0','6535','0','0','19700','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','','','1');
 UPDATE `gameobject_template` SET `ScriptName` = 'go_wickerman_ember' WHERE `entry` =180574;
 
 -- Wickerman Festival            
@@ -106,12 +109,16 @@ INSERT INTO `game_event_creature` VALUES
 (12,@GUID+3),
 (12,@GUID+4);
 
-DELETE FROM `areatrigger_involvedrelation` WHERE `id` IN (3991);
-INSERT INTO `areatrigger_involvedrelation` (`id`, `quest`) VALUES (3991,1658);
-DELETE FROM `event_scripts` WHERE `id` IN (9417);
-INSERT INTO `event_scripts` (`id`, `delay`, `command`, `datalong`, `datalong2`, `dataint`, `x`, `y`, `z`, `o`) VALUES (9417,0,8,15415,0,0,0,0,0,0);
-DELETE FROM `conditions` WHERE `SourceEntry` IN (24973);
-INSERT INTO `conditions` (`SourceTypeOrReferenceId`,`SourceGroup`,`SourceEntry`,`ElseGroup`,`ConditionTypeOrReference`,`ConditionValue1`,`ConditionValue2`,`ConditionValue3`,`ErrorTextId`,`ScriptName`,`Comment`) VALUES
+DELETE FROM `areatrigger_involvedrelation` WHERE `id` =3991;
+INSERT INTO `areatrigger_involvedrelation` (`id`, `quest`) 
+VALUES (3991,1658);
+DELETE FROM `event_scripts` WHERE `id` =9417;
+INSERT INTO `event_scripts` (`id`, `delay`, `command`, `datalong`, `datalong2`, `dataint`, `x`, `y`, `z`, `o`) 
+VALUES 
+(9417,0,8,15415,0,0,0,0,0,0);
+DELETE FROM `conditions` WHERE `SourceEntry` =24973;
+INSERT INTO `conditions` (`SourceTypeOrReferenceId`,`SourceGroup`,`SourceEntry`,`ElseGroup`,`ConditionTypeOrReference`,`ConditionValue1`,`ConditionValue2`,`ConditionValue3`,`ErrorTextId`,`ScriptName`,`Comment`) 
+VALUES
 (17,0,24973,0,30,180449,2,0,0,'',"Spell Clean Up Stink Bomb - Stink Bomb Cleaner");
 
 UPDATE `creature_template` SET `ScriptName`='npc_wickerman_guardian' WHERE `entry`='15195';

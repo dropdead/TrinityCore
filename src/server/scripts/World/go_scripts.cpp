@@ -1216,11 +1216,17 @@ public:
     bool OnGossipSelect(Player* player, GameObject* pGO, uint32 /*uiSender*/, uint32 uiAction)
     {
         player->PlayerTalkClass->ClearMenus();
-        if (uiAction == GOSSIP_ACTION_INFO_DEF +1)
+        if (player->HasAura(SPELL_GRIM_VISAGE))
+        {
+            player->SEND_GOSSIP_MENU(player->GetGossipTextId(pGO), pGO->GetGUID());
+            player->CLOSE_GOSSIP_MENU();
+            
+        }
+        else if (uiAction == GOSSIP_ACTION_INFO_DEF +1)
         {
             pGO->CastSpell(player, SPELL_GRIM_VISAGE);
+            player->CLOSE_GOSSIP_MENU();
         }
-        player->CLOSE_GOSSIP_MENU();
         return true;
     }
 };

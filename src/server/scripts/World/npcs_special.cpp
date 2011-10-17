@@ -3556,7 +3556,7 @@ public:
 
         void JustDied(Unit* killer)
         {
-            DoCast(SPELL_WICKERMAN_GUARDIAN_EMBER);
+            DoCast(killer, SPELL_WICKERMAN_GUARDIAN_EMBER, true);
         }
     };
 };
