@@ -3478,7 +3478,8 @@ public:
             if (id == 0) 
                 me->SetVisible(true);
 
-            if (WaypointsShadeOfTheHorsemans[PointFisrtArea + PointCur].CastPoint) {
+            if (WaypointsShadeOfTheHorsemans[PointFisrtArea + PointCur].CastPoint) 
+            {
                 CreateFires();
                 me->PlayDirectSound(11966);
             }
