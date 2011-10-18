@@ -2997,6 +2997,8 @@ enum HallowendFire
     SPELL_HEADLESS_HORSEMAN_BURNING         = 42971,
     SPELL_HEADLESS_HORSEMAN_FIRE            = 42074,
     SPELL_HEADLESS_HORSEMAN_VISUAL_FIRE     = 42075,
+    // http://old.wowhead.com/object=186887
+    GO_LARGE_JACK                           = 186887,
 };
 
 #define ACTION_FAIL_EVENT       1
@@ -3078,6 +3080,7 @@ public:
 
             for (std::list<Player*>::const_iterator itr = players.begin(); itr != players.end(); ++itr)
                 (*itr)->CastSpell((*itr),SPELL_HEADLES_HORSEMAN_QUEST_CREDIT,true);
+            me->SummonGameObject(GO_LARGE_JACK, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ()+2, 0.0f, 0, 0, 0, 0 ,25000);
         }
 
         void SetData(uint32 uiType, uint32 uiData)
