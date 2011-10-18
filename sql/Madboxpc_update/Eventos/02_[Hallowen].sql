@@ -216,3 +216,78 @@ DELETE FROM `smart_scripts` WHERE `entryorguid`=@INNKEEPER;
 INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES
 (@INNKEEPER, 0, 0, 1, 62, 0, 100, 0, @GOSSIP, 0, 0, 0, 72, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 'Jarin Dawnglow - On gossip option 0 select - Close gossip'),
 (@INNKEEPER, 0, 1, 0, 61, 0, 100, 0, 0, 0, 0, 0, 85, 24751, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 'Jarin Dawnglow - On gossip option 0 select - Player cast Trick or Treat on self');
+
+-- Flexing for Nougat (Alliance)
+SET @INNKEEPER=6740;
+SET @QUEST=8356;
+DELETE FROM `smart_scripts` WHERE `entryorguid`=@INNKEEPER AND `id`=2;
+INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES 
+(@INNKEEPER, 0, 2, 0, 22, 0, 100, 0, 41, 0, 0, 0, 33, @INNKEEPER, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 'Innkeeper Allison - on /flex credit for quest');
+DELETE FROM `conditions` WHERE `SourceEntry`=@QUEST;
+INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES 
+(19, 0, @QUEST, 0, 12, 12, 0, 0, 0, '', NULL);
+-- Chicken Clucking for a Mint (Alliance)
+SET @INNKEEPER=5111;
+SET @QUEST=8353;
+DELETE FROM `smart_scripts` WHERE `entryorguid`=@INNKEEPER AND `id`=2;
+INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES 
+(@INNKEEPER, 0, 2, 0, 22, 0, 100, 0, 22, 0, 0, 0, 33, @INNKEEPER, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 'Innkeeper Firebrew - on /chicken credit for quest');
+DELETE FROM `conditions` WHERE `SourceEntry`=@QUEST;
+INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES 
+(19, 0, @QUEST, 0, 12, 12, 0, 0, 0, '', NULL);
+-- Dancing for Marzipan (Alliance)
+SET @INNKEEPER=6735;
+SET @QUEST=8357;
+DELETE FROM `smart_scripts` WHERE `entryorguid`=@INNKEEPER AND `id`=2;
+INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES 
+(@INNKEEPER, 0, 2, 0, 22, 0, 100, 0, 34, 0, 0, 0, 33, @INNKEEPER, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 'Innkeeper Saelienne - on /dance credit for quest');
+DELETE FROM `conditions` WHERE `SourceEntry`=@QUEST;
+INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES 
+(19, 0, @QUEST, 0, 12, 12, 0, 0, 0, '', NULL);
+-- Incoming Gumdrop (Alliance)
+SET @INNKEEPER=6826;
+SET @QUEST=8355;
+UPDATE `creature_template` SET `AIName`='SmartAI' WHERE `entry`=@INNKEEPER;
+DELETE FROM `smart_scripts` WHERE `entryorguid`=@INNKEEPER;
+INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES 
+(@INNKEEPER, 0, 0, 0, 22, 0, 100, 0, 264, 0, 0, 0, 33, @INNKEEPER, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 'Talvash del Kissel - on /train credit for quest');
+DELETE FROM `conditions` WHERE `SourceEntry`=@QUEST;
+INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES 
+(19, 0, @QUEST, 0, 12, 12, 0, 0, 0, '', NULL);
+-- Flexing for Nougat (Horde)
+SET @INNKEEPER=6929;
+SET @QUEST=8359;
+DELETE FROM `smart_scripts` WHERE `entryorguid`=@INNKEEPER AND `id`=2;
+INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES 
+(@INNKEEPER, 0, 2, 0, 22, 0, 100, 0, 41, 0, 0, 0, 33, @INNKEEPER, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 'Innkeeper Allison - on /flex credit for quest');
+DELETE FROM `conditions` WHERE `SourceEntry`=@QUEST;
+INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES 
+(19, 0, @QUEST, 0, 12, 12, 0, 0, 0, '', NULL);
+-- Chicken Clucking for a Mint (Horde)
+SET @INNKEEPER=6741;
+SET @QUEST=8354;
+DELETE FROM `smart_scripts` WHERE `entryorguid`=@INNKEEPER AND `id`=2;
+INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES 
+(@INNKEEPER, 0, 2, 0, 22, 0, 100, 0, 22, 0, 0, 0, 33, @INNKEEPER, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 'Innkeeper Firebrew - on /chicken credit for quest');
+DELETE FROM `conditions` WHERE `SourceEntry`=@QUEST;
+INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES 
+(19, 0, @QUEST, 0, 12, 12, 0, 0, 0, '', NULL);
+-- Dancing for Marzipan (Horde)
+SET @INNKEEPER=6746;
+SET @QUEST=8360;
+DELETE FROM `smart_scripts` WHERE `entryorguid`=@INNKEEPER AND `id`=2;
+INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES 
+(@INNKEEPER, 0, 2, 0, 22, 0, 100, 0, 34, 0, 0, 0, 33, @INNKEEPER, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 'Innkeeper Saelienne - on /dance credit for quest');
+DELETE FROM `conditions` WHERE `SourceEntry`=@QUEST;
+INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES 
+(19, 0, @QUEST, 0, 12, 12, 0, 0, 0, '', NULL);
+-- Incoming Gumdrop (Horde)
+SET @INNKEEPER=11814;
+SET @QUEST=8358;
+UPDATE `creature_template` SET `AIName`='SmartAI' WHERE `entry`=@INNKEEPER;
+DELETE FROM `smart_scripts` WHERE `entryorguid`=@INNKEEPER;
+INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES 
+(@INNKEEPER, 0, 0, 0, 22, 0, 100, 0, 264, 0, 0, 0, 33, @INNKEEPER, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 'Talvash del Kissel - on /train credit for quest');
+DELETE FROM `conditions` WHERE `SourceEntry`=@QUEST;
+INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES 
+(19, 0, @QUEST, 0, 12, 12, 0, 0, 0, '', NULL);
