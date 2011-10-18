@@ -723,7 +723,7 @@ int32 AuraEffect::CalculateAmount(Unit* caster)
         case SPELL_AURA_MOD_THREAT:
         {
             uint8 level_diff = 0;
-            float multiplier = 0.0;
+            float multiplier = 0.0f;
             switch (GetId())
             {
                 // Arcane Shroud
@@ -5751,7 +5751,7 @@ void AuraEffect::HandlePeriodicDummyAuraTick(Unit* target, Unit* caster) const
                         // eff_radius == 0
                         float radius = GetSpellInfo()->GetMaxRange(false);
 
-                        CellPair p(Trinity::ComputeCellPair(target->GetPositionX(), target->GetPositionY()));
+                        CellCoord p(Trinity::ComputeCellCoord(target->GetPositionX(), target->GetPositionY()));
                         Cell cell(p);
                         cell.data.Part.reserved = ALL_DISTRICT;
 
