@@ -291,3 +291,5 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 DELETE FROM `conditions` WHERE `SourceEntry`=@QUEST;
 INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES 
 (19, 0, @QUEST, 0, 12, 12, 0, 0, 0, '', NULL);
+
+UPDATE `quest_template` SET `RewSpellCast`=44242 WHERE `entry` IN (12133,12155);
