@@ -174,7 +174,7 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (@INNKEEPER, 0, 1, 0, 61, 0, 100, 0, 0, 0, 0, 0, 85, 24751, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 'Innkeeper Biribi - On gossip option 0 select - Player cast Trick or Treat on self');
 DELETE FROM `conditions` WHERE `SourceGroup`=@GOSSIP;
 INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES
-(15, @GOSSIP, 0, 0, 12, 12, 0, 0, 0, '', 'Innkeeper Biribi - If Hallow\'s End show Gossip option 0');
+(15, @GOSSIP, 0, 0, 12, 12, 0, 0, 0, '', 'Innkeeper Biribi - If Hallow\'s End show Gossip option 0'),
 (15, @GOSSIP, 0, 0, 11, 24755, 0, 0, 0, '', NULL);
 -- Initiate Brenners, Shadow Vault,Add menu option, Add SAI, Add condition
 SET @GOSSIP=9895;
@@ -190,11 +190,11 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (@INNKEEPER, 0, 1, 0, 61, 0, 100, 0, 0, 0, 0, 0, 85, 24751, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 'Initiate Brenners - On gossip option 0 select - Player cast Trick or Treat on self');
 DELETE FROM `conditions` WHERE `SourceGroup`=@GOSSIP;
 INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES
-(15, @GOSSIP, 0, 0, 12, 12, 0, 0, 0, '', 'Initiate Brenners - If Hallow\'s End show Gossip option 0');
+(15, @GOSSIP, 0, 0, 12, 12, 0, 0, 0, '', 'Initiate Brenners - If Hallow\'s End show Gossip option 0'),
 (15, @GOSSIP, 0, 0, 11, 24755, 0, 0, 0, '', NULL);
 -- Peon Gakra, Grom'arsh Crash-Sitee, Add menu option, Add SAI, Add condition
-SET @GOSSIP=9944
-SET @INNKEEPER=29944
+SET @GOSSIP=9944;
+SET @INNKEEPER=29944;
 DELETE FROM `gossip_menu_option` WHERE `menu_id`=@GOSSIP;
 INSERT INTO `gossip_menu_option` (`menu_id`, `id`, `option_icon`, `option_text`, `option_id`, `npc_option_npcflag`, `action_menu_id`, `action_poi_id`, `box_coded`, `box_money`, `box_text`) VALUES
 (@GOSSIP, 1, 5, 'Make this inn your home.', 8, 65536, 0, 0, 0, 0, ''),
@@ -207,7 +207,7 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (@INNKEEPER, 0, 1, 0, 61, 0, 100, 0, 0, 0, 0, 0, 85, 24751, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 'Peon Gakra - On gossip option 0 select - Player cast Trick or Treat on self');
 DELETE FROM `conditions` WHERE `SourceGroup`=@GOSSIP;
 INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES
-(15, @GOSSIP, 0, 0, 12, 12, 0, 0, 0, '', 'Peon Gakra - If Hallow\'s End show Gossip option 0');
+(15, @GOSSIP, 0, 0, 12, 12, 0, 0, 0, '', 'Peon Gakra - If Hallow\'s End show Gossip option 0'),
 (15, @GOSSIP, 0, 0, 11, 24755, 0, 0, 0, '', NULL);
 -- Jarin Dawnglow, Argent Tournament, Add SAI, shares gossip with Caris Sunlance
 SET @INNKEEPER=33971;
