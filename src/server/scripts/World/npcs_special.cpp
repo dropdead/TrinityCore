@@ -3255,17 +3255,15 @@ public:
            return NULL;
         }
 
-        void SpellHit(Unit* caster, const SpellEntry* spell)
+        void SpellHit(Unit* /*caster*/, SpellInfo const* spell)
         {
             if (spell->Id == SPELL_BUCKET_LANDS && Fire && !Immuned) 
             {
-                sLog->outString("MadboxCustom: NO encontre la spell SPELL_BUCKET_LANDS ");
+
                 if (PlayersCountRange(5.0f))
-                    sLog->outString("MadboxCustom: NO se a encontrado el rango");
                 return;
 
                 me->CastSpell(me,SPELL_HEADLESS_HORSEMAN_FIRE_EXTINGUISH,true);
-                sLog->outString("MadboxCustom: No e podido extinguir el fuego");
                 me->RemoveAura(RangoFire[curRangoFire]);
 
                 if (curRangoFire) 
