@@ -3300,7 +3300,7 @@ public:
                     if (!RateFire)
                         return;
                     Fire = true;
-                    IncreaseFireTimer = 40000 / RateFire;
+                    IncreaseFireTimer = 60000 / RateFire;
                 } else
                     if (IncreaseFireTimer <= diff)
                     {
@@ -3315,7 +3315,7 @@ public:
                                 nextFireNode->AddAura(RangoFire[0],nextFireNode);
                                 PostionEventoHallowends[nextFireNode->AI()->GetData(0)].AlreadyFired = true;
                             }
-                            IncreaseFireTimer = 40000 / RateFire;
+                            IncreaseFireTimer = 60000 / RateFire;
                     } else
                         IncreaseFireTimer -= diff;
             }
