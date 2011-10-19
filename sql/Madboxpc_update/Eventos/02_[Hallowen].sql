@@ -323,3 +323,9 @@ SET @guid := 303110;
 DELETE FROM `creature` WHERE `id`=23682;
 INSERT INTO `creature` (`guid`, `id`, `map`, `spawnMask`, `phaseMask`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `dynamicflags`) VALUES
 (@guid,'23682','189','1','1','0','0','1763.1','1347.73','17.5602','6.20833','10','0','0','126000','3994','0','0','0','0');
+
+-- Fix Dungeon finder
+UPDATE `instance_encounters` SET `creditType`=0,  `creditEntry`=23682  WHERE `entry` IN (692,693);
+
+-- Hack fix quest
+UPDATE `quest_template` SET method = '0' WHERE title = 'Candy Bucket';
