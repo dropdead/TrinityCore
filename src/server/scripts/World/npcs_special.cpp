@@ -2993,6 +2993,7 @@ enum HallowendFire
     SPELL_HEADLESS_HORSEMAN_START_FIRE      = 42132,
     SPELL_BUCKET_LANDS                      = 42339,
     SPELL_HEADLESS_HORSEMAN_FIRE_EXTINGUISH = 42348,
+    SPELL_HEADLESS_HORSEMAN_LARGE_JACK      = 44231,
     // RangoFire
     SPELL_HEADLESS_HORSEMAN_BURNING         = 42971,
     SPELL_HEADLESS_HORSEMAN_FIRE            = 42074,
@@ -3077,11 +3078,9 @@ public:
             Trinity::AnyPlayerInObjectRangeCheck checker(me, dist);
             Trinity::PlayerListSearcher<Trinity::AnyPlayerInObjectRangeCheck> searcher(me, players, checker);
             me->VisitNearbyWorldObject(dist, searcher);
-
+            me->CastSpell(me->GetPositionX(),me->GetPositionY(), me->GetPositionZ()+1,SPELL_HEADLESS_HORSEMAN_LARGE_JACK,true);
             for (std::list<Player*>::const_iterator itr = players.begin(); itr != players.end(); ++itr)
                 (*itr)->CastSpell((*itr),SPELL_HEADLES_HORSEMAN_QUEST_CREDIT,true);
-            // Se desactiva esta parte para ver una mejor solución. es temporal 
-            //me->SummonGameObject(GO_LARGE_JACK, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ()+2, 0.0f, 0, 0, 0, 0 ,25000);
         }
 
         void SetData(uint32 uiType, uint32 uiData)
@@ -3301,7 +3300,7 @@ public:
                     if (!RateFire)
                         return;
                     Fire = true;
-                    IncreaseFireTimer = 10000 / RateFire;
+                    IncreaseFireTimer = 40000 / RateFire;
                 } else
                     if (IncreaseFireTimer <= diff)
                     {
@@ -3316,7 +3315,7 @@ public:
                                 nextFireNode->AddAura(RangoFire[0],nextFireNode);
                                 PostionEventoHallowends[nextFireNode->AI()->GetData(0)].AlreadyFired = true;
                             }
-                            IncreaseFireTimer = 10000 / RateFire;
+                            IncreaseFireTimer = 40000 / RateFire;
                     } else
                         IncreaseFireTimer -= diff;
             }
