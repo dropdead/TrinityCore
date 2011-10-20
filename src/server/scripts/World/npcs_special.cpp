@@ -3273,6 +3273,7 @@ public:
                 }
                 else 
                 {
+                    if (me->isSummon())
                     if (Unit * pEventKeeper =  me->ToTempSummon()->GetSummoner())
                         pEventKeeper->ToCreature()->AI()->SetData(HALLOWEND_FIRE_REMOVE,Ui_ID);
                     Fire = false;
