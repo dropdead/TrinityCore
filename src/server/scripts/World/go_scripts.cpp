@@ -1231,6 +1231,61 @@ public:
     }
 };
 
+/*
+## go_veil_skith_cage
+## Fix Quest Missing Friends - http://www.wowhead.com/quest=10852
+*/
+
+enum MissingFriends
+{
+   QUEST_MISSING_FRIENDS     = 10852,
+   NPC_CAPTIVE_CHILD         = 22314,
+   SAY_THANKS_1              = -1000590,
+   SAY_THANKS_2              = -1000591,
+   SAY_THANKS_3              = -1000592,
+   SAY_THANKS_4              = -1000593
+};
+
+class go_veil_skith_cage : public GameObjectScript
+{
+public:
+   go_veil_skith_cage() : GameObjectScript("go_veil_skith_cage") { }
+
+   bool OnGossipHello(Player *player, GameObject* go)
+   {
+       if (player->GetQuestStatus(QUEST_MISSING_FRIENDS) == QUEST_STATUS_INCOMPLETE)
+       {
+           std::list<Creature*> lChildrenList;
+           GetCreatureListWithEntryInGrid(lChildrenList, go, NPC_CAPTIVE_CHILD, INTERACTION_DISTANCE);
+           for (std::list<Creature*>::const_iterator itr = lChildrenList.begin(); itr != lChildrenList.end(); ++itr)
+           {
+               go->UseDoorOrButton();
+               player->KilledMonsterCredit(NPC_CAPTIVE_CHILD, (*itr)->GetGUID());
+               (*itr)->ForcedDespawn(6000);
+               (*itr)->GetMotionMaster()->MoveFleeing(player, 3500);
+              
+               switch(urand(0,3))
+               {
+                    case 0: 
+                        DoScriptText(SAY_THANKS_1, *itr); 
+                        break;
+                    case 1: 
+                        DoScriptText(SAY_THANKS_2, *itr); 
+                        break;
+                    case 2: 
+                        DoScriptText(SAY_THANKS_3, *itr); 
+                        break;
+                    case 3: 
+                        DoScriptText(SAY_THANKS_4, *itr); 
+                        break;
+               }
+               (*itr)->GetMotionMaster()->Clear();
+           }
+       }        
+       return false;
+   }
+};
+
 void AddSC_go_scripts()
 {
     new go_cat_figurine;
@@ -1270,4 +1325,5 @@ void AddSC_go_scripts()
     new go_hive_pod;
     new go_massive_seaforium_charge;
     new go_wickerman_ember;
+    new go_veil_skith_cage;
 }
