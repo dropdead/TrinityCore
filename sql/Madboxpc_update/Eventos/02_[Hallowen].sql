@@ -49,12 +49,12 @@ VALUES
 (NULL, 98686, 0, 1, 1, 0, 0, '-5589.21', -486, '397.038', '0.0537012', 300, 0, 0, 42, 0, 0, 0, 0, 0);
 -- Linqueamos trigger solo al evento.
 INSERT INTO `game_event_creature` VALUES
-(12,(SELECT `guid` FROM `creature` WHERE `id` = 98686 limit 0,1),),
-(12,(SELECT `guid` FROM `creature` WHERE `id` = 98686 limit 0,1),),
-(12,(SELECT `guid` FROM `creature` WHERE `id` = 98686 limit 0,1),),
-(12,(SELECT `guid` FROM `creature` WHERE `id` = 98686 limit 0,1),),
-(12,(SELECT `guid` FROM `creature` WHERE `id` = 98686 limit 0,1),),
-(12,(SELECT `guid` FROM `creature` WHERE `id` = 98686 limit 0,1),);
+(12,(SELECT `guid` FROM `creature` WHERE `id` = 98686 limit 0,1)),
+(12,(SELECT `guid` FROM `creature` WHERE `id` = 98686 limit 0,1)),
+(12,(SELECT `guid` FROM `creature` WHERE `id` = 98686 limit 0,1)),
+(12,(SELECT `guid` FROM `creature` WHERE `id` = 98686 limit 0,1)),
+(12,(SELECT `guid` FROM `creature` WHERE `id` = 98686 limit 0,1)),
+(12,(SELECT `guid` FROM `creature` WHERE `id` = 98686 limit 0,1));
 
 -- Script go  http://www.wowhead.com/object=180574
 DELETE FROM `gameobject_template` WHERE `entry` =180574;
@@ -326,9 +326,6 @@ INSERT INTO `creature` (`guid`, `id`, `map`, `spawnMask`, `phaseMask`, `modelid`
 
 -- Fix Dungeon finder
 UPDATE `instance_encounters` SET `creditType`=0,  `creditEntry`=23682  WHERE `entry` IN (692,693);
-
--- Hack fix quest
-UPDATE `quest_template` SET method = '0' WHERE title = 'Candy Bucket';
 
 -- Tricks and Treats of Kalimdor (Visit the Candy Buckets in Kalimdor.)
 DELETE FROM gameobject_questrelation WHERE quest IN (12345, 12377);
