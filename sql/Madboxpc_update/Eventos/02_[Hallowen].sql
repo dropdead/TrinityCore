@@ -329,3 +329,13 @@ UPDATE `instance_encounters` SET `creditType`=0,  `creditEntry`=23682  WHERE `en
 
 -- Hack fix quest
 UPDATE `quest_template` SET method = '0' WHERE title = 'Candy Bucket';
+
+-- Tricks and Treats of Kalimdor (Visit the Candy Buckets in Kalimdor.)
+DELETE FROM gameobject_questrelation WHERE quest IN (12345, 12377);
+INSERT INTO gameobject_questrelation VALUES
+(190035, 12345),
+(190079, 12377);
+DELETE FROM gameobject_involvedrelation WHERE quest IN (12345, 12377);
+INSERT INTO gameobject_involvedrelation VALUES
+(190035, 12345),
+(190079, 12377);
