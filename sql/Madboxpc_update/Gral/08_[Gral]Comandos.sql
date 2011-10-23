@@ -5,6 +5,8 @@ UPDATE `command` SET `security`=5;
 -- Asignamos Comandos con seguridad 0
 UPDATE `command` SET `security`='0' WHERE (`name`='save'); 
 UPDATE `command` SET `security`='0' WHERE (`name`='server info'); 
+UPDATE `command` SET  `security` =  '0' WHERE `name` =  'start';
+
 
 -- Comandos seguridad 1
 UPDATE `command` SET `security`='1' WHERE (`name`='announce');  
