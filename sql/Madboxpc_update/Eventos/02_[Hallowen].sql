@@ -325,7 +325,7 @@ INSERT INTO `creature` (`guid`, `id`, `map`, `spawnMask`, `phaseMask`, `modelid`
 (@guid,'23682','189','1','1','0','0','1763.1','1347.73','17.5602','6.20833','10','0','0','126000','3994','0','0','0','0');
 
 -- Fix Dungeon finder
-UPDATE `instance_encounters` SET `creditType`=0,  `creditEntry`=23682  WHERE `entry` IN (692,693);
+UPDATE `instance_encounters` SET `creditType`=1,  `creditEntry`=59450  WHERE `entry` IN (692,693);
 
 -- Tricks and Treats of Kalimdor (Visit the Candy Buckets in Kalimdor.)
 DELETE FROM gameobject_questrelation WHERE quest IN (12345, 12377);
