@@ -1799,7 +1799,7 @@ void LFGMgr::RewardDungeonDoneFor(const uint32 dungeonId, Player* player)
 
     // Give rewards only if its a random dungeon
     LFGDungeonEntry const* dungeon = sLFGDungeonStore.LookupEntry(rDungeonId);
-    if (!dungeon || dungeon->type != LFG_TYPE_RANDOM)
+    if (!dungeon || (dungeon->type != LFG_TYPE_RANDOM && dungeon->grouptype != 11))
     {
         sLog->outDebug(LOG_FILTER_LFG, "LFGMgr::RewardDungeonDoneFor: [" UI64FMTD "] dungeon %u is not random", guid, rDungeonId);
         return;
