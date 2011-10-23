@@ -1194,7 +1194,7 @@ public:
 ## go_wickerman_ember
 ######*/
 
-#define GOSSIP_WICKERMAN_SPELL "Smear the on my face like war paint!"
+#define GOSSIP_WICKERMAN_SPELL "Smear the ash on my face like war paint!" 
 
 enum WickermanEmberGo
 {
