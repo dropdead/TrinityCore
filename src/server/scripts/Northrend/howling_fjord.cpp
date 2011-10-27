@@ -493,7 +493,7 @@ public:
                 }
                 if (summonNumber <= 3)
                     summons = 1;
-                else if(summonNumber <= 4)
+                else if (summonNumber <= 4)
                     summons = 2;
                 else summons = 3;
                 for (int i = 0 ; i < summons ; i++)
@@ -514,6 +514,322 @@ public:
 };
 
 
+/*################
+# [Part 1]
+# Quest Soporte The Echo of Ymiron - 11343
+# Lichking = 35877
+###############*/
+ 
+enum Yells
+{
+    SAY_YMIRON_LK_1                                = -1700005, //Shamanism has brought you here... Its scent permeates the air. I was once a shaman.
+    SAY_YMIRON_LK_2                                = -1700006, //No, minion. This one is not ready.
+    SAY_YMIRON_LK_3                                = -1700007, //Do you feel it, mortal? Death seeps through me, enveloping all that I touch. With just a snap of my finger your soul will languish in damnation for all eternity.
+    SAY_YMIRON_LK_4                                = -1700008, //But... It is not yet your time to serve the Lich King. Yes, a greater destiny awaits you. Power... You must become more powerful before you are to serve me.
+    SAY_YMIRON_LK_5                                = -1700009, //Now watch, val\'kyr. Observe as I apply pressure. Can you see that it is not yet ripe? Watch as it pops and falls lifeless to the floor.
+    SAY_YMIRON_LK_6                                = -1700010, //Valkyre Shall we prepare it for you, my lord?
+    SAY_ANCIENT_MALE_VRYKUL_1                      = -1700011, //So then we too are cursed?
+    SAY_ANCIENT_MALE_VRYKUL_2                      = -1700012, //The gods have forsaken us! We must dispose of it before Ymiron is notified!
+    SAY_ANCIENT_MALE_VRYKUL_3                      = -1700013, //Then what are we to do, wife? The others cannot find out. Should they learn of this aberration, we will all be executed.
+    SAY_ANCIENT_FEMALE_VRYKUL_1                    = -1700014, //NO! You cannot! I beg of you! It is our child!
+    SAY_ANCIENT_FEMALE_VRYKUL_2                    = -1700015, //I... I will hide it. I will hide it until I find it a home, far away from here...
+};
+
+enum Spells
+{
+    SPELL_WRATH_OF_THE_LICH_KING        = 5,
+    SPELL_GRASP_OF_THE_LICH_KING        = 43489,
+    SPELL_MAGNETIC_PULL                 = 29661,
+};
+
+// Variables y boleanos - Glovales para los 3 npcs
+uint32 uiPhase_Ymiron_LK; 
+uint32 uiPhaseTimer_Ymiron_LK;                                  
+uint32 uiEventCounter;
+uint32 EventAncientVrykulPhase;
+uint32 EventAncientVrykulTimer;
+bool EventStartedYmiron; 
+bool EventStarted;
+
+class LichKingYmiron : public CreatureScript
+{
+public:
+    LichKingYmiron() : CreatureScript("LichKingYmiron") { }
+
+    CreatureAI *GetAI(Creature *creature) const
+    {
+        return new LichKingYmironAI (creature);
+    }
+
+    struct LichKingYmironAI : public ScriptedAI
+    {
+        LichKingYmironAI(Creature *c) : ScriptedAI(c) {}
+        
+        void Reset()    
+        {
+            uiPhase_Ymiron_LK = 0;
+            uiPhaseTimer_Ymiron_LK = 1000;
+            EventStartedYmiron = false;
+        }
+     
+        void UpdateAI(const uint32 uiDiff)
+        {
+     
+            if (me->getVictim())
+            {
+                me->StopMoving();
+                Unit *LK_VICTIM = me->getVictim();
+     
+                if (LK_VICTIM == NULL)
+                    return;
+     
+                if (uiPhaseTimer_Ymiron_LK <= uiDiff)
+                {
+                    switch (uiPhase_Ymiron_LK)
+                    {
+                        case 0:                                               
+                            me->CastSpell(me->getVictim(), SPELL_MAGNETIC_PULL, false, 0, 0, 0);
+                            me->CastSpell(me->getVictim(), SPELL_GRASP_OF_THE_LICH_KING, false, 0, 0, 0);
+                            me->AttackStop();
+                            uiPhase_Ymiron_LK = 1;
+                            break;     
+                        case 1:
+                            DoScriptText(SAY_YMIRON_LK_1, me);
+                            uiPhaseTimer_Ymiron_LK = 10000;
+                            uiPhase_Ymiron_LK = 2;
+                            break;                                       
+                        case 2:
+                            EventStartedYmiron = true;
+                            uiPhaseTimer_Ymiron_LK = 10000;
+                            uiPhase_Ymiron_LK = 3;
+                            break;         
+                        case 3:
+                            DoScriptText(SAY_YMIRON_LK_2, me);
+                            uiPhaseTimer_Ymiron_LK = 10000;
+                            uiPhase_Ymiron_LK = 4;
+                            break;         
+                        case 4:
+                            DoScriptText(SAY_YMIRON_LK_3, me);
+                            uiPhaseTimer_Ymiron_LK = 10000;
+                            uiPhase_Ymiron_LK = 5;
+                            break;         
+                        case 5:
+                            DoScriptText(SAY_YMIRON_LK_4, me);
+                            uiPhaseTimer_Ymiron_LK = 10000;
+                            uiPhase_Ymiron_LK = 6;
+                            break;         
+                        case 6:
+                            DoScriptText(SAY_YMIRON_LK_5, me);
+                            uiPhaseTimer_Ymiron_LK = 4000;
+                            uiPhase_Ymiron_LK = 7;
+                            break;     
+                        case 7:
+                            me->CastSpell(LK_VICTIM, SPELL_WRATH_OF_THE_LICH_KING, false, 0, 0, 0);
+                            uiPhase_Ymiron_LK = 8;
+                            break;     
+                        case 8:
+                            Reset();
+                            LK_VICTIM = NULL; 
+                            break;
+                    }
+                }
+                else
+                    uiPhaseTimer_Ymiron_LK -= uiDiff;
+            }
+        }
+    };
+};
+
+/*################
+# [Parte 2]
+# LichKing dialog con Valkyre
+# Valkyre = 24327
+###############*/
+
+class ValkyreYmiron : public CreatureScript
+{
+public:
+    ValkyreYmiron() : CreatureScript("ValkyreYmiron") { }
+
+    CreatureAI *GetAI(Creature *creature) const
+    {
+        return new ValkyreYmironAI (creature);
+    }
+
+    struct ValkyreYmironAI : public ScriptedAI
+    {
+        ValkyreYmironAI(Creature *c) : ScriptedAI(c) {}
+       
+        uint32 EventValkyreTimer;
+       
+        void Reset()
+        {
+            EventValkyreTimer = 17000;  
+        }
+     
+        void UpdateAI(const uint32 uiDiff)
+        {
+            if (me->isInCombat())
+            {
+                me->StopMoving();
+                me->AttackStop();
+            }
+            if (EventValkyreTimer <= uiDiff)
+            {
+                if (EventStartedYmiron == true)
+                {
+                    DoScriptText(SAY_YMIRON_LK_6, me);
+                    EventStartedYmiron = false;
+                }
+            }
+            else
+                EventValkyreTimer -= uiDiff;
+        }
+    };
+};
+
+/*###############
+# [Parte 3]
+# The Echo of Ymiron 
+# Parte donde completas la quest (parte inciial).
+# Ancient Male Vrykul = 24314, Ancient Female Vrykul = 24315
+###############*/
+
+class AncientMaleVrykul : public CreatureScript
+{
+public:
+    AncientMaleVrykul() : CreatureScript("AncientMaleVrykul") { }
+
+    struct AncientMaleVrykulAI : public ScriptedAI
+    {
+        AncientMaleVrykulAI(Creature *c) : ScriptedAI(c) {}
+       
+        void Reset()    
+        {
+            EventAncientVrykulPhase = 0;
+            EventAncientVrykulTimer = 5000; 
+            EventStarted            = false;
+        }
+     
+        void CompleteQuest()
+        {
+            if (Map *pMap = me->GetMap())
+            {
+                Map::PlayerList const &PlayerList = pMap->GetPlayers();
+                for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
+                {
+                    if (Player *curPlayer = i->getSource())
+                    {
+                        if (me->IsInRange(curPlayer, 0.0f, 30.0f))
+                            curPlayer->CompleteQuest(11343);
+                    }
+                }
+            }
+        }
+       
+        void MoveInLineOfSight(Unit* who)
+        {
+            if (who->HasAura(42786, 0, 3) == true)
+            {
+                EventStarted = true;
+            }
+        }
+       
+        void UpdateAI(const uint32 uiDiff)
+        {
+            if (me->getFaction() == 14)
+            {
+                me->setFaction(11);
+                me->SetPhaseMask(2, true);
+            }
+     
+            if (EventStarted == true)
+            {
+                if (EventAncientVrykulTimer <= uiDiff)
+                {
+                    switch (EventAncientVrykulPhase)
+                    {
+                    case 0:
+                        DoScriptText(SAY_ANCIENT_MALE_VRYKUL_1, me);
+                        EventAncientVrykulTimer = 7000;
+                        EventAncientVrykulPhase++;
+                        break;
+     
+                    case 1:
+                       DoScriptText(SAY_ANCIENT_MALE_VRYKUL_2, me);
+                        EventAncientVrykulTimer = 7000;
+                        EventAncientVrykulPhase++;
+                        break;
+     
+                    case 3:
+                        DoScriptText(SAY_ANCIENT_MALE_VRYKUL_3, me);
+                        EventAncientVrykulTimer = 7000;
+                        EventAncientVrykulPhase++;
+                        break;    
+     
+                    case 5:
+                        CompleteQuest();
+                        break;
+                    }
+                }
+                else EventAncientVrykulTimer -= uiDiff;
+            }  
+        }
+    };
+
+    CreatureAI *GetAI(Creature *creature) const
+    {
+        return new AncientMaleVrykulAI (creature);
+    }
+};
+
+class AncientFeMaleVrykul : public CreatureScript
+{
+public:
+    AncientFeMaleVrykul() : CreatureScript("AncientFeMaleVrykul") { }
+
+    CreatureAI *GetAI(Creature *creature) const
+    {
+        return new AncientFeMaleVrykulAI (creature);
+    }
+
+    struct AncientFeMaleVrykulAI : public ScriptedAI
+    {
+        AncientFeMaleVrykulAI(Creature *c) : ScriptedAI(c) {}
+       
+        void UpdateAI(const uint32 uiDiff)
+        {
+            if (me->getFaction() == 14)
+            {
+                me->setFaction(11);
+                me->SetPhaseMask(2, true);
+            }     
+     
+            if (EventStarted == true)
+            {
+                if (EventAncientVrykulTimer <= uiDiff)
+                {
+                    switch (EventAncientVrykulPhase)
+                    {
+                        case 2:
+                            DoScriptText(SAY_ANCIENT_FEMALE_VRYKUL_1, me);
+                            EventAncientVrykulTimer = 7000;
+                            EventAncientVrykulPhase++;
+                            break;
+         
+                        case 4:
+                            DoScriptText(SAY_ANCIENT_FEMALE_VRYKUL_2, me);
+                            EventAncientVrykulTimer = 7000;
+                            EventAncientVrykulPhase++;
+                            break;
+                    }
+                }
+                else EventAncientVrykulTimer -= uiDiff;
+            }
+        }
+    };
+};
+
 void AddSC_howling_fjord()
 {
     new npc_apothecary_hanes;
@@ -522,4 +838,8 @@ void AddSC_howling_fjord()
     new npc_mcgoyver;
     new npc_daegarn;
     new npc_alliance_banner_standard;
+    new LichKingYmiron;
+    new ValkyreYmiron;
+    new AncientMaleVrykul;
+    new AncientFeMaleVrykul;
  }

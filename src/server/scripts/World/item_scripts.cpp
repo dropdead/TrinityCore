@@ -486,6 +486,32 @@ public:
    }
 };
 
+/*#####
+# item_ymiron_raeuchergefaess
+#####*/
+enum
+{
+    QUEST_THE_ECHO_OF_YMIRON    = 11343,
+    NPC_ANCIENT_FEMALE_VRYKUL   = 24315, 
+    NPC_ANCIENT_MALE_VRYKUL     = 24314
+};
+
+class item_ymiron_raeuchergefaess : public ItemScript
+{
+public:
+    item_ymiron_raeuchergefaess() : ItemScript("item_ymiron_raeuchergefaess") { }
+
+    bool OnUse(Player* player, Item* item, const SpellCastTargets & pTargets)
+    {
+        if (player->GetQuestStatus(QUEST_THE_ECHO_OF_YMIRON) == QUEST_STATUS_INCOMPLETE)
+        {
+            player->SummonCreature(NPC_ANCIENT_FEMALE_VRYKUL, 1076.130005f, -5035.040039f, 9.690260f, 2.745330f, TEMPSUMMON_TIMED_DESPAWN, 60000);
+            player->SummonCreature(NPC_ANCIENT_MALE_VRYKUL, 1073.099976f, -5026.250000f, 9.718090f, 4.607560f, TEMPSUMMON_TIMED_DESPAWN, 60000);
+        }
+        return false;
+    }
+};
+
 void AddSC_item_scripts()
 {
     new item_only_for_flight();
@@ -501,4 +527,5 @@ void AddSC_item_scripts()
     new item_trident_of_nazjan();
     new item_captured_frog();
     new item_hallowsend_tricky_treat();
+    new item_ymiron_raeuchergefaess();
 }
