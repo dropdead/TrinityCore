@@ -2966,6 +2966,9 @@ void SpellMgr::LoadDbcDataCorrections()
 
         switch (spellInfo->Id)
         {
+            case 24259: // Spell Lock 
+                spellInfo->speed = 80;
+                break;
             case 42835: // Spout
                 spellInfo->Effect[0] = 0; // remove damage effect, only anim is needed
                 break;
