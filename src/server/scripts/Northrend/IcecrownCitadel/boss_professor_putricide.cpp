@@ -704,7 +704,7 @@ class npc_volatile_ooze : public CreatureScript
                 if (victim && victim->IsWithinDistInMap(me, 1.0f) && victim->HasAura(SPELL_VOLATILE_OOZE_ADHESIVE) && victim->isAlive())
                 {
                     DoCast(me, SPELL_OOZE_ERUPTION);
-                    victim->RemoveAura(SPELL_VOLATILE_OOZE_ADHESIVE,AURA_REMOVE_BY_ENEMY_SPELL);
+                    victim->RemoveAurasDueToSpell(SPELL_VOLATILE_OOZE_ADHESIVE, 0, 0, AURA_REMOVE_BY_ENEMY_SPELL);
                 }
 
                 if (!_newTargetSelectTimer)
