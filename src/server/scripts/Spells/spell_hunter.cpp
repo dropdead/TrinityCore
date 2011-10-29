@@ -290,6 +290,9 @@ class spell_hun_masters_call : public SpellScriptLoader
             {
                 if (Unit* target = GetHitUnit())
                 {
+                    if (!target->isAlive())
+                        return;
+
                     // Cannot be processed while pet is dead
                     TriggerCastFlags castMask = TriggerCastFlags(TRIGGERED_FULL_MASK & ~TRIGGERED_IGNORE_CASTER_AURASTATE);
                     target->CastSpell(target, GetEffectValue(), castMask);
