@@ -3544,6 +3544,9 @@ void SpellMgr::LoadDbcDataCorrections()
             case 72405: // Broken Frostmourne
                 spellInfo->EffectRadiusIndex[1] = 22;   // 200yd
                 break;
+            case 56651: // master's call immunity removed before wotlk launch
+                spellInfo->EffectMiscValue[0] = 11;
+                break;
             default:
                 break;
         }
