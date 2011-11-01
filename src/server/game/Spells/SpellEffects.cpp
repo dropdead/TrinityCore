@@ -1687,13 +1687,7 @@ void Spell::EffectTriggerSpell(SpellEffIndex effIndex)
                 for (uint32 j = 0; j < spell->StackAmount; ++j)
                     m_caster->CastSpell(unitTarget, spell->Id, true);
                 return;
-            }
-            // Righteous Defense
-            case 31980:
-            {
-                m_caster->CastSpell(unitTarget, 31790, true);
-                return;
-            }
+            }           
             // Cloak of Shadows
             case 35729:
             {
