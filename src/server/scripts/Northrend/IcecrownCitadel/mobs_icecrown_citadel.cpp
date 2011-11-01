@@ -219,6 +219,16 @@ struct mobs_icecrown_citadelAI : public ScriptedAI
         return count;
     }
 
+    uint32 PlayersCountRange(float dist) const
+    {
+        std::list<Player*> players;
+        Trinity::AnyPlayerInObjectRangeCheck checker(me, dist);
+        Trinity::PlayerListSearcher<Trinity::AnyPlayerInObjectRangeCheck> searcher(me, players, checker);
+        me->VisitNearbyWorldObject(dist, searcher);
+
+        return players.size();
+    }
+
     InstanceScript* instance;
 };
 
@@ -282,7 +292,7 @@ public:
             case NPC_YMIRJAR_WARLORD:
                 return new mob_icecrown_citadel_Ymirjar_WarlordAI (creature);
             default:
-                return new mob_icecrown_citadel_Deathbound_WardAI (creature);
+                return new mob_icecrown_citadel_Ymirjar_WarlordAI (creature);
         }
     }
 
@@ -343,10 +353,13 @@ public:
             Glacial_Blast    = 1*IN_MILLISECONDS;
         }
 
-        /*void JustDied(Unit* killer)
+        void JustDied(Unit* killer)
         {
-            // aca falta agregar 	50000 yards (Anywhere)
-        }*/
+            if (PlayersCountRange(500.0f))// 500 yardas
+                return;
+
+            DoCast(me,SPELL_SOUL_FEAST_ALL);
+        }
 
         void UpdateAI(const uint32 diff)
         {
@@ -377,10 +390,13 @@ public:
             SHIELD_BASH    = 5*IN_MILLISECONDS;
         }
 
-        /*void JustDied(Unit* killer)
+        void JustDied(Unit* killer)
         {
-            // aca falta agregar 	50000 yards (Anywhere)
-        }*/
+            if (PlayersCountRange(500.0f))// 500 yardas
+                return;
+
+            DoCast(me,SPELL_SOUL_FEAST_ALL);
+        }
 
         void UpdateAI(const uint32 diff)
         {
@@ -415,10 +431,13 @@ public:
             WEB_WRAP       = urand(5*IN_MILLISECONDS, 8*IN_MILLISECONDS);
         }
 
-        /*void JustDied(Unit* killer)
+        void JustDied(Unit* killer)
         {
-            // aca falta agregar 	50000 yards (Anywhere)
-        }*/
+            if (PlayersCountRange(500.0f))// 500 yardas
+                return;
+
+            DoCast(me,SPELL_SOUL_FEAST_ALL);
+        }
 
         void UpdateAI(const uint32 diff)
         {
@@ -465,10 +484,13 @@ public:
             CONSUMING_SHADOWS  = urand(3*IN_MILLISECONDS, 5*IN_MILLISECONDS);
         }
 
-        /*void JustDied(Unit* killer)
+        void JustDied(Unit* killer)
         {
-            // aca falta agregar 	50000 yards (Anywhere)
-        }*/
+            if (PlayersCountRange(500.0f))// 500 yardas
+                return;
+
+            DoCast(me,SPELL_SOUL_FEAST_ALL);
+        }
 
         void UpdateAI(const uint32 diff)
         {
@@ -514,10 +536,13 @@ public:
             SHADOW_CLEAVE    = 6*IN_MILLISECONDS;
         }
 
-        /*void JustDied(Unit* killer)
+        void JustDied(Unit* killer)
         {
-            // aca falta agregar 	50000 yards (Anywhere)
-        }*/
+            if (PlayersCountRange(500.0f))// 500 yardas
+                return;
+
+            DoCast(me,SPELL_SOUL_FEAST_ALL);
+        }
 
         void UpdateAI(const uint32 diff)
         {
@@ -553,10 +578,13 @@ public:
             DARK_BLESSING    = urand(3*IN_MILLISECONDS, 5*IN_MILLISECONDS);
         }
 
-        /*void JustDied(Unit* killer)
+        void JustDied(Unit* killer)
         {
-            // aca falta agregar 	50000 yards (Anywhere)
-        }*/
+            if (PlayersCountRange(500.0f))// 500 yardas
+                return;
+
+            DoCast(me,SPELL_SOUL_FEAST_ALL);
+        }
 
         void UpdateAI(const uint32 diff)
         {
@@ -602,10 +630,13 @@ public:
             SHADOW_NOVA      = urand(5*IN_MILLISECONDS, 10*IN_MILLISECONDS);
         }
 
-        /*void JustDied(Unit* killer)
+        void JustDied(Unit* killer)
         {
-            // aca falta agregar 	50000 yards (Anywhere)
-        }*/
+            if (PlayersCountRange(500.0f))// 500 yardas
+                return;
+
+            DoCast(me,SPELL_SOUL_FEAST_ALL);
+        }
 
         void UpdateAI(const uint32 diff)
         {
@@ -648,10 +679,13 @@ public:
             DoCast(me, SPELL_AURA_OF_DARKNESS);
         }
 
-        /*void JustDied(Unit* killer)
+        void JustDied(Unit* killer)
         {
-            // aca falta agregar 	50000 yards (Anywhere)
-        }*/
+            if (PlayersCountRange(500.0f))// 500 yardas
+                return;
+
+            DoCast(me,SPELL_SOUL_FEAST_ALL);
+        }
 
         void UpdateAI(const uint32 diff)
         {
@@ -686,10 +720,13 @@ public:
             CLEAVE          = 4*IN_MILLISECONDS;
         }
 
-        /*void JustDied(Unit* killer)
+        void JustDied(Unit* killer)
         {
-            // aca falta agregar 	50000 yards (Anywhere)
-        }*/
+            if (PlayersCountRange(500.0f))// 500 yardas
+                return;
+
+            DoCast(me,SPELL_SOUL_FEAST_ALL);
+        }
 
         void UpdateAI(const uint32 diff)
         {
@@ -733,10 +770,13 @@ public:
             BUBBLING_PUS = 5*IN_MILLISECONDS;
         }
 
-        /*void JustDied(Unit* killer)
+        void JustDied(Unit* killer)
         {
-            // aca falta agregar 	50000 yards (Anywhere)
-        }*/
+            if (PlayersCountRange(500.0f))// 500 yardas
+                return;
+
+            DoCast(me,SPELL_SOUL_FEAST_ALL);
+        }
 
         void UpdateAI(const uint32 diff)
         {
@@ -781,10 +821,13 @@ public:
             PLAGUE_STREAM_OUT     = 24*IN_MILLISECONDS;
         }
 
-        /*void JustDied(Unit* killer)
+        void JustDied(Unit* killer)
         {
-            // aca falta agregar 	50000 yards (Anywhere)
-        }*/
+            if (PlayersCountRange(500.0f))// 500 yardas
+                return;
+
+            DoCast(me,SPELL_SOUL_FEAST_ALL);
+        }
 
         void UpdateAI(const uint32 diff)
         {
@@ -836,10 +879,15 @@ public:
             MASSIVE_STOMP = 5*IN_MILLISECONDS;
         }
 
-        /*void JustDied(Unit* killer)
+        void JustDied(Unit* killer)
         {
-            // aca falta agregar 	50000 yards (Anywhere)
-        }*/
+            if (PlayersCountRange(500.0f))// 500 yardas
+                return;
+
+            DoCast(me,SPELL_SOUL_FEAST_ALL);
+
+
+        }
 
         void UpdateAI(const uint32 diff)
         {
@@ -877,10 +925,13 @@ public:
             FIREBALL         = 2*IN_MILLISECONDS;
         }
 
-        /*void JustDied(Unit* killer)
+        void JustDied(Unit* killer)
         {
-            // aca falta agregar 	50000 yards (Anywhere)
-        }*/
+            if (PlayersCountRange(500.0f))// 500 yardas
+                return;
+
+            DoCast(me,SPELL_SOUL_FEAST_ALL);
+        }
 
         void UpdateAI(const uint32 diff)
         {
@@ -935,10 +986,13 @@ public:
             BLOOD_MIRROR   = urand(4*IN_MILLISECONDS, 5*IN_MILLISECONDS);
         }
 
-        /*void JustDied(Unit* killer)
+        void JustDied(Unit* killer)
         {
-            // aca falta agregar 	50000 yards (Anywhere)
-        }*/
+            if (PlayersCountRange(500.0f))// 500 yardas
+                return;
+
+            DoCast(me,SPELL_SOUL_FEAST_ALL);
+        }
 
         void EnterCombat(Unit* /*target*/)
         {
@@ -991,10 +1045,13 @@ public:
             VAMPIRIC_FIEND   = 15*IN_MILLISECONDS;
         }
 
-        /*void JustDied(Unit* killer)
+        void JustDied(Unit* killer)
         {
-            // aca falta agregar 	50000 yards (Anywhere)
-        }*/
+            if (PlayersCountRange(500.0f))// 500 yardas
+                return;
+
+            DoCast(me,SPELL_SOUL_FEAST_ALL);
+        }
 
         void UpdateAI(const uint32 diff)
         {
@@ -1040,10 +1097,13 @@ public:
             LEECHING_ROT = 10*IN_MILLISECONDS;
         }
 
-        /*void JustDied(Unit* killer)
+        void JustDied(Unit* killer)
         {
-            // aca falta agregar 	50000 yards (Anywhere)
-        }*/
+            if (PlayersCountRange(500.0f))// 500 yardas
+                return;
+
+            DoCast(me,SPELL_SOUL_FEAST_ALL);
+        }
 
         void EnterCombat(Unit* /*target*/)
         {
@@ -1084,10 +1144,13 @@ public:
             LICH_SLAP               = urand(5*IN_MILLISECONDS, 10*IN_MILLISECONDS);
         }
 
-        /*void JustDied(Unit* killer)
+        void JustDied(Unit* killer)
         {
-            // aca falta agregar 	50000 yards (Anywhere)
-        }*/
+            if (PlayersCountRange(500.0f))// 500 yardas
+                return;
+
+            DoCast(me,SPELL_SOUL_FEAST_ALL);
+        }
 
         void UpdateAI(const uint32 diff)
         {
@@ -1130,10 +1193,13 @@ public:
             VAMPIRE_RUSH  = urand(10*IN_MILLISECONDS, 15*IN_MILLISECONDS);
         }
 
-        /*void JustDied(Unit* killer)
+        void JustDied(Unit* killer)
         {
-            // aca falta agregar 	50000 yards (Anywhere)
-        }*/
+            if (PlayersCountRange(500.0f))// 500 yardas
+                return;
+
+            DoCast(me,SPELL_SOUL_FEAST_ALL);
+        }
 
         void UpdateAI(const uint32 diff)
         {
@@ -1177,10 +1243,13 @@ public:
             UNHOLY_STRIKE = urand(2*IN_MILLISECONDS, 3*IN_MILLISECONDS);
         }
 
-        /*void JustDied(Unit* killer)
+        void JustDied(Unit* killer)
         {
-            // aca falta agregar 	50000 yards (Anywhere)
-        }*/
+            if (PlayersCountRange(500.0f))// 500 yardas
+                return;
+
+            DoCast(me,SPELL_SOUL_FEAST_ALL);
+        }
 
         void UpdateAI(const uint32 diff)
         {
@@ -1229,10 +1298,13 @@ public:
             VAMPIRIC_CURSE = urand(5*IN_MILLISECONDS, 15*IN_MILLISECONDS);
         }
 
-        /*void JustDied(Unit* killer)
+        void JustDied(Unit* killer)
         {
-            // aca falta agregar 	50000 yards (Anywhere)
-        }*/
+            if (PlayersCountRange(500.0f))// 500 yardas
+                return;
+
+            DoCast(me,SPELL_SOUL_FEAST_ALL);
+        }
 
         void UpdateAI(const uint32 diff)
         {
@@ -1271,10 +1343,13 @@ public:
             FROZEN_ORB     = 1*IN_MILLISECONDS;
         }
 
-        /*void JustDied(Unit* killer)
+        void JustDied(Unit* killer)
         {
-            // aca falta agregar 	50000 yards (Anywhere)
-        }*/
+            if (PlayersCountRange(500.0f))// 500 yardas
+                return;
+
+            DoCast(me,SPELL_SOUL_FEAST_ALL);
+        }
 
         void EnterCombat(Unit* /*target*/)
         {
@@ -1313,10 +1388,13 @@ public:
             SHADOW_BOLT_2  = urand(1*IN_MILLISECONDS, 2*IN_MILLISECONDS);
         }
 
-        /*void JustDied(Unit* killer)
+        void JustDied(Unit* killer)
         {
-            // aca falta agregar 	50000 yards (Anywhere)
-        }*/
+            if (PlayersCountRange(500.0f))// 500 yardas
+                return;
+
+            DoCast(me,SPELL_SOUL_FEAST_ALL);
+        }
 
         void UpdateAI(const uint32 diff)
         {
@@ -1363,10 +1441,13 @@ public:
             BARBARIC_STRIKE = urand(1*IN_MILLISECONDS, 5*IN_MILLISECONDS);
         }
 
-        /*void JustDied(Unit* killer)
+        void JustDied(Unit* killer)
         {
-            // aca falta agregar 	50000 yards (Anywhere)
-        }*/
+            if (PlayersCountRange(500.0f))// 500 yardas
+                return;
+
+            DoCast(me,SPELL_SOUL_FEAST_ALL);
+        }
 
         void UpdateAI(const uint32 diff)
         {
@@ -1411,10 +1492,13 @@ public:
             VOLLEY     = urand(5*IN_MILLISECONDS, 15*IN_MILLISECONDS);
         }
 
-        /*void JustDied(Unit* killer)
+        void JustDied(Unit* killer)
         {
-            // aca falta agregar 	50000 yards (Anywhere)
-        }*/
+            if (PlayersCountRange(500.0f))// 500 yardas
+                return;
+
+            DoCast(me,SPELL_SOUL_FEAST_ALL);
+        }
 
         void EnterCombat(Unit* /*target*/)
         {
@@ -1479,10 +1563,13 @@ public:
             WHIRLWIND = urand(5*IN_MILLISECONDS, 15*IN_MILLISECONDS);
         }
 
-        /*void JustDied(Unit* killer)
+        void JustDied(Unit* killer)
         {
-            // aca falta agregar 	50000 yards (Anywhere)
-        }*/
+            if (PlayersCountRange(500.0f))// 500 yardas
+                return;
+
+            DoCast(me,SPELL_SOUL_FEAST_ALL);
+        }
 
         void UpdateAI(const uint32 diff)
         {
