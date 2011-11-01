@@ -1348,6 +1348,8 @@ void Spell::DoAllEffectOnTarget(TargetInfo* target)
 
         caster->DealSpellDamage(&damageInfo, true);
 
+        m_true_damage = damageInfo.damage;
+
         // Haunt
         if (m_spellInfo->SpellFamilyName == SPELLFAMILY_WARLOCK && m_spellInfo->SpellFamilyFlags[1] & 0x40000 && m_spellAura && m_spellAura->GetEffect(1))
         {
