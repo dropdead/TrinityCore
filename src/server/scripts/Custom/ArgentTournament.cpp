@@ -1302,40 +1302,6 @@ public:
     }
 };
 
-class npc_leaper : public CreatureScript
-{
-public:
-    npc_leaper() : CreatureScript("npc_leaper") { }
-
-    CreatureAI* GetAI(Creature* pCreature) const
-    {
-        return new npc_leaperAI (pCreature);
-    }
-
-    struct npc_leaperAI : public ScriptedAI
-    {
-        npc_leaperAI(Creature *c) : ScriptedAI(c) {}
-
-        bool spellHit;
-
-        void Reset()
-        {
-            spellHit = false;
-        }
-
-        void SpellHit(Unit *Hitter, const SpellEntry *Spellkind)
-        {
-            if ((Spellkind->Id == SPELL_SOVEREIGN_ROD) && !spellHit &&
-                (Hitter->GetTypeId() == TYPEID_PLAYER) && (CAST_PLR(Hitter)->IsActiveQuest(QUEST_FREE_YOUR_MIND)))
-            {
-                CAST_PLR(Hitter)->KilledMonsterCredit(NPC_LEAPER_BUNNY, 0);
-                spellHit = true;
-            }
-        }
-    };
-
-};
-
 /*######
 ## The Grand Melee Quests 
 ## 13665-13745-13750-13756-13761-13767-13772-13777-13782-13787.- http://www.wowhead.com/search?q=The+Grand+Melee SELECT entry,title FROM quest_template WHERE title LIKE 'The Grand Melee%'
@@ -2909,8 +2875,6 @@ void AddSC_Argen_Tournament()
     new npc_jeran_lockwood;
     new npc_keritose;
     new npc_variant;
-    new npc_vile;
-    new npc_leaper;
     new npc_ValiantGrandMelee;
     new npc_squire_danny;
     new npc_argent_champion;
