@@ -514,3 +514,5 @@ UPDATE creature_model_info SET bounding_radius=0.459,combat_reach=2.25,gender=0 
 DELETE FROM creature_template_addon WHERE entry=33429;
 INSERT INTO creature_template_addon (entry,mount,bytes1,bytes2,emote,auras) VALUES
 (33429,25678,0,1,0,NULL); -- Boneguard Lieutenant
+-- Fix Quest
+UPDATE `creature_template` SET ScriptName = 'npc_free_your_mind' WHERE `entry` IN (29769,29770,29840);
