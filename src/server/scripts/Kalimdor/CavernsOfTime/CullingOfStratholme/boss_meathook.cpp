@@ -59,8 +59,8 @@ public:
     {
         boss_meathookAI(Creature* c) : ScriptedAI(c)
         {
-            pInstance = c->GetInstanceScript();
-            if (pInstance)
+            instance = c->GetInstanceScript();
+            if (instance)
                 DoScriptText(SAY_SPAWN, me);
         }
 
@@ -68,7 +68,7 @@ public:
         uint32 uiDiseaseTimer;
         uint32 uiFrenzyTimer;
 
-        InstanceScript* pInstance;
+        InstanceScript* instance;
 
         void Reset()
         {
@@ -76,16 +76,16 @@ public:
             uiDiseaseTimer = urand(3000, 5000);
             uiFrenzyTimer = urand(15000, 20000);
 
-            if (pInstance)
-                pInstance->SetData(DATA_MEATHOOK_EVENT, NOT_STARTED);
+            if (instance)
+                instance->SetData(DATA_MEATHOOK_EVENT, NOT_STARTED);
         }
 
         void EnterCombat(Unit* /*who*/)
         {
             DoScriptText(SAY_AGGRO, me);
 
-            if (pInstance)
-                pInstance->SetData(DATA_MEATHOOK_EVENT, IN_PROGRESS);
+            if (instance)
+                instance->SetData(DATA_MEATHOOK_EVENT, IN_PROGRESS);
         }
 
         void UpdateAI(const uint32 diff)
@@ -122,8 +122,8 @@ public:
         {
             DoScriptText(SAY_DEATH, me);
 
-            if (pInstance)
-                pInstance->SetData(DATA_MEATHOOK_EVENT, DONE);
+            if (instance)
+                instance->SetData(DATA_MEATHOOK_EVENT, DONE);
         }
 
         void KilledUnit(Unit* victim)

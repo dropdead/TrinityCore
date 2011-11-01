@@ -366,7 +366,7 @@ public:
 
         void WaypointReached(uint32 uiPointId)
         {
-            switch(uiPointId)
+            switch (uiPointId)
             {
                 case 0:
                 case 1:
@@ -459,7 +459,7 @@ public:
                     break;
                 case 45:
                     SetRun(true);
-                    SetDespawnAtFar(false);
+                    //SetDespawnAtFar(false);
                     uiGossipStep = 4;
                     me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
                     SetHoldState(true);
@@ -479,7 +479,7 @@ public:
                     DoScriptText(SAY_PHASE407,me);
                     break;
                 case 54:
-                    SetDespawnAtFar(false);
+                    //SetDespawnAtFar(false);
                     uiGossipStep = 5;
                     me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
                     SetHoldState(true);
@@ -497,7 +497,7 @@ public:
             {
                 if (uiPhaseTimer <= diff)
                 {
-                    switch(uiStep)
+                    switch (uiStep)
                     {
                         //After reset
                         case 0:
@@ -787,7 +787,7 @@ public:
                                 pInstance->SetData(DATA_INFINITE_EVENT, SPECIAL);                //start countdown
 
                             me->SetReactState(REACT_DEFENSIVE);
-                            SetDespawnAtFar(false);
+                            //SetDespawnAtFar(false);
                             JumpToNextStep(5000);
                             break;
                         case 41: //Summon wave group
@@ -1052,7 +1052,7 @@ public:
                         //After Gossip 4
                         case 84:
                             DoScriptText(SAY_PHASE404,me);
-                            SetDespawnAtFar(false);
+                            //SetDespawnAtFar(false);
                             SetHoldState(false);
                             bStepping = false;
                             break;
@@ -1135,39 +1135,39 @@ public:
         }
     };
 
-    bool OnGossipHello (Player* pPlayer, Creature* pCreature)
+    bool OnGossipHello (Player* player, Creature* creature)
     {
-        npc_arthasAI* pAI = CAST_AI(npc_arthasAI,pCreature->AI());
+        npc_arthasAI* AI = CAST_AI(npc_arthasAI, creature->AI());
 
-        if (pAI && pAI->bStepping == false)
+        if (AI && AI->bStepping == false)
         {
-            switch (pAI->uiGossipStep)
+            switch (AI->uiGossipStep)
             {
                 case 0: //This one is a workaround since the very beggining of the script is wrong.
-                    //if (pPlayer->GetQuestStatus(13149) != QUEST_STATUS_COMPLETE)
+                    //if (player->GetQuestStatus(13149) != QUEST_STATUS_COMPLETE)
                     //    return false;
-                    //pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_ARTHAS_0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
-                    pPlayer->SEND_GOSSIP_MENU(907, pCreature->GetGUID());
+                    //player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_ARTHAS_0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
+                    player->SEND_GOSSIP_MENU(907, creature->GetGUID());
                     break;
                 case 1:
-                    pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_ARTHAS_1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
-                    pPlayer->SEND_GOSSIP_MENU(GOSSIP_MENU_ARTHAS_1, pCreature->GetGUID());
+                    player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_ARTHAS_1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
+                    player->SEND_GOSSIP_MENU(GOSSIP_MENU_ARTHAS_1, creature->GetGUID());
                     break;
                 case 2:
-                    pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_ARTHAS_2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+2);
-                    pPlayer->SEND_GOSSIP_MENU(GOSSIP_MENU_ARTHAS_2, pCreature->GetGUID());
+                    player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_ARTHAS_2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+2);
+                    player->SEND_GOSSIP_MENU(GOSSIP_MENU_ARTHAS_2, creature->GetGUID());
                     break;
                 case 3:
-                    pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_ARTHAS_3, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+3);
-                    pPlayer->SEND_GOSSIP_MENU(GOSSIP_MENU_ARTHAS_3, pCreature->GetGUID());
+                    player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_ARTHAS_3, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+3);
+                    player->SEND_GOSSIP_MENU(GOSSIP_MENU_ARTHAS_3, creature->GetGUID());
                     break;
                 case 4:
-                    pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_ARTHAS_4, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+4);
-                    pPlayer->SEND_GOSSIP_MENU(GOSSIP_MENU_ARTHAS_4, pCreature->GetGUID());
+                    player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_ARTHAS_4, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+4);
+                    player->SEND_GOSSIP_MENU(GOSSIP_MENU_ARTHAS_4, creature->GetGUID());
                     break;
                 case 5:
-                    pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_ARTHAS_5, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+5);
-                    pPlayer->SEND_GOSSIP_MENU(GOSSIP_MENU_ARTHAS_5, pCreature->GetGUID());
+                    player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_ARTHAS_5, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+5);
+                    player->SEND_GOSSIP_MENU(GOSSIP_MENU_ARTHAS_5, creature->GetGUID());
                     break;
                 default:
                     return false;
@@ -1176,47 +1176,47 @@ public:
         return true;
     }
 
-    bool OnGossipSelect (Player *pPlayer, Creature *pCreature, uint32 /*sender*/, uint32 action)
+    bool OnGossipSelect (Player* player, Creature* creature, uint32 /*sender*/, uint32 action)
     {
-        npc_arthasAI* pAI = CAST_AI(npc_arthasAI,pCreature->AI());
+        npc_arthasAI* AI = CAST_AI(npc_arthasAI, creature->AI());
 
-        if (!pAI)
+        if (!AI)
             return false;
 
-        pPlayer->PlayerTalkClass->ClearMenus();
+        player->PlayerTalkClass->ClearMenus();
 
         switch (action)
         {
             case GOSSIP_ACTION_INFO_DEF:
-                pAI->Start(true,true,pPlayer->GetGUID(),0,false,false);
-                pAI->SetDespawnAtEnd(false);
-                pAI->bStepping = false;
-                pAI->uiStep = 1;
+                AI->Start(true, true, player->GetGUID(), 0, false, false);
+                AI->SetDespawnAtEnd(false);
+                AI->bStepping = false;
+                AI->uiStep = 1;
                 break;
             case GOSSIP_ACTION_INFO_DEF+1:
-                pAI->bStepping = true;
-                pAI->uiStep = 24;
+                AI->bStepping = true;
+                AI->uiStep = 24;
                 break;
             case GOSSIP_ACTION_INFO_DEF+2:
-                pAI->SetHoldState(false);
-                pAI->bStepping = false;
-                pAI->uiStep = 61;
+                AI->SetHoldState(false);
+                AI->bStepping = false;
+                AI->uiStep = 61;
                 break;
             case GOSSIP_ACTION_INFO_DEF+3:
-                pAI->SetHoldState(false);
+                AI->SetHoldState(false);
                 break;
             case GOSSIP_ACTION_INFO_DEF+4:
-                pAI->bStepping = true;
-                pAI->uiStep = 84;
+                AI->bStepping = true;
+                AI->uiStep = 84;
                 break;
             case GOSSIP_ACTION_INFO_DEF+5:
-                pAI->bStepping = true;
-                pAI->uiStep = 85;
+                AI->bStepping = true;
+                AI->uiStep = 85;
                 break;
         }
-        pPlayer->CLOSE_GOSSIP_MENU();
-        pAI->SetDespawnAtFar(true);
-        pCreature->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+        player->CLOSE_GOSSIP_MENU();
+        AI->SetDespawnAtFar(false);
+        creature->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
         return true;
     }
 };
