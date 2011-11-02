@@ -44,7 +44,11 @@ UPDATE `spell_bonus_data` SET `direct_bonus` = 0, `dot_bonus` = 0 WHERE `entry` 
 -- -----------------------
 -- DK
 -- -----------------------
--- Dk - Enchants
+
+-- -----------------------
+-- Enchants
+-- -----------------------
+-- Enchants
 DELETE FROM `spell_bonus_data` WHERE `entry` IN (6297, 13897, 20004, 28005, 20006, 44525); 
 INSERT INTO `spell_bonus_data` (`entry`, `direct_bonus`, `dot_bonus`, `ap_bonus`, `ap_dot_bonus`, `comments`) VALUES
 (6297,0,0,0,0,'Enchant - Fiery Blaze'),
