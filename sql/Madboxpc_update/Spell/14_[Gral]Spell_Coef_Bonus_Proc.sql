@@ -34,3 +34,9 @@ INSERT INTO `spell_ranks` VALUES
 DELETE FROM `spell_bonus_data` WHERE `entry`='53352';
 INSERT INTO `spell_bonus_data` (`entry`, `direct_bonus`, `dot_bonus`, `ap_bonus`, `ap_dot_bonus`, `comments`) VALUES
 ( '53352','0','0','0.14','0','Hunter - Explosive Shot (triggered)');
+
+-- -----------------------
+-- ROGUE
+-- -----------------------
+-- Fix Rogue - Deadly Poison No stack SP.
+UPDATE `spell_bonus_data` SET `direct_bonus` = 0, `dot_bonus` = 0 WHERE `entry` IN (2818,2819,11353,11354,25349,26968,27187,57969,57970);
