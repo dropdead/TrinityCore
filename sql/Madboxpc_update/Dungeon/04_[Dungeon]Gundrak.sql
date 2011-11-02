@@ -27,7 +27,6 @@ UPDATE `creature_template` SET `mechanic_immune_mask` = `mechanic_immune_mask` &
 -- Livin Mojos Update Spawnmask 
 -- http://www.wowhead.com/npc=29830 "Living Mojo"
 UPDATE `creature` SET `spawnMask` = '0' WHERE `guid` IN ('127071','127072','127073','127074','127075');
-DELETE FROM  `creature_linked_respawn` WHERE `guid` IN ('127071','127072','127073','127074','127075');
 -- Vehicle ID (Experimental)
 UPDATE `creature_template` SET `VehicleId` = '169' where `entry` IN ('29306','31368');
 -- Update Damage =)
