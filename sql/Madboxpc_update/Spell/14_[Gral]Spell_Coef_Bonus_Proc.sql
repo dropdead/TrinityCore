@@ -41,6 +41,18 @@ INSERT INTO `spell_bonus_data` (`entry`, `direct_bonus`, `dot_bonus`, `ap_bonus`
 -- Fix Rogue - Deadly Poison No stack SP.
 UPDATE `spell_bonus_data` SET `direct_bonus` = 0, `dot_bonus` = 0 WHERE `entry` IN (2818,2819,11353,11354,25349,26968,27187,57969,57970);
 
+-- -----------------------
+-- DK
+-- -----------------------
+-- Dk - Enchants
+DELETE FROM `spell_bonus_data` WHERE `entry` IN (6297, 13897, 20004, 28005, 20006, 44525); 
+INSERT INTO `spell_bonus_data` (`entry`, `direct_bonus`, `dot_bonus`, `ap_bonus`, `ap_dot_bonus`, `comments`) VALUES
+(6297,0,0,0,0,'Enchant - Fiery Blaze'),
+(13897,0,0,0,0,'Enchant - Fiery Weapon'),
+(20004,0,0,0,0,'Enchant - Lifestealing'),
+(28005,0,0,0,0,'Enchant - Battlemaster'),
+(20006,0,0,0,0,'Enchant - Unholy Weapon'),
+(44525,0,0,0,0,'Enchant - Icebreaker');
 
 -- --------------------------
 -- Items
