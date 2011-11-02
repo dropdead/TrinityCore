@@ -5781,7 +5781,13 @@ void Spell::EffectStuck(SpellEffIndex /*effIndex*/)
     if (!spellInfo)
         return;
     Spell spell(target, spellInfo, TRIGGERED_FULL_MASK);
-    spell.SendSpellCooldown();
+    // Revisa si la piedra tiene cd para usar el comando .st
+    if (spell.getState() == SPELL_STATE_IDLE)
+    {
+        target->TeleportTo(target->GetStartPosition(), unitTarget == m_caster ? TELE_TO_SPELL : 0);
+        spell.SendSpellCooldown();
+    }
+    else spell.cast(true);
 }
 
 void Spell::EffectSummonPlayer(SpellEffIndex /*effIndex*/)
