@@ -1,3 +1,7 @@
+-- -----------------------
+-- DRUIDA
+-- -----------------------
+
 -- Druida Spells Fix Stack Sp y coeficientes.
 UPDATE `spell_bonus_data` SET `direct_bonus` = 0, `dot_bonus` = 0 WHERE `entry` IN (779,1822,60089);
 DELETE FROM `spell_bonus_data` WHERE `entry` IN (1079,9007,22568);
@@ -8,3 +12,25 @@ INSERT INTO `spell_bonus_data` VALUES
 -- Lifebloom final bloom fix
 UPDATE `spell_bonus_data` SET `direct_bonus`=0.3857 WHERE `entry`=33778 ;
 UPDATE `spell_bonus_data` SET `dot_bonus`=0.0653 WHERE `entry` IN (48450, 48451, 48628);
+
+-- -----------------------
+-- HUNTER
+-- -----------------------
+UPDATE `spell_bonus_data` SET `direct_bonus` = 0, `dot_bonus` = 0 WHERE `entry` IN (3044,3674,53352,13812,13797,1978,42243);
+UPDATE `spell_bonus_data` SET `ap_dot_bonus` = 0.1 WHERE `entry` = 13812;
+DELETE FROM `spell_bonus_data` WHERE `entry` IN (24131,53353);
+INSERT INTO `spell_bonus_data` VALUES
+(24131,0,0,-1,-1,'Hunter - Wyvern Sting (triggered)'),
+(53353,0,0,-1,-1,'Hunter - Chimera Shot (Serpent)');
+DELETE FROM `spell_ranks` WHERE `first_spell_id` = 24131;
+INSERT INTO `spell_ranks` VALUES
+(24131,24131,1),
+(24131,24134,2),
+(24131,24135,3),
+(24131,27069,4),
+(24131,49009,5),
+(24131,49010,6);
+-- Fix Explosive Shot 
+DELETE FROM `spell_bonus_data` WHERE `entry`='53352';
+INSERT INTO `spell_bonus_data` (`entry`, `direct_bonus`, `dot_bonus`, `ap_bonus`, `ap_dot_bonus`, `comments`) VALUES
+( '53352','0','0','0.14','0','Hunter - Explosive Shot (triggered)');
