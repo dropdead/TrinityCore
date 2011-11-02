@@ -40,3 +40,17 @@ INSERT INTO `spell_bonus_data` (`entry`, `direct_bonus`, `dot_bonus`, `ap_bonus`
 -- -----------------------
 -- Fix Rogue - Deadly Poison No stack SP.
 UPDATE `spell_bonus_data` SET `direct_bonus` = 0, `dot_bonus` = 0 WHERE `entry` IN (2818,2819,11353,11354,25349,26968,27187,57969,57970);
+
+
+-- --------------------------
+-- Items
+-- ----------------------------
+-- Trinkets - Reign of the Unliving, Reign of the Dead
+DELETE FROM spell_bonus_data WHERE entry IN (67760,67714);
+INSERT INTO spell_bonus_data (entry,direct_bonus,dot_bonus,ap_bonus,ap_dot_bonus,comments) VALUES
+(67760,0,0,0,0, 'Item - Coliseum 25 Heroic Caster Trinket - Pillar of Flame'),
+(67714,0,0,0,0, 'Item - Coliseum 25 Normal Caster Trinket - Pillar of Flame');
+DELETE FROM spell_proc_event WHERE entry IN (67712,67758);
+INSERT INTO spell_proc_event (entry,SchoolMask,SpellFamilyName,SpellFamilyMask0,SpellFamilyMask1,SpellFamilyMask2,procFlags,procEx,ppmRate,CustomChance,Cooldown) VALUES
+(67712,0,0,0,0,0,0x00011000,0x0000002,0,0,2),
+(67758,0,0,0,0,0,0x00011000,0x0000002,0,0,2);
