@@ -15708,6 +15708,8 @@ void Unit::SetControlled(bool apply, UnitState state)
             case UNIT_STAT_CONFUSED:
                 if (!HasUnitState(UNIT_STAT_STUNNED))
                 {
+                    ClearUnitState(UNIT_STAT_MELEE_ATTACKING);
+                    SendMeleeAttackStop(m_attacking);
                     SetConfused(true);
                     CastStop();
                 }
@@ -15715,6 +15717,8 @@ void Unit::SetControlled(bool apply, UnitState state)
             case UNIT_STAT_FLEEING:
                 if (!HasUnitState(UNIT_STAT_STUNNED | UNIT_STAT_CONFUSED))
                 {
+                    ClearUnitState(UNIT_STAT_MELEE_ATTACKING);
+                    SendMeleeAttackStop(m_attacking);
                     SetFeared(true);
                     CastStop();
                 }
