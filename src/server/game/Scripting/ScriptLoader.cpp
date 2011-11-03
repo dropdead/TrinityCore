@@ -64,6 +64,7 @@ void AddSC_gps_commandscript();
 
 //Custom
 void AddSC_Argen_Tournament();
+void AddSC_Duelo_Reset();
 
 #ifdef SCRIPTS
 //world
@@ -1240,6 +1241,7 @@ void AddCustomScripts()
 {
 #ifdef SCRIPTS
     AddSC_Argen_Tournament();
+    AddSC_Duelo_Reset();
 
 #endif
 }

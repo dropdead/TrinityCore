@@ -11,6 +11,7 @@
 set(scripts_STAT_SRCS
   ${scripts_STAT_SRCS}
   Custom/ArgentTournament.cpp
+  Custom/Duelo_Reset.cpp
 )
 
 message("  -> Prepared: Custom")
