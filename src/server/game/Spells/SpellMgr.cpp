@@ -2671,11 +2671,15 @@ void SpellMgr::LoadSpellCustomAttr()
             switch (spellInfo->Effects[j].ApplyAuraName)
             {
                 case SPELL_AURA_MOD_POSSESS:
-                case SPELL_AURA_MOD_CONFUSE:
                 case SPELL_AURA_MOD_CHARM:
                 case SPELL_AURA_AOE_CHARM:
+                    spellInfo->AttributesCu |= SPELL_ATTR0_CU_AURA_CC;
+                    break;
                 case SPELL_AURA_MOD_FEAR:
                 case SPELL_AURA_MOD_STUN:
+                case SPELL_AURA_MOD_CONFUSE:
+                    if (spellInfo->Speed == 0)
+                        spellInfo->Speed = 50;// Delay spell 43 segun videos que vi es la mejor calculo que pude realizar tambien funciona bien con 42,5f
                     spellInfo->AttributesCu |= SPELL_ATTR0_CU_AURA_CC;
                     break;
                 case SPELL_AURA_PERIODIC_HEAL:
