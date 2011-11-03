@@ -2970,6 +2970,9 @@ void SpellMgr::LoadDbcDataCorrections()
 
         switch (spellInfo->Id)
         {
+            case 1543:  // Flare - llega al lugar donde se lanza instantaneamente 
+                spellInfo->speed = 100;
+                break;
             case 24259: // Spell Lock 
                 spellInfo->speed = 80;
                 break;
