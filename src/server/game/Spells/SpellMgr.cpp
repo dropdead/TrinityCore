@@ -2678,7 +2678,7 @@ void SpellMgr::LoadSpellCustomAttr()
                 case SPELL_AURA_MOD_FEAR:
                 case SPELL_AURA_MOD_STUN:
                 case SPELL_AURA_MOD_CONFUSE:
-                    if (spellInfo->Speed == 0)
+                    if (spellInfo->Speed == 0 && !MECHANIC_FREEZE)// Excluimos el grupo MECHANIC_FREEZE como trampas de Hunter para el delay.
                         spellInfo->Speed = 43;// Delay spell 43 segun videos que vi es la mejor calculo que pude realizar tambien funciona bien con 42,5f
                     spellInfo->AttributesCu |= SPELL_ATTR0_CU_AURA_CC;
                     break;
@@ -2698,6 +2698,10 @@ void SpellMgr::LoadSpellCustomAttr()
 
             switch (spellInfo->Effects[j].Effect)
             {
+                case SPELL_EFFECT_LEAP:
+                case SPELL_EFFECT_TELEPORT_UNITS:
+                    spellInfo->Speed = 43;
+                    break;
                 case SPELL_EFFECT_SCHOOL_DAMAGE:
                 case SPELL_EFFECT_WEAPON_DAMAGE:
                 case SPELL_EFFECT_WEAPON_DAMAGE_NOSCHOOL:
@@ -2970,10 +2974,24 @@ void SpellMgr::LoadDbcDataCorrections()
 
         switch (spellInfo->Id)
         {
-            case 1543:  // Flare - llega al lugar donde se lanza instantaneamente 
+            // ###############################
+            // INICIO CAMBIOS POR DELAY MAGICO
+            // ###############################
+            case 30283:	// Shadow Fury - [Warlock]
+            case 30413:	// Shadow Fury - [Warlock]
+            case 30414: // Shadow Fury - [Warlock]
+            case 47846:	// Shadow Fury - [Warlock]
+            case 47847: // Shadow Fury - [Warlock]
+            case 64044: // Psychic Horror - [Priest]
+                spellInfo->speed = 0;
+                break;
+            // ###############################
+            // FINAL CAMBIOS POR DELAY MAGICO
+            // ###############################
+            case 1543:  // Flare - [Hunter] llega al lugar donde se lanza instantaneamente 
                 spellInfo->speed = 100;
                 break;
-            case 24259: // Spell Lock 
+            case 24259: // Spell Lock - [Warlock]
                 spellInfo->speed = 80;
                 break;
             case 23880: // Bloodthirst
