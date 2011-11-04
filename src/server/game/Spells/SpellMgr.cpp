@@ -2983,7 +2983,7 @@ void SpellMgr::LoadDbcDataCorrections()
                 break;
             case 1953:  // Blink - [Mago]
             case 36554: // Shadowstep - [Rogue]
-                spellInfo->Speed = 43;
+                spellInfo->speed = 43;
                 break;
             // ###############################
             // FINAL CAMBIOS POR DELAY MAGICO
