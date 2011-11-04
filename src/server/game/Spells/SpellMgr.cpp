@@ -2697,11 +2697,7 @@ void SpellMgr::LoadSpellCustomAttr()
             }
 
             switch (spellInfo->Effects[j].Effect)
-            {
-                case SPELL_EFFECT_LEAP:
-                case SPELL_EFFECT_TELEPORT_UNITS:
-                    spellInfo->Speed = 43;
-                    break;
+            {                
                 case SPELL_EFFECT_SCHOOL_DAMAGE:
                 case SPELL_EFFECT_WEAPON_DAMAGE:
                 case SPELL_EFFECT_WEAPON_DAMAGE_NOSCHOOL:
@@ -2984,6 +2980,10 @@ void SpellMgr::LoadDbcDataCorrections()
             case 47847: // Shadow Fury - [Warlock]
             case 64044: // Psychic Horror - [Priest]
                 spellInfo->speed = 0;
+                break;
+            case 1953:  // Blink - [Mago]
+            case 36554: // Shadowstep - [Rogue]
+                spellInfo->Speed = 43;
                 break;
             // ###############################
             // FINAL CAMBIOS POR DELAY MAGICO
