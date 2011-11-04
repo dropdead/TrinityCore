@@ -2977,10 +2977,10 @@ void SpellMgr::LoadDbcDataCorrections()
             // ###############################
             // INICIO CAMBIOS POR DELAY MAGICO
             // ###############################
-            case 30283:	// Shadow Fury - [Warlock]
-            case 30413:	// Shadow Fury - [Warlock]
+            case 30283: // Shadow Fury - [Warlock]
+            case 30413: // Shadow Fury - [Warlock]
             case 30414: // Shadow Fury - [Warlock]
-            case 47846:	// Shadow Fury - [Warlock]
+            case 47846: // Shadow Fury - [Warlock]
             case 47847: // Shadow Fury - [Warlock]
             case 64044: // Psychic Horror - [Priest]
                 spellInfo->speed = 0;
