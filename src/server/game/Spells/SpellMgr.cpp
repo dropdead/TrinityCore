@@ -2764,56 +2764,48 @@ void SpellMgr::LoadSpellCustomAttr()
                 if (spellInfo->Mechanic != 0 &&
                     spellInfo->Mechanic != MECHANIC_INFECTED)
                 {
-                    mSpellCustomAttr[i] |= SPELL_ATTR0_CU_BINARY;
-                    count++;
+                    spellInfo->AttributesCu |= SPELL_ATTR0_CU_BINARY;
                 }
-                else if (spellInfo->EffectMechanic[0] != 0 &&
-                    spellInfo->EffectMechanic[0] != MECHANIC_INFECTED &&
+                else if (spellInfo->GetEffectMechanicMask[0] != 0 &&
+                    spellInfo->GetEffectMechanicMask[0] != MECHANIC_INFECTED &&
                     spellInfo->Effect[1] != SPELL_EFFECT_SCHOOL_DAMAGE)
                 {
-                    mSpellCustomAttr[i] |= SPELL_ATTR0_CU_BINARY;
-                    count++;
-                }
+                    spellInfo->AttributesCu |= SPELL_ATTR0_CU_BINARY;
+                 }
                 else if (spellInfo->EffectMechanic[1] != 0 &&
                     spellInfo->EffectMechanic[1] != MECHANIC_INFECTED)
                 {
-                    mSpellCustomAttr[i] |= SPELL_ATTR0_CU_BINARY;
-                    count++;
+                    spellInfo->AttributesCu |= SPELL_ATTR0_CU_BINARY;
                 }
                 else if (spellInfo->Effect[0] == SPELL_EFFECT_DISPEL ||
                     spellInfo->Effect[1] == SPELL_EFFECT_DISPEL ||
                     spellInfo->Effect[2] == SPELL_EFFECT_DISPEL)
                 {
-                    mSpellCustomAttr[i] |= SPELL_ATTR0_CU_BINARY;
-                    count++;
+                    spellInfo->AttributesCu |= SPELL_ATTR0_CU_BINARY;
                 }
                 else if (spellInfo->Effect[0] == SPELL_EFFECT_STEAL_BENEFICIAL_BUFF ||
                     spellInfo->Effect[1] == SPELL_EFFECT_STEAL_BENEFICIAL_BUFF ||
                     spellInfo->Effect[2] == SPELL_EFFECT_STEAL_BENEFICIAL_BUFF)
                 {
-                    mSpellCustomAttr[i] |= SPELL_ATTR0_CU_BINARY;
-                    count++;
+                    spellInfo->AttributesCu |= SPELL_ATTR0_CU_BINARY;
                 }
                 else if (spellInfo->Effect[0] == SPELL_EFFECT_POWER_BURN ||
                     spellInfo->Effect[1] == SPELL_EFFECT_POWER_BURN ||
                     spellInfo->Effect[2] == SPELL_EFFECT_POWER_BURN)
                 {
-                    mSpellCustomAttr[i] |= SPELL_ATTR0_CU_BINARY;
-                    count++;
+                    spellInfo->AttributesCu |= SPELL_ATTR0_CU_BINARY;
                 }
                 else if (spellInfo->Effect[0] == SPELL_EFFECT_POWER_DRAIN ||
                     spellInfo->Effect[1] == SPELL_EFFECT_POWER_DRAIN ||
                     spellInfo->Effect[2] == SPELL_EFFECT_POWER_DRAIN)
                 {
-                    mSpellCustomAttr[i] |= SPELL_ATTR0_CU_BINARY;
-                    count++;
+                    spellInfo->AttributesCu |= SPELL_ATTR0_CU_BINARY;
                 }
                 else if (spellInfo->EffectApplyAuraName[0] == SPELL_AURA_PERIODIC_MANA_LEECH ||
                     spellInfo->EffectApplyAuraName[1] == SPELL_AURA_PERIODIC_MANA_LEECH ||
                     spellInfo->EffectApplyAuraName[2] == SPELL_AURA_PERIODIC_MANA_LEECH)
                 {
-                    mSpellCustomAttr[i] |= SPELL_ATTR0_CU_BINARY;
-                    count++;
+                    spellInfo->AttributesCu |= SPELL_ATTR0_CU_BINARY;
                 }
                 else if ((spellInfo->Dispel == DISPEL_POISON) ||
                     (spellInfo->Dispel == DISPEL_CURSE) ||
@@ -2826,8 +2818,7 @@ void SpellMgr::LoadSpellCustomAttr()
                         spellInfo->EffectApplyAuraName[1] != SPELL_AURA_PERIODIC_DAMAGE &&
                         spellInfo->EffectApplyAuraName[2] != SPELL_AURA_PERIODIC_DAMAGE)
                     {
-                        mSpellCustomAttr[i] |= SPELL_ATTR0_CU_BINARY;
-                        count++;
+                        spellInfo->AttributesCu |= SPELL_ATTR0_CU_BINARY;
                     }
                 }
             }
