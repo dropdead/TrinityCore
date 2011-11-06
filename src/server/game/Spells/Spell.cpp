@@ -5358,6 +5358,13 @@ SpellCastResult Spell::CheckCast(bool strict)
                     return SPELL_FAILED_BAD_TARGETS;
                 break;
             }
+            case SPELL_EFFECT_TRIGGER_SPELL:
+            {
+                // Spell 36554 (Shadowstep) no se puede usar mientras estas en roots
+                if (m_caster->GetTypeId() == TYPEID_PLAYER && m_spellInfo->Id == 36554 && m_caster->HasUnitState(UNIT_STAT_ROOT))
+                    return SPELL_FAILED_ROOTED;
+                break;
+            }
             case SPELL_EFFECT_LEAP_BACK:
             {
                 // Spell 781 (Disengage) requires player to be in combat
