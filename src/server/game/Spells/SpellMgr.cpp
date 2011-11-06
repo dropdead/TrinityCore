@@ -3041,7 +3041,6 @@ void SpellMgr::LoadDbcDataCorrections()
                 break;
             case 49838: // Stop Time
             case 50526: // Wandering Plague
-            case 52916: // Honor Among Thieves
                 spellInfo->AttributesEx3 |= SPELL_ATTR3_NO_INITIAL_AGGRO;
                 break;
             case 61407: // Energize Cores
@@ -3480,6 +3479,7 @@ void SpellMgr::LoadDbcDataCorrections()
                 spellInfo->EffectImplicitTargetA[0] = TARGET_UNIT_CASTER;
                 break;
             case 52916:
+                spellInfo->AttributesEx = SPELL_ATTR1_NO_THREAT;
                 spellInfo->AttributesEx3 |= SPELL_ATTR3_NO_INITIAL_AGGRO;
                 spellInfo->EffectImplicitTargetA[0] = TARGET_UNIT_CASTER;
                 break;
