@@ -1412,8 +1412,11 @@ void Unit::DealMeleeDamage(CalcDamageInfo* damageInfo, bool durabilityLoss)
         if (victim->getLevel() < 30)
             Probability = 0.65f * victim->getLevel() + 0.5f;
 
-        uint32 VictimDefense=victim->GetDefenseSkillValue();
-        uint32 AttackerMeleeSkill=GetUnitMeleeSkill();
+        int32 VictimDefense=victim->GetDefenseSkillValue();
+        if (victim->GetTypeId() == TYPEID_PLAYER)
+            VictimDefense += victim->ToPlayer()->GetRatingBonusValue(CR_DEFENSE_SKILL);
+
+        int32 AttackerMeleeSkill=GetUnitMeleeSkill();        
 
         Probability *= AttackerMeleeSkill/(float)VictimDefense;
 
