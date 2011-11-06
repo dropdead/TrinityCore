@@ -2359,14 +2359,13 @@ SpellMissInfo Unit::MeleeSpellHitResult(Unit* victim, SpellInfo const* spell)
     bool canParry = true;
     bool canBlock = spell->AttributesEx3 & SPELL_ATTR3_BLOCKABLE_SPELL;
 
-    // Same spells cannot be parry/dodge
+    // Same spells cannot be parry/dodge/Block
     if (spell->Attributes & SPELL_ATTR0_IMPOSSIBLE_DODGE_PARRY_BLOCK)
     {
         canDodge = false;
         canParry = false;
         canBlock = false;
     }
-        return SPELL_MISS_NONE;    
 
     // Ranged attacks can only miss, resist and deflect
     if (attType == RANGED_ATTACK)
