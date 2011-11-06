@@ -366,10 +366,9 @@ class boss_sindragosa : public CreatureScript
                     Talk(SAY_PHASE_2);
                     events.CancelEvent(EVENT_AIR_PHASE);
                     events.ScheduleEvent(EVENT_ICE_TOMB, urand(7000, 10000));
-                    events.ScheduleEvent(EVENT_THIRD_PHASE_CHECK, 1000);
                     events.RescheduleEvent(EVENT_ICY_GRIP, urand(35000, 40000));
                     DoCast(me, SPELL_MYSTIC_BUFFET, true);
-                    me->RemoveAurasDueToSpell(SPELL_BUFFET_VULNERABILITY);
+                    me->RemoveAurasDueToSpell(SPELL_MYSTIC_BUFFET_VULNERABILITY);
                     _isThirdPhase = true;
                 }
             }
