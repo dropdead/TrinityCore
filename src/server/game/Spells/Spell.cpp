@@ -7271,8 +7271,8 @@ bool Spell::CanExecuteTriggersOnHit(uint8 effMask, SpellInfo const* spellInfo) c
     // If triggered spell has SPELL_ATTR4_PROC_ONLY_ON_DUMMY then it can only proc on a casted spell with SPELL_EFFECT_DUMMY
     // If triggered spell doesn't have SPELL_ATTR4_PROC_ONLY_ON_DUMMY then it can NOT proc on SPELL_EFFECT_DUMMY (needs confirmation)
     for (uint8 i = 0;i < MAX_SPELL_EFFECTS; ++i)
-    {        
-        if ((effMask & (1 << i)) && (only_on_dummy == (m_spellInfo->Effects[i].Effect == SPELL_EFFECT_DUMMY))|| (m_spellInfo->SpellFamilyName == SPELLFAMILY_ROGUE && m_spellInfo->SpellFamilyFlags[1] & 0x8 && i != 0))
+    {
+        if ((effMask & (1 << i)) && (only_on_dummy == (m_spellInfo->Effects[i].Effect == SPELL_EFFECT_DUMMY)))
             return true;
     }
     return false;
