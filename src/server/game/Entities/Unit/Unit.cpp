@@ -6790,12 +6790,21 @@ bool Unit::HandleDummyAuraProc(Unit* victim, uint32 damage, AuraEffect* triggere
             {
                 // Heart of the Crusader
                 case 20335: // rank 1
+                    if (!victim)
+                        return false;
+                    target = victim;
                     triggered_spell_id = 21183;
                     break;
                 case 20336: // rank 2
+                     if (!victim)
+                        return false;
+                    target = victim;
                     triggered_spell_id = 54498;
                     break;
                 case 20337: // rank 3
+                     if (!victim)
+                        return false;
+                    target = victim;
                     triggered_spell_id = 54499;
                     break;
                 // Judgement of Light
@@ -8084,11 +8093,12 @@ bool Unit::HandleAuraProc(Unit* victim, uint32 damage, Aura* triggeredByAura, Sp
             else if (dummySpell->SpellIconID == 3015)
             {
                 *handled = true;
-                if (procSpell->Category == SPELLCATEGORY_JUDGEMENT)
+                if (victim)
                 {
                     CastSpell(victim, 68055, true);
                     return true;
                 }
+                return true;
             }
             // Glyph of Divinity
             else if (dummySpell->Id == 54939)
@@ -10718,9 +10728,11 @@ uint32 Unit::SpellDamageBonus(Unit* victim, SpellInfo const* spellProto, uint32 
     int32 TakenAdvertisedBenefit = SpellBaseDamageBonusForVictim(spellProto->GetSchoolMask(), victim);
     // Pets just add their bonus damage to their spell damage
     // note that their spell damage is just gain of their own auras
-    if (HasUnitTypeMask(UNIT_MASK_GUARDIAN))
-        DoneAdvertisedBenefit += ((Guardian*)this)->GetBonusDamage();
-
+    if (HasUnitTypeMask(UNIT_MASK_GUARDIAN))        
+        if (!(spellProto->GetSchoolMask() & SPELL_SCHOOL_MASK_NORMAL)) 
+            DoneAdvertisedBenefit += ((Guardian*)this)->GetBonusDamage();
+        else if (((Guardian*)this)->GetBonusDamage())                                     
+            DoneAdvertisedBenefit += GetTotalAttackPowerValue(BASE_ATTACK) * 0.2f;
     // Check for table values
     float coeff = 0;
     SpellBonusEntry const* bonus = sSpellMgr->GetSpellBonusData(spellProto->Id);
