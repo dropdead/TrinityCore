@@ -5900,8 +5900,11 @@ bool Unit::HandleDummyAuraProc(Unit* victim, uint32 damage, AuraEffect* triggere
             // Retaliation
             if (dummySpell->SpellFamilyFlags[1] & 0x8)
             {
-                // check attack comes not from behind
-                if (!HasInArc(M_PI, victim))
+                // No realiza efecto Retaliation por las espaldas.
+                if (!HasInArc(static_cast<float>(M_PI),victim))
+                    return false;
+
+                if (HasUnitState(UNIT_STAT_STUNNED))  //Si el warro esta en stun no se procea el retaliation, sin importar el angulo.
                     return false;
 
                 triggered_spell_id = 22858;
