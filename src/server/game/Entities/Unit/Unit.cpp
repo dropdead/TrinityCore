@@ -5658,25 +5658,7 @@ bool Unit::HandleDummyAuraProc(Unit* victim, uint32 damage, AuraEffect* triggere
             break;
         }
         case SPELLFAMILY_MAGE:
-        {
-            // Brain freeze 
-            if (dummySpell->SpellIconID == 2938)
-            {
-                if (procSpell->SpellFamilyFlags[0] & 0x00000220) //frost damaging spells
-                {
-                    target = this;
-                    triggered_spell_id = 57761;
-                }
-                else if (procSpell->SpellFamilyFlags[1] & 0x00001000) // proc con frosfire
-                {
-                    if (this->HasSpell(57761)) //si posee esta aura entonces no vuelve a procear usando frostfire bolt
-                        return false;
-
-                    target = this;
-                    triggered_spell_id = 57761;
-                }
-                break;
-            }                 
+        {                           
             // Magic Absorption
             if (dummySpell->SpellIconID == 459)             // only this spell have SpellIconID == 459 and dummy aura
             {
@@ -8126,6 +8108,17 @@ bool Unit::HandleAuraProc(Unit* victim, uint32 damage, Aura* triggeredByAura, Sp
             // Combustion
             switch (dummySpell->Id)
             {
+                case 44549: // Brain freeze
+                case 44548:
+                case 44546:
+                {
+                    if (procSpell->SpellFamilyFlags[0] & 0x260)
+                        CastSpell(this,57761,true);
+                    else 
+                        if (procSpell->SpellFamilyFlags[1] & 0x00001000)
+                            if (!this->HasAura(57761))
+                                CastSpell(this,57761,true);
+                }
                 case 11129:
                 {
                     *handled = true;
