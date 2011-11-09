@@ -8105,7 +8105,7 @@ bool Unit::HandleAuraProc(Unit* victim, uint32 damage, Aura* triggeredByAura, Sp
         }
         case SPELLFAMILY_MAGE:
         {
-            // Combustion
+           
             switch (dummySpell->Id)
             {
                 case 44549: // Brain freeze
@@ -8119,6 +8119,8 @@ bool Unit::HandleAuraProc(Unit* victim, uint32 damage, Aura* triggeredByAura, Sp
                             if (!this->HasAura(57761))
                                 CastSpell(this,57761,true);
                 }
+                break;
+                // Combustion
                 case 11129:
                 {
                     *handled = true;
