@@ -75,3 +75,18 @@ DELETE FROM spell_proc_event WHERE entry IN (67712,67758);
 INSERT INTO spell_proc_event (entry,SchoolMask,SpellFamilyName,SpellFamilyMask0,SpellFamilyMask1,SpellFamilyMask2,procFlags,procEx,ppmRate,CustomChance,Cooldown) VALUES
 (67712,0,0,0,0,0,0x00011000,0x0000002,0,0,2),
 (67758,0,0,0,0,0,0x00011000,0x0000002,0,0,2);
+
+
+-- Fix Stacks  Earth and Moon & Ebon Plague & Curse of Elements
+DELETE FROM `spell_group` WHERE `id` = 1114;
+INSERT INTO `spell_group` (`id`, `spell_id`) VALUES
+(1114,1490),
+(1114,60431),
+(1114,60432),
+(1114,60433),
+(1114,51726),
+(1114,51734),
+(1114,51735);
+DELETE FROM `spell_group_stack_rules` WHERE `group_id` = 1114;
+INSERT INTO `spell_group_stack_rules` (`group_id`, `stack_rule`) VALUES
+(1114,1);
