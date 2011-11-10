@@ -8132,7 +8132,7 @@ bool Unit::HandleAuraProc(Unit* victim, uint32 damage, Aura* triggeredByAura, Sp
 
                     if (dummy && dummy->GetStackAmount() > 9 && (procEx & PROC_EX_CRITICAL_HIT))
                     {
-                        if(triggeredByAura->GetCharges() > 1)
+                        if (triggeredByAura->GetCharges() > 1)
                         {
                             triggeredByAura->DropCharge(); 
                             return false;

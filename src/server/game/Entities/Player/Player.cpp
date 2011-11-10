@@ -21326,6 +21326,40 @@ void Player::UpdateVisibilityForPlayer()
 void Player::InitPrimaryProfessions()
 {
     SetFreePrimaryProfessions(sWorld->getIntConfig(CONFIG_MAX_PRIMARY_TRADE_SKILL));
+
+    // Chequea Numero De profesiones primarias.
+    if (GetSession()->GetSecurity() == SEC_PLAYER) // Solo gms podran tener mas de 2 profesiones
+    {
+        uint32 prof_count = 0;
+        std::vector<uint32> prof_skills;
+        prof_skills.push_back(164); // Blacksmithing
+        prof_skills.push_back(165); // Leatherworking
+        prof_skills.push_back(171); // Alchemy
+        prof_skills.push_back(182); // Herbalism
+        prof_skills.push_back(186); // Mining
+        prof_skills.push_back(197); // Tailoring
+        prof_skills.push_back(202); // Engineering 
+        prof_skills.push_back(333); // Enchanting
+        prof_skills.push_back(393); // Skinning
+        prof_skills.push_back(755); // Jewelcrafting
+        prof_skills.push_back(773); // Inscription
+
+        for (std::vector<uint32>::iterator itr = prof_skills.begin(); itr != prof_skills.end(); ++itr)
+        {
+            uint32 skill_id = *itr;
+
+            if (HasSkill(skill_id))
+            {
+                ++prof_count;
+                if (prof_count > 2)
+                {
+                    SetSkill(skill_id,0 , 0, 0);// Skill 0 para las profesiones por bugero 
+                    sLog->outError("Player csmre %s  tiene mas de dos profesiones cago por 60 dias",GetName(),skill_id);
+                    sWorld->BanAccount(BAN_CHARACTER, GetName(), "60d" , "No es bueno tener mas profesiones :P", "Server-anticheat");
+                }
+            }
+        }
+    }
 }
 
 void Player::ModifyMoney(int32 d)
