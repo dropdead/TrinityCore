@@ -8111,19 +8111,19 @@ bool Unit::HandleAuraProc(Unit* victim, uint32 damage, Aura* triggeredByAura, Sp
                 case 44549: // Brain freeze
                 case 44548:
                 case 44546:
-				{
- 					*handled = true;
-					if (procSpell->SpellFamilyFlags[1] & 0x00001000) // Frostfire
-					{
-						if (!HasAura(57761)) // si tiene el aura entonces no gana fireball!
-							CastSpell(this,57761);
-					}
-					else if (procSpell->SpellFamilyFlags[0] & 0x260) // frost damaging spells
-					{
-						CastSpell(this,57761,true);
-					}
-				}
-				break;
+                {
+                    *handled = true;
+                    if (procSpell->SpellFamilyFlags[1] & 0x00001000) // Frostfire
+                    {
+                        if (!HasAura(57761)) // si tiene el aura entonces no gana fireball!
+                            CastSpell(this,57761);
+                    }
+                    else if (procSpell->SpellFamilyFlags[0] & 0x260) // frost damaging spells
+                    {
+                        CastSpell(this,57761,true);
+                    }
+                }
+                break;
                 // Combustion
                 case 11129:
                 {
