@@ -759,10 +759,10 @@ public:
 
         void EnterCombat(Unit * /*who*/)
         {
-            events.ScheduleEvent(EVENT_SHADOW_WORD_PAIN, SEKUNDEN_05);
-            events.ScheduleEvent(EVENT_CIRCLE_OF_DESTRUCTION, SEKUNDEN_10);
-            events.ScheduleEvent(EVENT_COWER_IN_FEAR, SEKUNDEN_15);
-            events.ScheduleEvent(EVENT_DARK_MENDING, SEKUNDEN_20);
+            events.ScheduleEvent(EVENT_SHADOW_WORD_PAIN, 8000);
+            events.ScheduleEvent(EVENT_CIRCLE_OF_DESTRUCTION, 12000);
+            events.ScheduleEvent(EVENT_COWER_IN_FEAR, 10000);
+            events.ScheduleEvent(EVENT_DARK_MENDING, 20000);
         }
 
         void UpdateAI(const uint32 diff)
@@ -801,7 +801,7 @@ public:
                         if (Unit * target = SelectTarget(SELECT_TARGET_RANDOM, 0, 20.0f, true))
                         {
                             DoCast(target, SPELL_COWER_IN_FEAR);
-                            events.RescheduleEvent(EVENT_COWER_IN_FEAR, SEKUNDEN_10);
+                            events.RescheduleEvent(EVENT_COWER_IN_FEAR, 12000);
                         }
                         else
                             events.RescheduleEvent(EVENT_COWER_IN_FEAR, 1 * IN_MILLISECONDS);
@@ -810,12 +810,12 @@ public:
                         if (Unit * target = DoSelectLowestHpFriendly(40.0f, 30000))
                         {
                             DoCast(target, SPELL_DARK_MENDING);
-                            events.RescheduleEvent(EVENT_DARK_MENDING, SEKUNDEN_20);
+                            events.RescheduleEvent(EVENT_DARK_MENDING, 20000);
                         }
                         else
                         {
                             DoCast(SPELL_DARK_MENDING);
-                            events.RescheduleEvent(EVENT_DARK_MENDING, urand(SEKUNDEN_10, SEKUNDEN_20));
+                            events.RescheduleEvent(EVENT_DARK_MENDING, urand(12000, 20000));
                         }
                         break;
                 }
@@ -849,10 +849,10 @@ public:
         void EnterCombat(Unit * /*who*/)
         {
             events.ScheduleEvent(EVENT_FIREBALL, 1 * IN_MILLISECONDS);
-            events.ScheduleEvent(EVENT_FLAMESTRIKE, SEKUNDEN_05);
-            events.ScheduleEvent(EVENT_FROSTBOLT, SEKUNDEN_10);
-            events.ScheduleEvent(EVENT_CHAINS_OF_ICE, SEKUNDEN_15);
-            events.ScheduleEvent(EVENT_HALLUCINATION, SEKUNDEN_30);
+            events.ScheduleEvent(EVENT_FLAMESTRIKE, 8000);
+            events.ScheduleEvent(EVENT_FROSTBOLT, 12000);
+            events.ScheduleEvent(EVENT_CHAINS_OF_ICE, 10000);
+            events.ScheduleEvent(EVENT_HALLUCINATION, 40000);
         }
 
         void UpdateAI(const uint32 diff)
@@ -873,20 +873,20 @@ public:
                         if (Unit * target = SelectTarget(SELECT_TARGET_RANDOM, 0, 40.0f, true))
                         {
                             DoCast(target, SPELL_FIREBALL);
-                            events.RescheduleEvent(EVENT_FIREBALL, urand(SEKUNDEN_10, SEKUNDEN_15));
+                            events.RescheduleEvent(EVENT_FIREBALL, urand(12000, 10000));
                         }
                         else
                             events.RescheduleEvent(EVENT_FIREBALL, 1 * IN_MILLISECONDS);
                         break;
                     case EVENT_FLAMESTRIKE:
                         DoCast(SPELL_FLAMESTRIKE);
-                        events.ScheduleEvent(EVENT_FLAMESTRIKE, urand(SEKUNDEN_10, SEKUNDEN_15));
+                        events.ScheduleEvent(EVENT_FLAMESTRIKE, urand(12000, 10000));
                         break;
                     case EVENT_FROSTBOLT:
                         if (Unit * target = SelectTarget(SELECT_TARGET_RANDOM, 0, 40.0f, true))
                         {
                             DoCast(target, SPELL_FROSTBOLT);
-                            events.RescheduleEvent(EVENT_FROSTBOLT, urand(SEKUNDEN_10, SEKUNDEN_15));
+                            events.RescheduleEvent(EVENT_FROSTBOLT, urand(12000, 10000));
                         }
                         else
                             events.RescheduleEvent(EVENT_FROSTBOLT, 1 * IN_MILLISECONDS);
@@ -895,7 +895,7 @@ public:
                         if (Unit * target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100.0f, true))
                         {
                             DoCast(target, SPELL_CHAINS_OF_ICE);
-                            events.RescheduleEvent(EVENT_CHAINS_OF_ICE, urand(SEKUNDEN_10, SEKUNDEN_20));
+                            events.RescheduleEvent(EVENT_CHAINS_OF_ICE, urand(12000, 20000));
                         }
                         else
                             events.RescheduleEvent(EVENT_CHAINS_OF_ICE, 1 * IN_MILLISECONDS);
@@ -956,10 +956,10 @@ public:
 
         void EnterCombat(Unit * /*who*/)
         {
-            events.ScheduleEvent(EVENT_SHADOW_STEP, SEKUNDEN_10);
-            events.ScheduleEvent(EVENT_DEADLY_POISON, SEKUNDEN_05);
-            events.ScheduleEvent(EVENT_ENVENOMED_DAGGER_THROW, SEKUNDEN_10);
-            events.ScheduleEvent(EVENT_KIDNEY_SHOT, SEKUNDEN_15);
+            events.ScheduleEvent(EVENT_SHADOW_STEP, 12000);
+            events.ScheduleEvent(EVENT_DEADLY_POISON, 8000);
+            events.ScheduleEvent(EVENT_ENVENOMED_DAGGER_THROW, 12000);
+            events.ScheduleEvent(EVENT_KIDNEY_SHOT, 10000);
         }
 
         void UpdateAI(const uint32 diff)
@@ -978,24 +978,24 @@ public:
                 {
                     case EVENT_SHADOW_STEP:
                         DoCast(SPELL_SHADOW_STEP);
-                        events.RescheduleEvent(EVENT_SHADOW_STEP, urand(SEKUNDEN_10, SEKUNDEN_15));
+                        events.RescheduleEvent(EVENT_SHADOW_STEP, urand(12000, 10000));
                         break;
                     case EVENT_DEADLY_POISON:
                         DoCastVictim(SPELL_DEADLY_POISON);
-                        events.ScheduleEvent(EVENT_DEADLY_POISON, urand(SEKUNDEN_05, SEKUNDEN_15));
+                        events.ScheduleEvent(EVENT_DEADLY_POISON, urand(8000, 10000));
                         break;
                     case EVENT_ENVENOMED_DAGGER_THROW:
                         if (Unit * target = SelectTarget(SELECT_TARGET_RANDOM, 0, 40.0f, true))
                         {
                             DoCast(target, SPELL_ENVENOMED_DAGGER_THROW);
-                            events.RescheduleEvent(EVENT_ENVENOMED_DAGGER_THROW, urand(SEKUNDEN_05, SEKUNDEN_10));
+                            events.RescheduleEvent(EVENT_ENVENOMED_DAGGER_THROW, urand(8000, 12000));
                         }
                         else
                             events.RescheduleEvent(EVENT_ENVENOMED_DAGGER_THROW, 1 * IN_MILLISECONDS);
                         break;
                     case EVENT_KIDNEY_SHOT:
                         DoCastVictim(SPELL_KIDNEY_SHOT);
-                        events.RescheduleEvent(EVENT_KIDNEY_SHOT, urand(SEKUNDEN_05, SEKUNDEN_10));
+                        events.RescheduleEvent(EVENT_KIDNEY_SHOT, urand(8000, 12000));
                         break;
                 }
             }
@@ -1027,9 +1027,9 @@ public:
 
         void EnterCombat(Unit * /*who*/)
         {
-            events.ScheduleEvent(EVENT_SPECTRAL_STRIKE, SEKUNDEN_05);
-            events.ScheduleEvent(EVENT_SHIELD_BASH, SEKUNDEN_10);
-            events.ScheduleEvent(EVENT_TORTURED_ENRAGE, SEKUNDEN_15);
+            events.ScheduleEvent(EVENT_SPECTRAL_STRIKE, 8000);
+            events.ScheduleEvent(EVENT_SHIELD_BASH, 12000);
+            events.ScheduleEvent(EVENT_TORTURED_ENRAGE, 10000);
         }
 
         void UpdateAI(const uint32 diff)
@@ -1048,15 +1048,15 @@ public:
                 {
                     case EVENT_SPECTRAL_STRIKE:
                         DoCastVictim(SPELL_SPECTRAL_STRIKE);
-                        events.RescheduleEvent(EVENT_SPECTRAL_STRIKE, SEKUNDEN_05);
+                        events.RescheduleEvent(EVENT_SPECTRAL_STRIKE, 8000);
                         break;
                     case EVENT_SHIELD_BASH:
                         DoCastVictim(SPELL_SHIELD_BASH);
-                        events.RescheduleEvent(EVENT_SHIELD_BASH, SEKUNDEN_05);
+                        events.RescheduleEvent(EVENT_SHIELD_BASH, 8000);
                         break;
                     case EVENT_TORTURED_ENRAGE:
                         DoCast(SPELL_TORTURED_ENRAGE);
-                        events.RescheduleEvent(EVENT_TORTURED_ENRAGE, SEKUNDEN_15);
+                        events.RescheduleEvent(EVENT_TORTURED_ENRAGE, 10000);
                         break;
                 }
             }
@@ -1089,9 +1089,9 @@ public:
         void EnterCombat(Unit * /*who*/)
         {
             events.ScheduleEvent(EVENT_SHOOT, 2 * IN_MILLISECONDS);
-            events.ScheduleEvent(EVENT_CURSED_ARROW, SEKUNDEN_05);
+            events.ScheduleEvent(EVENT_CURSED_ARROW, 8000);
             events.ScheduleEvent(EVENT_FROST_TRAP, 1 * IN_MILLISECONDS);
-            events.ScheduleEvent(EVENT_ICE_SHOT, SEKUNDEN_10);
+            events.ScheduleEvent(EVENT_ICE_SHOT, 12000);
         }
 
         void UpdateAI(const uint32 diff)
@@ -1121,20 +1121,20 @@ public:
                         if (Unit * target = SelectTarget(SELECT_TARGET_RANDOM, 0, 40.0f, true))
                         {
                             DoCast(target, SPELL_CURSED_ARROW);
-                            events.RescheduleEvent(EVENT_CURSED_ARROW, urand(SEKUNDEN_05, SEKUNDEN_15));
+                            events.RescheduleEvent(EVENT_CURSED_ARROW, urand(8000, 10000));
                         }
                         else
                             events.RescheduleEvent(EVENT_CURSED_ARROW, 1 * IN_MILLISECONDS);
                         break;
                     case EVENT_FROST_TRAP:
                         DoCast(SPELL_FROST_TRAP);
-                        events.RescheduleEvent(EVENT_FROST_TRAP, SEKUNDEN_30);
+                        events.RescheduleEvent(EVENT_FROST_TRAP, 40000);
                         break;
                     case EVENT_ICE_SHOT:
                         if (Unit * target = SelectTarget(SELECT_TARGET_RANDOM, 0, 40.0f, true))
                         {
                             DoCast(target, SPELL_ICE_SHOT);
-                            events.RescheduleEvent(EVENT_ICE_SHOT, urand(SEKUNDEN_10, SEKUNDEN_15));
+                            events.RescheduleEvent(EVENT_ICE_SHOT, urand(12000, 10000));
                         }
                         else
                             events.RescheduleEvent(EVENT_ICE_SHOT, 1 * IN_MILLISECONDS);
@@ -1249,8 +1249,8 @@ public:
 
         void EnterCombat(Unit * /*victim*/)
         {
-            events.ScheduleEvent(EVENT_SHIELD, SEKUNDEN_05);
-            events.ScheduleEvent(EVENT_SPIKE, urand(SEKUNDEN_10, SEKUNDEN_15));
+            events.ScheduleEvent(EVENT_SHIELD, 8000);
+            events.ScheduleEvent(EVENT_SPIKE, urand(12000, 10000));
 
             DoScriptText(SAY_AGGRO, me);
 
@@ -1290,7 +1290,7 @@ public:
                         if (Unit * target = SelectTarget(SELECT_TARGET_RANDOM, 0, 45.0f, true))
                         {
                             DoCast(target, SPELL_SPIKE);
-                            events.RescheduleEvent(EVENT_SPIKE, urand(SEKUNDEN_05, SEKUNDEN_15));
+                            events.RescheduleEvent(EVENT_SPIKE, urand(8000, 10000));
                         }
                         else
                             events.RescheduleEvent(EVENT_SPIKE, 1 * IN_MILLISECONDS);
@@ -2094,7 +2094,7 @@ public:
             else
                 PlrGUID = 0;
 
-            checktimer = SEKUNDEN_05;
+            checktimer = 8000;
         }
 
         void Reset()
@@ -2138,7 +2138,7 @@ public:
             if (PlrGUID && checktimer && checktimer <= diff)
             {
                 CheckQuelDelarPlr();
-                checktimer = SEKUNDEN_05;
+                checktimer = 8000;
             }
             else
                 checktimer -= diff;
@@ -2166,7 +2166,7 @@ public:
         {
             me->SetDisplayId(30547);
             me->setActive(false);
-            waittimer = SEKUNDEN_20;
+            waittimer = 20000;
             instance = me->GetInstanceScript();
             // TODO: Spell finden, der den NPC als Schwert sichtbar macht!
         }
@@ -2179,8 +2179,8 @@ public:
 
         void EnterCombat(Unit * /*who*/)
         {
-            events.ScheduleEvent(EVENT_HELDENHAFTER_STOSS, SEKUNDEN_05);
-            events.ScheduleEvent(EVENT_KLINGENSTURM, SEKUNDEN_10);
+            events.ScheduleEvent(EVENT_HELDENHAFTER_STOSS, 8000);
+            events.ScheduleEvent(EVENT_KLINGENSTURM, 12000);
             events.ScheduleEvent(EVENT_TOEDLICHER_STOSS, 8 * IN_MILLISECONDS);
         }
 
@@ -2220,16 +2220,16 @@ public:
                 {
                     case EVENT_HELDENHAFTER_STOSS:
                         DoCastVictim(SPELL_HELDENHAFTER_STOSS);
-                        events.RescheduleEvent(EVENT_HELDENHAFTER_STOSS, SEKUNDEN_10);
+                        events.RescheduleEvent(EVENT_HELDENHAFTER_STOSS, 12000);
                         break;
                     case EVENT_KLINGENSTURM:
                         DoCastAOE(SPELL_KLINGENSTURM, true);
                         DoCastAOE(SPELL_WHIRLWIND_VISUAL, true);
-                        events.RescheduleEvent(EVENT_KLINGENSTURM, urand(SEKUNDEN_10, SEKUNDEN_20));
+                        events.RescheduleEvent(EVENT_KLINGENSTURM, urand(12000, 20000));
                         break;
                     case EVENT_TOEDLICHER_STOSS:
                         DoCastVictim(SPELL_TOEDLICHER_STOSS);
-                        events.RescheduleEvent(EVENT_TOEDLICHER_STOSS, urand(SEKUNDEN_10, SEKUNDEN_20));
+                        events.RescheduleEvent(EVENT_TOEDLICHER_STOSS, urand(12000, 20000));
                         break;
                 }
             }

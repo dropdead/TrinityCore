@@ -372,23 +372,23 @@ public:
                         events.CancelEvent(EVENT_NEXT_WAVE);
                         break;
                     }
-                    if (data == START_WAVES) // Start der Wellen
+                    if (data == START_WAVES) 
                     {
                         CloseDoor(FrontDoorGUID);
                         events.ScheduleEvent(EVENT_NEXT_WAVE, 0);
                         break;
                     }
-                    if (data == START_NEXT_WAVE_INSTANT) // Nächste Welle sofort
+                    if (data == START_NEXT_WAVE_INSTANT) 
                     {
                         events.RescheduleEvent(EVENT_NEXT_WAVE, 0);
                         break;
                     }
-                    if (data == START_NEXT_WAVE) // Nächste Welle starten
+                    if (data == START_NEXT_WAVE) 
                     {
-                        events.RescheduleEvent(EVENT_NEXT_WAVE, SEKUNDEN_60);
+                        events.RescheduleEvent(EVENT_NEXT_WAVE, 60000);
                         break;
                     }
-                    if (WaveCnt && data == START_RESET) // Wipe
+                    if (WaveCnt && data == START_RESET) 
                     {
                         DoWipe();
                         break;
@@ -400,7 +400,7 @@ public:
                 case DATA_FALRIC_EVENT:
                     Encounter[0] = data;
                     if (data == DONE)
-                        events.RescheduleEvent(EVENT_NEXT_WAVE, SEKUNDEN_60);
+                        events.RescheduleEvent(EVENT_NEXT_WAVE, 60000);
                     break;
                 case DATA_MARWYN_EVENT:
                     Encounter[1] = data;
