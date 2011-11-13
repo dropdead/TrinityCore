@@ -32,7 +32,7 @@ UPDATE `creature_template` SET `scale`='0.8' WHERE `entry` IN (@NPC_UTHER, @NPC_
 
 -- Creature Spawns
 SET @GUID_CREATURE := 202284;
-DELETE FROM creature WHERE map=668 AND id IN (14881, 36723, 37221, 37704, 37906, 38112, 38113);
+DELETE FROM `creature` WHERE map=668 AND `id` IN (14881, 36723, 37221, 37704, 37906, 38112, 38113);
 INSERT INTO `creature` (`guid`, `id`, `map`, `spawnMask`, `phaseMask`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `dynamicflags`) VALUES
 (@GUID_CREATURE+1,'37704','668','3','1','17612','0','5309.08','2006.32','711.422','3.93429','604800','0','0','12600','0','0','0','0','0'),
 (@GUID_CREATURE+2,'14881','668','3','1','1160','0','5337.6','2012.14','707.695','3.52509','604800','0','0','8','0','0','0','0','0'),
@@ -306,3 +306,33 @@ INSERT INTO `gameobject_loot_template` VALUES
 (27985, 49848, 0, 1, 2, 1, 1),
 (27985, 49849, 0, 1, 1, 1, 1),
 (27985, 49851, 0, 1, 2, 1, 1);
+
+-- Inmunidades.
+UPDATE `creature_template` SET `mechanic_immune_mask` = `mechanic_immune_mask`|1|2|8|16|32|64|128|256|512|1024|2048|4096|8192|65536|131072|524288|4194304|8388608|33554432|536870912 WHERE `entry` IN (SELECT `id`  FROM `creature` WHERE map=668);
+UPDATE `creature_template` SET `mechanic_immune_mask` = `mechanic_immune_mask`|1|2|8|16|32|64|128|256|512|1024|2048|4096|8192|65536|131072|524288|4194304|8388608|33554432|536870912 WHERE `entry` IN 
+(
+38112,
+38113,
+36723,
+37107,
+36954,
+37745,
+37158,
+37226,
+37225,
+37221,
+36955,
+37223,
+37554,
+37182,
+37833,
+38177,
+38173,
+38176,
+38175,
+38172,
+37906,
+37014,
+36940,
+36941,
+37069);
