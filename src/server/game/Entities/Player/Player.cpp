@@ -1654,6 +1654,12 @@ void Player::Update(uint32 p_time)
         }
     }
 
+    // Remueve montura cuando usas dispersion en ella.
+    if (HasAura(47585) && HasAuraType(SPELL_AURA_MOUNTED))
+    {
+        ToPlayer()->RemoveAurasByType(SPELL_AURA_MOUNTED);
+    }
+
     if (HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_RESTING))
     {
         if (roll_chance_i(3) && GetTimeInnEnter() > 0)      // freeze update
