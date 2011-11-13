@@ -3087,6 +3087,7 @@ void SpellMgr::LoadDbcDataCorrections()
             case 42611: // Shoot
             case 61588: // Blazing Harpoon
             case 52479: // Gift of the Harvester
+            case 56397: // Arcane Barrage
                 spellInfo->MaxAffectedTargets = 1;
                 break;
             case 42132: // Headless Horseman - Start Fire
@@ -3105,6 +3106,7 @@ void SpellMgr::LoadDbcDataCorrections()
             case 28542: // Life Drain - Sapphiron
             case 66588: // Flaming Spear
             case 54171: // Divine Storm
+            case 61693: // Arcane Storm
                 spellInfo->MaxAffectedTargets = 3;
                 break;
             case 38310: // Multi-Shot
@@ -3126,6 +3128,7 @@ void SpellMgr::LoadDbcDataCorrections()
             case 40861: // Wicked Beam
             case 54835: // Curse of the Plaguebringer - Noth (H)
             case 54098: // Poison Bolt Volly - Faerlina (H)
+            case 61694: // Arcane Storm
                 spellInfo->MaxAffectedTargets = 10;
                 break;
             case 50312: // Unholy Frenzy
@@ -3303,6 +3306,16 @@ void SpellMgr::LoadDbcDataCorrections()
                 break;
             case 56790: // Create Harpoon
                 spellInfo->EffectImplicitTargetA[0] = TARGET_UNIT_TARGET_ANY;
+                break;
+            case 55849: // Power Spark
+                spellInfo->AttributesEx3 |= SPELL_ATTR3_STACK_FOR_DIFF_CASTERS;
+                break;
+            case 56430: // Arcane Bomb
+            case 61421: // Ride Vehicle
+            case 62309: // Ride Vehicle (Scales w/ Gear)
+            case 65031: // Ride Vehicle (Scales w/ Gear)
+            case 65266: // Gear Scaling
+                spellInfo->AttributesEx6 |= SPELL_ATTR6_CAN_TARGET_UNTARGETABLE;
                 break;
             // ULDUAR SPELLS
             //
