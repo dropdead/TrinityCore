@@ -1,21 +1,39 @@
 #include "ScriptPCH.h"
 
+enum Zones
+{
+    ZONE_ELWYNN_FOREST  = 12,
+    ZONE_DUROTAR        = 14,
+    ZONE_DALARAN        = 4395,
+};
+
 class Duelo_Reset : public PlayerScript
 {
     public:
         Duelo_Reset() : PlayerScript("Duelo_Reset") { }
 
-    void OnDuelEnd(Player *winner, Player *looser, DuelCompleteType type)
+    void OnDuelEnd(Player* winner, Player* loser, DuelCompleteType type)
     {
-        // Reinicio de Cd en Ogri - SW, implica tambien Full HP y mana .
-        if (winner->GetZoneId() == 0 || winner->GetZoneId() == 41 || winner->GetZoneId() == 616)
+        if (type == DUEL_WON)
         {
-            winner->RemoveArenaSpellCooldowns();
-            looser->RemoveArenaSpellCooldowns();
-            winner->SetHealth(winner->GetMaxHealth());
-            winner->SetPower(POWER_MANA, winner->GetMaxPower(POWER_MANA));
-            looser->SetHealth(looser->GetMaxHealth());
-            looser->SetPower(POWER_MANA, looser->GetMaxPower(POWER_MANA));
+            switch (winner->GetZoneId())
+            {
+                case ZONE_ELWYNN_FOREST:
+                case ZONE_DUROTAR:
+                case ZONE_DALARAN:
+                    winner->RemoveArenaSpellCooldowns();
+                    loser->RemoveArenaSpellCooldowns();
+                    winner->SetHealth(winner->GetMaxHealth());
+                    loser->SetHealth(loser->GetMaxHealth());
+
+                    if (winner->getPowerType() == POWER_MANA)
+                        winner->SetPower(POWER_MANA, winner->GetMaxPower(POWER_MANA));
+
+                    if (loser->getPowerType() == POWER_MANA)
+                        loser->SetPower(POWER_MANA, loser->GetMaxPower(POWER_MANA));
+
+                    break;
+            }
         }
     }
 };
