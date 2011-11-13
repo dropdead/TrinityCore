@@ -1179,6 +1179,7 @@ void World::LoadConfigSettings(bool reload)
 
     // Dungeon finder
     m_bool_configs[CONFIG_DUNGEON_FINDER_ENABLE] = ConfigMgr::GetBoolDefault("DungeonFinder.Enable", false);
+    m_bool_configs[CONFIG_DUNGEON_FINDER_DESERTER] = ConfigMgr::GetBoolDefault("DungeonFinder.CastDeserter", true);
 
     // DBC_ItemAttributes
     m_bool_configs[CONFIG_DBC_ENFORCE_ITEM_ATTRIBUTES] = ConfigMgr::GetBoolDefault("DBC.EnforceItemAttributes", true);

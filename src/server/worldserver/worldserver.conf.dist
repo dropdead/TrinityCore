@@ -1397,6 +1397,15 @@ AllowTickets = 1
 DungeonFinder.Enable = 0
 
 #
+#     DungeonFinder.CastDeserter
+#        Description: Enable or disable the deserter spell when a player leaves an heroic dungeon
+#                     or a dungeon, having used the Dungeon Finder
+#        Default:     1 - (Enabled)
+#                     0 - (Disabled)
+	
+DungeonFinder.CastDeserter = 1
+
+#
 #   DBC.EnforceItemAttributes
 #        Description: Disallow overriding item attributes stored in DBC files with values from the
 #                     database.

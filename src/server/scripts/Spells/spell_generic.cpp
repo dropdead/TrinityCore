@@ -1319,34 +1319,27 @@ class spell_gen_luck_of_the_draw : public SpellScriptLoader
 public:
     spell_gen_luck_of_the_draw() : SpellScriptLoader("spell_gen_luck_of_the_draw") { }
 
-    class spell_gen_luck_of_the_draw_AuraScript : public AuraScript
+    class spell_gen_luck_of_the_draw_SpellScript : public SpellScript
     {
-        PrepareAuraScript(spell_gen_luck_of_the_draw_AuraScript);
+        PrepareSpellScript(spell_gen_luck_of_the_draw_SpellScript)
 
-        bool CheckAreaTarget(Unit* target)
+        void HandleHit(SpellEffIndex /*effIndex*/)
         {
-            Unit* caster = GetCaster();
-            Map* map = target->GetMap();
-
-            if(!caster || !map)
-                return false;
-
-            if(map->IsDungeon())
-                return true;
-            
-            target->RemoveAurasDueToSpell(this->GetId());
-            return false;
+            if (Unit* target = GetHitUnit())
+                if (Map* map = target->GetMap())
+                    if (!map->IsDungeon())
+                        target->RemoveAurasDueToSpell(GetSpellInfo()->Id);
 
         }
         void Register()
         {
-            DoCheckAreaTarget += AuraCheckAreaTargetFn(spell_gen_luck_of_the_draw_AuraScript::CheckAreaTarget);
+            OnEffectHitTarget += SpellEffectFn(spell_gen_luck_of_the_draw_SpellScript::HandleHit, EFFECT_0, SPELL_EFFECT_APPLY_AURA);
         }
     };
 
-    AuraScript* GetAuraScript() const
+    SpellScript* GetSpellScript() const
     {
-        return new spell_gen_luck_of_the_draw_AuraScript();
+        return new spell_gen_luck_of_the_draw_SpellScript();
     }
 };
 
