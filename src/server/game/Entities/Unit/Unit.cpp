@@ -8527,6 +8527,13 @@ bool Unit::HandleProcTriggerSpell(Unit* victim, uint32 damage, AuraEffect* trigg
             {
                 switch (auraSpellInfo->Id)
                 {
+                    case 53709: //Shield of the Templar - silence
+                    case 53710:
+                    case 53711:
+                    {
+                        trigger_spell_id = 63529;
+                        break;
+                    }
                     // Healing Discount
                     case 37705:
                     {
