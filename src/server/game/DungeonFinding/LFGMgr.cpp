@@ -521,10 +521,7 @@ void LFGMgr::Join(Player* plr, uint8 roles, const LfgDungeonSet& selectedDungeon
                     if (dungeons.size() > 1)               // Only allow 1 random dungeon
                         joinData.result = LFG_JOIN_DUNGEON_INVALID;
                     else
-                    {
                         rDungeonId = (*dungeons.begin());
-                        isRandom = true;
-                    }
                     // No break on purpose (Random can only be dungeon or heroic dungeon)
                 case LFG_TYPE_HEROIC:
                 case LFG_TYPE_DUNGEON:
