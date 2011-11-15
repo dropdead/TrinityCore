@@ -2988,6 +2988,9 @@ void SpellMgr::LoadDbcDataCorrections()
             // ###############################
             // FINAL CAMBIOS POR DELAY MAGICO
             // ###############################
+            case 45524: // Chains of Ice - [Death Knight]
+                spellInfo->Effect[2] = 0; //Aplicaba el efecto de cadenas visualmente sobre el dk
+                break;
             case 1543:  // Flare - [Hunter] llega al lugar donde se lanza instantaneamente 
                 spellInfo->speed = 100;
                 break;
