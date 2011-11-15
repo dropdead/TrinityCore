@@ -7727,7 +7727,7 @@ bool Unit::HandleDummyAuraProc(Unit* victim, uint32 damage, AuraEffect* triggere
             // Wandering Plague
             if (dummySpell->SpellIconID == 1614)
             {
-                if (!roll_chance_f(GetUnitCriticalChance(BASE_ATTACK, victim)))
+                if (!roll_chance_f(GetUnitCriticalChance(BASE_ATTACK, this)))
                     return false;
                 basepoints0 = CalculatePctN(int32(damage), triggerAmount);
                 triggered_spell_id = 50526;
