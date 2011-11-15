@@ -3388,6 +3388,7 @@ void SpellMgr::LoadDbcDataCorrections()
             case 70860: // Frozen Throne Teleport
             case 70861: // Sindragosa's Lair Teleport
                 spellInfo->EffectImplicitTargetA[0] = TARGET_DEST_DB;
+                spellInfo->speed = 0;
                 break;
             case 69055: // Saber Lash (Lord Marrowgar)
             case 70814: // Saber Lash (Lord Marrowgar)
