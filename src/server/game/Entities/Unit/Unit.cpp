@@ -6864,7 +6864,7 @@ bool Unit::HandleDummyAuraProc(Unit* victim, uint32 damage, AuraEffect* triggere
                         return false;
 
                     // At melee attack or Hammer of the Righteous spell damage considered as melee attack
-                    bool stacker = !procSpell || procSpell->Id == 53595;
+                    bool stacker = !procSpell || procSpell->Id == 53595|| procSpell->Id == 71433 || procSpell->Id == 71434;
                     // spells with SPELL_DAMAGE_CLASS_MELEE excluding Judgements
                     bool damager = procSpell && procSpell->EquippedItemClass != -1;
 
@@ -6896,7 +6896,7 @@ bool Unit::HandleDummyAuraProc(Unit* victim, uint32 damage, AuraEffect* triggere
                         return false;
 
                     // At melee attack or Hammer of the Righteous spell damage considered as melee attack
-                    bool stacker = !procSpell || procSpell->Id == 53595;
+                    bool stacker = !procSpell || procSpell->Id == 53595|| procSpell->Id == 71433 || procSpell->Id == 71434;
                     // spells with SPELL_DAMAGE_CLASS_MELEE excluding Judgements
                     bool damager = procSpell && procSpell->EquippedItemClass != -1;
 
