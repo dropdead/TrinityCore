@@ -11005,7 +11005,8 @@ bool Unit::isSpellCrit(Unit* victim, SpellInfo const* spellProto, SpellSchoolMas
                         case  849: modChance+= 17;
                             if (!victim->HasAuraState(AURA_STATE_FROZEN, spellProto, this))
                                 break;
-                            crit_chance+=modChance;
+                            if ((spellProto->Id == 71757) || victim->HasAuraState(AURA_STATE_FROZEN, spellProto, this))
+                                crit_chance+=modChance;
                             break;
                         case 7917: // Glyph of Shadowburn
                             if (victim->HasAuraState(AURA_STATE_HEALTHLESS_35_PERCENT, spellProto, this))
