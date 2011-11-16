@@ -3320,6 +3320,9 @@ void Spell::EffectDispel(SpellEffIndex effIndex)
 
     if (dispel_list.empty())
         return;
+    
+    if (damage > int32(dispel_list.size()))
+        damage = int32(dispel_list.size());
 
     // Ok if exist some buffs for dispel try dispel it
     uint32 failCount = 0;
