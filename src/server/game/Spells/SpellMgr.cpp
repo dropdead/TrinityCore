@@ -2988,6 +2988,11 @@ void SpellMgr::LoadDbcDataCorrections()
             // ###############################
             // FINAL CAMBIOS POR DELAY MAGICO
             // ###############################
+            case 67188: //Tier 9 bono 2 piezas dps - [Paladin]
+            case 67118: //Tier 9 bono 4 piezas dps - [Death Knight]
+            case 67150: //Tier 9 bono 2 piezas - [Hunter]
+                spellInfo->Effect[1] = 0;
+                break;
             case 45524: // Chains of Ice - [Death Knight]
                 spellInfo->Effect[2] = 0; //Aplicaba el efecto de cadenas visualmente sobre el dk
                 break;
