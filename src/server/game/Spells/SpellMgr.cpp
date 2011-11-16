@@ -3385,6 +3385,13 @@ void SpellMgr::LoadDbcDataCorrections()
             // THESE SPELLS ARE WORKING CORRECTLY EVEN WITHOUT THIS HACK
             // THE ONLY REASON ITS HERE IS THAT CURRENT GRID SYSTEM
             // DOES NOT ALLOW FAR OBJECT SELECTION (dist > 333)
+            case 70127: // Mystic Buffet
+            case 72528:
+            case 72529:
+            case 72530:
+                spellInfo->EffectImplicitTargetA[1] = TARGET_SRC_CASTER;
+                spellInfo->EffectImplicitTargetB[1] = TARGET_UNIT_AREA_ENEMY_SRC;
+                break;
             case 70781: // Light's Hammer Teleport
             case 70856: // Oratory of the Damned Teleport
             case 70857: // Rampart of Skulls Teleport
