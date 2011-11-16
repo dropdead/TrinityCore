@@ -3390,7 +3390,7 @@ void SpellMgr::LoadDbcDataCorrections()
             case 72529:
             case 72530:
                 spellInfo->EffectImplicitTargetA[1] = TARGET_SRC_CASTER;
-                spellInfo->EffectImplicitTargetB[1] = TARGET_UNIT_AREA_ENEMY_SRC;
+                spellInfo->EffectImplicitTargetB[1] = TARGET_UNIT_SRC_AREA_ENEMY;
                 break;
             case 70781: // Light's Hammer Teleport
             case 70856: // Oratory of the Damned Teleport
