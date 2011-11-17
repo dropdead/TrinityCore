@@ -3667,9 +3667,9 @@ void Unit::RemoveAurasDueToSpellByDispel(uint32 spellId, uint64 casterGUID, Unit
                             break;
                         if (AuraEffect const* aurEff = aura->GetEffect(EFFECT_0))
                         {
-                            int32 damage = aurEff->GetAmount() * 9;
+                            int32 damage = aurEff->GetAmount() * 9; //daño base del dispel UA
                             // backfire damage and silence
-                            caster->CastCustomSpell(dispeller, 31117, &damage, NULL, NULL, true, NULL, aurEff);
+                            caster->CastCustomSpell(dispeller, 31117, &damage, NULL, NULL, true, NULL, aurEff, aura->GetCasterGUID());
                         }
                     }
                     break;
