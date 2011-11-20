@@ -3667,9 +3667,9 @@ void Unit::RemoveAurasDueToSpellByDispel(uint32 spellId, uint64 casterGUID, Unit
                             break;
                         if (AuraEffect const* aurEff = aura->GetEffect(EFFECT_0))
                         {
-                            int32 damage = aurEff->GetAmount() * 9;
+                            int32 damage = aurEff->GetAmount() * 9; //daño base del dispel UA
                             // backfire damage and silence
-                            caster->CastCustomSpell(dispeller, 31117, &damage, NULL, NULL, true, NULL, aurEff);
+                            caster->CastCustomSpell(dispeller, 31117, &damage, NULL, NULL, true, NULL, aurEff, aura->GetCasterGUID());
                         }
                     }
                     break;
@@ -9126,11 +9126,11 @@ bool Unit::HandleProcTriggerSpell(Unit* victim, uint32 damage, AuraEffect* trigg
         // Culling the Herd
         case 70893:
         {
-            // check if we're doing a critical hit
-            if (!(procSpell->SpellFamilyFlags[1] & 0x10000000) && (procEx != PROC_EX_CRITICAL_HIT) )
-                return false;
             // check if we're procced by Claw, Bite or Smack (need to use the spell icon ID to detect it)
-            if (!(procSpell->SpellIconID == 262 || procSpell->SpellIconID == 1680 || procSpell->SpellIconID == 473 ))
+            if (!(procSpell->SpellIconID == 262 || procSpell->SpellIconID == 1680 || procSpell->SpellIconID == 473))
+                return false;
+            // chequeo de golpe critico
+            if (procEx != PROC_EX_CRITICAL_HIT)                
                 return false;
             break;
         }
