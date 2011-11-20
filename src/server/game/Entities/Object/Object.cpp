@@ -1794,11 +1794,14 @@ bool WorldObject::CanDetectStealthOf(WorldObject const* obj) const
         // Level difference: 5 point / level, starting from level 1.
         // There may be spells for this and the starting points too, but
         //   not in the DBCs of the client.
-        detectionValue += int32(getLevelForTarget(obj) - 1) * 5;
+        detectionValue += int32(getLevelForTarget(obj)) * 5;
 
         // Apply modifiers
         detectionValue += m_stealthDetect.GetValue(StealthType(i));
         detectionValue -= obj->m_stealth.GetValue(StealthType(i));
+
+        if (distance < 2.5f)              //si esta muy cerca lo detectara
+        detectionValue += 1000;
 
         // Calculate max distance
         float visibilityRange = float(detectionValue) * 0.3f + combatReach;
