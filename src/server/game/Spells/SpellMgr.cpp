@@ -2979,6 +2979,7 @@ void SpellMgr::LoadDbcDataCorrections()
             case 47846: // Shadow Fury - [Warlock]
             case 47847: // Shadow Fury - [Warlock]
             case 64044: // Psychic Horror - [Priest]
+            case 46968: // Shockwave - [Warrior]
                 spellInfo->speed = 0;
                 break;
             case 1953:  // Blink - [Mago]
