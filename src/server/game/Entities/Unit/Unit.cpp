@@ -12298,8 +12298,9 @@ bool Unit::_IsValidAttackTarget(Unit const* target, SpellInfo const* bySpell) co
         if (IsOnVehicle(target) || m_vehicle->GetBase()->IsOnVehicle(target))
             return false;
 
-    // can't attack invisible (ignore stealth for aoe spells)
-    if ((!bySpell || !(bySpell->AttributesEx6 & SPELL_ATTR6_CAN_TARGET_INVISIBLE)) && !canSeeOrDetect(target, bySpell && bySpell->IsAOE()))
+    // can't attack invisible
+    if ((!bySpell || !(bySpell->AttributesEx6 & SPELL_ATTR6_CAN_TARGET_INVISIBLE)) 
+        && (!canSeeOrDetect(target, bySpell && bySpell->IsAOE()) & !(target->HasAuraType(SPELL_AURA_MOD_STEALTH)))) // si esta stealth, entonces es valido
         return false;
 
     // can't attack dead
