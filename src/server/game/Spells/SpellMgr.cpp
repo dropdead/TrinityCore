@@ -2997,8 +2997,10 @@ void SpellMgr::LoadDbcDataCorrections()
             case 45524: // Chains of Ice - [Death Knight]
                 spellInfo->Effect[2] = 0; //Aplicaba el efecto de cadenas visualmente sobre el dk
                 break;
-            case 1543:  // Flare - [Hunter] llega al lugar donde se lanza instantaneamente 
-                spellInfo->speed = 100;
+            case 1543:  // Flare - [Hunter] 
+                spellInfo->EffectRadiusIndex[0] = EFFECT_RADIUS_5_YARDS;
+                spellInfo->EffectRadiusIndex[1] = EFFECT_RADIUS_5_YARDS; //10 yardas de diametro
+                spellInfo->speed = 100; //Llega al lugar donde se lanza instantaneamente
                 break;
             case 24259: // Spell Lock - [Warlock]
                 spellInfo->speed = 80;
@@ -3404,7 +3406,7 @@ void SpellMgr::LoadDbcDataCorrections()
             case 70860: // Frozen Throne Teleport
             case 70861: // Sindragosa's Lair Teleport
                 spellInfo->EffectImplicitTargetA[0] = TARGET_DEST_DB;
-                spellInfo->speed = 0;
+                spellInfo->speed = 100;
                 break;
             case 69055: // Saber Lash (Lord Marrowgar)
             case 70814: // Saber Lash (Lord Marrowgar)
