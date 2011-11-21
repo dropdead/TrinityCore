@@ -5381,6 +5381,14 @@ SpellCastResult Spell::CheckCast(bool strict)
                     return SPELL_FAILED_BAD_TARGETS;
                 break;
             }
+            case SPELL_EFFECT_APPLY_AURA:
+            {
+                //stealth no se puede usar si estas en flare (o efectos que dispeleen el aura stealth)
+                if (m_caster->GetTypeId() == TYPEID_PLAYER
+                    && (m_spellInfo->Dispel == DISPEL_STEALTH && m_caster->HasAuraTypeWithMiscvalue(SPELL_AURA_DISPEL_IMMUNITY, DISPEL_STEALTH)))
+                    return SPELL_FAILED_ERROR;   // debe haber otra forma de hacerlo
+                break;
+            }
             case SPELL_EFFECT_TRIGGER_SPELL:
             {
                 // Spell 36554 (Shadowstep) no se puede usar mientras estas en roots
