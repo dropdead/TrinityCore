@@ -12395,7 +12395,8 @@ bool Unit::_IsValidAssistTarget(Unit const* target, SpellInfo const* bySpell) co
             return false;
 
     // can't assist invisible
-    if ((!bySpell || !(bySpell->AttributesEx6 & SPELL_ATTR6_CAN_TARGET_INVISIBLE)) && !canSeeOrDetect(target, bySpell && bySpell->IsAOE()))
+    if ((!bySpell || !(bySpell->AttributesEx6 & SPELL_ATTR6_CAN_TARGET_INVISIBLE))
+        && (!canSeeOrDetect(target, bySpell && bySpell->IsAOE()) & !(target->HasAuraType(SPELL_AURA_MOD_STEALTH))))
         return false;
 
     // can't assist dead
