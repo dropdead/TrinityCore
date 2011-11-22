@@ -8536,8 +8536,9 @@ bool Unit::HandleProcTriggerSpell(Unit* victim, uint32 damage, AuraEffect* trigg
                     case 53710:
                     case 53711:
                     {
-                        trigger_spell_id = 63529;
-                        break;
+                        if (procSpell->SpellIconID == 3016)
+                            trigger_spell_id = 63529;
+                            break;
                     }
                     // Healing Discount
                     case 37705:
