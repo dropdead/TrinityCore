@@ -1277,6 +1277,13 @@ void Spell::EffectDummy(SpellEffIndex effIndex)
                     unitTarget->Kill(unitTarget);
                     return;
                 }
+                // Glyph of Dragon's Breath
+                case 56989:  
+                {
+                    if (unitTarget)
+                        m_caster->CastSpell(m_caster, 56373, false, NULL);
+                    return;
+                }
             }
 
             break;
