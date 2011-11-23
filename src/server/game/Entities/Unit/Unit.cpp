@@ -14662,6 +14662,10 @@ void Unit::ProcDamageAndSpellFor(bool isVictim, Unit* target, uint32 procFlag, u
                     break;
             }
         }
+        // Stealth no es removido si el daño es abosorvido.
+        if ((procFlag & PROC_FLAG_TAKEN_DAMAGE) && !damage)
+            takeCharges = false;
+
         // Remove charge (aura can be removed by triggers)
         if (useCharges && takeCharges)
             i->aura->DropCharge(AURA_REMOVE_BY_EXPIRE);
