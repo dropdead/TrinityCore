@@ -1361,6 +1361,14 @@ void Spell::DoAllEffectOnTarget(TargetInfo* target)
             if (Unit * owner = caster->GetOwner())
                 if (Aura* pAura = owner->GetAura(53257))
                     pAura->DropCharge();
+
+        // Improved Devouring Plague
+        if (m_spellInfo->Id == 63675 && damageInfo.damage && caster->isAlive())
+        {
+            uint32 healthGain = damageInfo.damage * 15 / 100;
+            healthGain = caster->SpellHealingBonus(caster, m_spellInfo, healthGain, HEAL);
+            caster->HealBySpell(caster, m_spellInfo, healthGain);
+        } 
         m_damage = damageInfo.damage;
     }
     // Passive spell hits/misses or active spells only misses (only triggers)
