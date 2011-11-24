@@ -347,7 +347,7 @@ public:
 
         void UpdateAI(const uint32 diff)
         {
-            switch(Phase)
+            switch (Phase)
             {
                 case FLYING:
                     if (!UpdateVictim())
@@ -393,7 +393,7 @@ public:
 
                     if (m_uiMovementTimer <= diff)
                     {
-                        switch(m_uiWaypointId)
+                        switch (m_uiWaypointId)
                         {
                             case 0:
                                 me->GetMotionMaster()->MovePoint(0, Location[1].GetPositionX(), Location[1].GetPositionY(), Location[1].GetPositionZ());

@@ -39,14 +39,14 @@ class instance_utgarde_pinnacle : public InstanceMapScript
 public:
     instance_utgarde_pinnacle() : InstanceMapScript("instance_utgarde_pinnacle", 575) { }
 
-    InstanceScript* GetInstanceScript(InstanceMap* pMap) const
+    InstanceScript* GetInstanceScript(InstanceMap* map) const
     {
-        return new instance_pinnacle(pMap);
+        return new instance_pinnacle(map);
     }
 
     struct instance_pinnacle : public InstanceScript
     {
-        instance_pinnacle(Map* pMap) : InstanceScript(pMap) {}
+        instance_pinnacle(Map* map) : InstanceScript(map) {}
 
         uint64 uiSvalaSorrowgrave;
         uint64 uiGortokPalehoof;
@@ -140,7 +140,7 @@ public:
 
         void SetData(uint32 type, uint32 data)
         {
-            switch(type)
+            switch (type)
             {
                 case DATA_SVALA_SORROWGRAVE_EVENT:
                     m_auiEncounter[0] = data;
@@ -166,7 +166,7 @@ public:
 
         uint32 GetData(uint32 type)
         {
-            switch(type)
+            switch (type)
             {
                 case DATA_SVALA_SORROWGRAVE_EVENT:        return m_auiEncounter[0];
                 case DATA_GORTOK_PALEHOOF_EVENT:          return m_auiEncounter[1];
@@ -178,7 +178,7 @@ public:
 
         uint64 GetData64(uint32 identifier)
         {
-            switch(identifier)
+            switch (identifier)
             {
                 case DATA_SVALA_SORROWGRAVE:           return uiSvalaSorrowgrave;
                 case DATA_GORTOK_PALEHOOF:             return uiGortokPalehoof;
