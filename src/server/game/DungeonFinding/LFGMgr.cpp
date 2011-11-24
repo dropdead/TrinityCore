@@ -639,7 +639,7 @@ void LFGMgr::Join(Player* player, uint8 roles, const LfgDungeonSet& selectedDung
         }
 
         if (isRandomDungeon)
-            plr->CastSpell(plr, LFG_SPELL_DUNGEON_COOLDOWN, true);
+            player->CastSpell(player, LFG_SPELL_DUNGEON_COOLDOWN, true);
 
         AddToQueue(guid, uint8(player->GetTeam()));
     }
@@ -1733,13 +1733,12 @@ void LFGMgr::TeleportPlayer(Player* player, bool out, bool fromOpcode /*= false*
                     player->CleanupAfterTaxiFlight();
                 }
 
-<<<<<<< HEAD
                 if (player->TeleportTo(mapid, x, y, z, orientation))
                 {
                     // FIXME - HACK - this should be done by teleport, when teleporting far
                     player->RemoveAurasByType(SPELL_AURA_MOUNTED);
                     if (dungeon->type == LFG_TYPE_RANDOM)
-                        plr->CastSpell(player, LFG_SPELL_LUCK_OF_THE_DRAW, true);
+                        player->CastSpell(player, LFG_SPELL_LUCK_OF_THE_DRAW, true);
                 }
                 else
                 {
