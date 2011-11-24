@@ -611,6 +611,9 @@ void Spell::EffectSchoolDMG(SpellEffIndex effIndex)
                         if (unitTarget->GetAuraEffect(SPELL_AURA_PERIODIC_DAMAGE, SPELLFAMILY_DRUID, 0x00200000, 0, 0))
                             AddPctN(damage, aurEff->GetAmount());
                 }
+                // Item - Druid T10 Balance 2P Bonus
+                if (m_spellInfo->Id == 16870 && m_caster->HasAura(70718))
+                    m_caster->CastSpell(m_caster, 70721, true);
                 break;
             }
             case SPELLFAMILY_ROGUE:
@@ -1332,6 +1335,9 @@ void Spell::EffectDummy(SpellEffIndex effIndex)
                     rageUsed += aurEff->GetAmount() * 10;
 
                 bp = damage + int32(rageUsed * m_spellInfo->Effects[effIndex].DamageMultiplier + m_caster->GetTotalAttackPowerValue(BASE_ATTACK) * 0.2f);
+                // Item - Warrior T10 Melee 4P Bonus
+                if (Aura * aura = m_caster->GetAura(52437))
+                    aura->DropCharge();
                 break;   
             }
             // Concussion Blow
@@ -1349,7 +1355,18 @@ void Spell::EffectDummy(SpellEffIndex effIndex)
                     return;
                 }
             }
-            break;
+            // Item - Warrior T10 Melee 4P Bonus
+            if (m_spellInfo->Id == 46916 || m_spellInfo->Id == 52437)
+                if (Aura * aur = m_caster->GetAura(70847))
+                    if (roll_chance_i(20))
+                        m_caster->CastSpell(m_caster, 70849, true);
+            if (Aura * aura = m_caster->GetAura(46916))
+                if (aura->GetCharges())
+                {
+                    m_caster->ToPlayer()->RestoreSpellMods(this, 46916);
+                    aura->DropCharge();
+                }
+                break;
         case SPELLFAMILY_WARLOCK:
             // Life Tap
             if ((m_spellInfo->SpellFamilyFlags[0] & SPELLFAMILYFLAG_WARLOCK_LIFETAP) && m_caster->ToPlayer())
@@ -1410,6 +1427,13 @@ void Spell::EffectDummy(SpellEffIndex effIndex)
                 m_caster->CastSpell(unitTarget, damage, true);
                 return;
             }
+            // Item - Druid T10 Balance 2P Bonus
+            if (m_spellInfo->Id == 16870 && m_caster->HasAura(70718))
+                m_caster->CastSpell(m_caster, 70721, true);
+
+            // Item - Druid T10 Feral 4P Bonus
+            if (m_spellInfo->Id == 5229 && m_caster->HasAura(70726))
+                m_caster->CastSpell(m_caster, 70725, true);
             break;
         case SPELLFAMILY_PALADIN:
             // Divine Storm
@@ -2137,6 +2161,22 @@ void Spell::EffectApplyAura(SpellEffIndex effIndex)
         return;
     ASSERT(unitTarget == m_spellAura->GetOwner());
     m_spellAura->_ApplyEffectForTargets(effIndex);
+    switch (m_spellInfo->Id)
+    {
+        case 29131:
+        {
+            // Warrior T10(Tank) 4 items bonus
+            if (unitTarget->HasAura(70844))
+            {
+                int32 absorbtion = m_caster->GetMaxHealth();
+                absorbtion = int32(absorbtion * 0.20f);
+                m_caster->CastCustomSpell(m_caster, 70845, &absorbtion, NULL, NULL, true);
+            }
+            break;
+        }
+        default: 
+            break;
+    }
 }
 
 void Spell::EffectApplyAreaAura(SpellEffIndex effIndex)
