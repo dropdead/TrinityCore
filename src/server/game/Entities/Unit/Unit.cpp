@@ -1646,7 +1646,7 @@ uint32 Unit::CalcSpellResistance(Unit * victim, SpellSchoolMask schoolMask, bool
 
     int32 levelDiff = std::max<int32>(victim->getLevel() - getLevel(), 0);
 
-    int32 baseVictimResistance = pVictim->GetResistance(GetFirstSchoolInMask(schoolMask));
+    int32 baseVictimResistance = victim->GetResistance(GetFirstSchoolInMask(schoolMask));
     uint32 spellPenetration = GetSpellPenetration(schoolMask);
     int32 victimResistance = std::max<int32>(baseVictimResistance - spellPenetration, 0);
 
@@ -1718,7 +1718,8 @@ void Unit::CalcAbsorbResist(Unit * victim, SpellSchoolMask schoolMask, DamageEff
 
     DamageInfo dmgInfo = DamageInfo(this, victim, damage, spellInfo, schoolMask, damagetype);
 
-    bool binary = (spellInfo && (uint32(sSpellMgr->GetSpellCustomAttr(spellInfo->Id) & SPELL_ATTR0_CU_BINARY) > 0));
+    bool binary = (spellInfo && (uint32(spellInfo->AttributesCu & SPELL_ATTR0_CU_BINARY) > 0));
+     //   sSpellMgr->GetSpellCustomAttr(spellInfo->Id) & SPELL_ATTR0_CU_BINARY) > 0));
     if (!binary)
         if (calc_resist >= 0)
             dmgInfo.ResistDamage(damage * calc_resist / 100);
@@ -2543,7 +2544,7 @@ uint32 Unit::CalcMagicSpellHitChance(Unit * victim, SpellSchoolMask schoolMask, 
     int32 lchance = victim->GetTypeId() == TYPEID_PLAYER ? 7 : 11;
     int32 thisLevel = getLevelForTarget(victim);
     if (GetTypeId() == TYPEID_UNIT && ToCreature()->isTrigger())
-        thisLevel = std::max<int32>(thisLevel, spellInfo->SpellLevel);
+        thisLevel = std::max<int32>(thisLevel, spellProto->SpellLevel);
     int32 leveldif = int32(victim->getLevelForTarget(this)) - thisLevel;
 
     // Base hit chance from attacker and victim levels
@@ -2583,7 +2584,7 @@ uint32 Unit::CalcMagicSpellHitChance(Unit * victim, SpellSchoolMask schoolMask, 
         if (!(spellProto->SpellFamilyName == SPELLFAMILY_WARLOCK && spellProto->SpellIconID == 3178)) // Chaos Bolt should ignore it
             modHitChance += victim->GetTotalAuraModifierByMiscMask(SPELL_AURA_MOD_ATTACKER_SPELL_HIT_CHANCE, schoolMask);
         // Reduce spell hit chance for Area of effect spells from victim SPELL_AURA_MOD_AOE_AVOIDANCE aura
-        if (spell->IsAOE())
+        if (spellProto->IsAOE())
             modHitChance -= victim->GetTotalAuraModifier(SPELL_AURA_MOD_AOE_AVOIDANCE);
 
         // Decrease hit chance from victim rating bonus
@@ -2595,12 +2596,14 @@ uint32 Unit::CalcMagicSpellHitChance(Unit * victim, SpellSchoolMask schoolMask, 
     modHitChance -= victim->GetMechanicResistChance(spellProto);
 
     // Chance resist debuff
-    if (!IsPositiveSpell(spellProto->Id))
+    if (!spellProto->IsPositive())
+       //!IsPositiveSpell(spellProto->Id))
     {
         bool bNegativeAura = false;
         for (uint8 i = 0; i < MAX_SPELL_EFFECTS; ++i)
         {
-            if (spellProto->EffectApplyAuraName[i] != 0)
+            if (spellProto->Effects[i].ApplyAuraName != 0)
+             // spellProto->EffectApplyAuraName[i] != 0
             {
                 bNegativeAura = true;
                 break;
@@ -2611,7 +2614,7 @@ uint32 Unit::CalcMagicSpellHitChance(Unit * victim, SpellSchoolMask schoolMask, 
         bool bDirectDamage = false;
         for (uint8 i = 0; i < MAX_SPELL_EFFECTS; ++i)
         {
-            if (spellProto->Effect[i] == SPELL_EFFECT_SCHOOL_DAMAGE || spellProto->Effect[i] == SPELL_EFFECT_HEALTH_LEECH)
+            if (spellProto->Effects[i].Effect == SPELL_EFFECT_SCHOOL_DAMAGE || spellProto->Effects[i].Effect == SPELL_EFFECT_HEALTH_LEECH)
             {
                 bDirectDamage = true;
                 break;
@@ -2644,7 +2647,7 @@ SpellMissInfo Unit::MagicSpellHitResult(Unit * victim, SpellInfo const * spell)
     if (!victim->isAlive() && victim->GetTypeId() != TYPEID_PLAYER)
         return SPELL_MISS_NONE;
 
-    SpellSchoolMask schoolMask = GetSpellSchoolMask(spell);
+    SpellSchoolMask schoolMask = spell->GetSchoolMask(); //GetSpellSchoolMask(spell);
 
     int32 ignoredResistance = 0;
 

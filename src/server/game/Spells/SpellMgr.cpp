@@ -2764,70 +2764,47 @@ void SpellMgr::LoadSpellCustomAttr()
                 if (spellInfo->Mechanic != 0 &&
                     spellInfo->Mechanic != MECHANIC_INFECTED)
                 {
-                    mSpellCustomAttr[i] |= SPELL_ATTR0_CU_BINARY;
-                    count++;
+                    spellInfo->AttributesCu = SPELL_ATTR0_CU_BINARY;
                 }
-                else if (spellInfo->EffectMechanic[0] != 0 &&
-                    spellInfo->EffectMechanic[0] != MECHANIC_INFECTED &&
-                    spellInfo->Effect[1] != SPELL_EFFECT_SCHOOL_DAMAGE)
+                else if (spellInfo->Effects[0].Mechanic != 0 &&
+                    spellInfo->Effects[0].Mechanic != MECHANIC_INFECTED &&
+                    spellInfo->Effects[1].Effect != SPELL_EFFECT_SCHOOL_DAMAGE)
                 {
-                    mSpellCustomAttr[i] |= SPELL_ATTR0_CU_BINARY;
-                    count++;
+                    spellInfo->AttributesCu = SPELL_ATTR0_CU_BINARY;
                 }
-                else if (spellInfo->EffectMechanic[1] != 0 &&
-                    spellInfo->EffectMechanic[1] != MECHANIC_INFECTED)
+                else if (spellInfo->Effects[1].Mechanic != 0 &&
+                    spellInfo->Effects[1].Mechanic != MECHANIC_INFECTED)
                 {
-                    mSpellCustomAttr[i] |= SPELL_ATTR0_CU_BINARY;
-                    count++;
+                    spellInfo->AttributesCu = SPELL_ATTR0_CU_BINARY;
                 }
-                else if (spellInfo->Effect[0] == SPELL_EFFECT_DISPEL ||
-                    spellInfo->Effect[1] == SPELL_EFFECT_DISPEL ||
-                    spellInfo->Effect[2] == SPELL_EFFECT_DISPEL)
+                else if (spellInfo->Effects[MAX_SPELL_EFFECTS].Effect = SPELL_EFFECT_DISPEL)
                 {
-                    mSpellCustomAttr[i] |= SPELL_ATTR0_CU_BINARY;
-                    count++;
+                    spellInfo->AttributesCu = SPELL_ATTR0_CU_BINARY;
                 }
-                else if (spellInfo->Effect[0] == SPELL_EFFECT_STEAL_BENEFICIAL_BUFF ||
-                    spellInfo->Effect[1] == SPELL_EFFECT_STEAL_BENEFICIAL_BUFF ||
-                    spellInfo->Effect[2] == SPELL_EFFECT_STEAL_BENEFICIAL_BUFF)
+                else if (spellInfo->Effects[MAX_SPELL_EFFECTS].Effect = SPELL_EFFECT_STEAL_BENEFICIAL_BUFF)
                 {
-                    mSpellCustomAttr[i] |= SPELL_ATTR0_CU_BINARY;
-                    count++;
+                    spellInfo->AttributesCu = SPELL_ATTR0_CU_BINARY;
                 }
-                else if (spellInfo->Effect[0] == SPELL_EFFECT_POWER_BURN ||
-                    spellInfo->Effect[1] == SPELL_EFFECT_POWER_BURN ||
-                    spellInfo->Effect[2] == SPELL_EFFECT_POWER_BURN)
+                else if (spellInfo->Effects[MAX_SPELL_EFFECTS].Effect = SPELL_EFFECT_POWER_BURN)
                 {
-                    mSpellCustomAttr[i] |= SPELL_ATTR0_CU_BINARY;
-                    count++;
+                    spellInfo->AttributesCu = SPELL_ATTR0_CU_BINARY;
                 }
-                else if (spellInfo->Effect[0] == SPELL_EFFECT_POWER_DRAIN ||
-                    spellInfo->Effect[1] == SPELL_EFFECT_POWER_DRAIN ||
-                    spellInfo->Effect[2] == SPELL_EFFECT_POWER_DRAIN)
+                else if (spellInfo->Effects[MAX_SPELL_EFFECTS].Effect = SPELL_EFFECT_POWER_DRAIN)
                 {
-                    mSpellCustomAttr[i] |= SPELL_ATTR0_CU_BINARY;
-                    count++;
+                    spellInfo->AttributesCu = SPELL_ATTR0_CU_BINARY;
                 }
-                else if (spellInfo->EffectApplyAuraName[0] == SPELL_AURA_PERIODIC_MANA_LEECH ||
-                    spellInfo->EffectApplyAuraName[1] == SPELL_AURA_PERIODIC_MANA_LEECH ||
-                    spellInfo->EffectApplyAuraName[2] == SPELL_AURA_PERIODIC_MANA_LEECH)
+                else if (spellInfo->Effects[MAX_SPELL_EFFECTS].ApplyAuraName = SPELL_AURA_PERIODIC_MANA_LEECH)
                 {
-                    mSpellCustomAttr[i] |= SPELL_ATTR0_CU_BINARY;
-                    count++;
+                    spellInfo->AttributesCu = SPELL_ATTR0_CU_BINARY;
                 }
                 else if ((spellInfo->Dispel == DISPEL_POISON) ||
                     (spellInfo->Dispel == DISPEL_CURSE) ||
                     (spellInfo->Dispel == DISPEL_DISEASE))
                 {
-                    if (spellInfo->Effect[0] != SPELL_EFFECT_SCHOOL_DAMAGE &&
-                        spellInfo->Effect[1] != SPELL_EFFECT_SCHOOL_DAMAGE &&
-                        spellInfo->Effect[2] != SPELL_EFFECT_SCHOOL_DAMAGE &&
-                        spellInfo->EffectApplyAuraName[0] != SPELL_AURA_PERIODIC_DAMAGE &&
-                        spellInfo->EffectApplyAuraName[1] != SPELL_AURA_PERIODIC_DAMAGE &&
-                        spellInfo->EffectApplyAuraName[2] != SPELL_AURA_PERIODIC_DAMAGE)
+                    if (spellInfo->Effects[MAX_SPELL_EFFECTS].Effect != SPELL_EFFECT_SCHOOL_DAMAGE &&
+                        spellInfo->Effects[MAX_SPELL_EFFECTS].ApplyAuraName != SPELL_AURA_PERIODIC_DAMAGE)
                     {
-                        mSpellCustomAttr[i] |= SPELL_ATTR0_CU_BINARY;
-                        count++;
+                         spellInfo->AttributesCu = SPELL_ATTR0_CU_BINARY;
                     }
                 }
             }
