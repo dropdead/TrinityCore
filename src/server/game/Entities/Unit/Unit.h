@@ -1495,6 +1495,7 @@ class Unit : public WorldObject
         float GetUnitMissChance(WeaponAttackType attType)     const;
         float GetUnitCriticalChance(WeaponAttackType attackType, const Unit* pVictim) const;
         int32 GetMechanicResistChance(const SpellInfo* spell);
+        int32 GetMechanicResistChance(const SpellInfo *spell) const;
         bool CanUseAttackType(uint8 attacktype) const
         {
             switch (attacktype)
@@ -1519,6 +1520,7 @@ class Unit : public WorldObject
                 value = soft_cap + ((value - soft_cap) / 2);
             }
 
+        
             return value;
         }
         uint32 GetUnitMeleeSkill(Unit const* target = NULL) const { return (target ? getLevelForTarget(target) : getLevel()) * 5; }
@@ -2058,6 +2060,7 @@ class Unit : public WorldObject
         static bool IsDamageReducedByArmor(SpellSchoolMask damageSchoolMask, SpellInfo const* spellInfo = NULL, uint8 effIndex = MAX_SPELL_EFFECTS);
         uint32 CalcArmorReducedDamage(Unit* pVictim, const uint32 damage, SpellInfo const* spellInfo, WeaponAttackType attackType=MAX_ATTACK);
         void CalcAbsorbResist(Unit* pVictim, SpellSchoolMask schoolMask, DamageEffectType damagetype, const uint32 damage, uint32 *absorb, uint32 *resist, SpellInfo const* spellInfo = NULL);
+        uint32 CalcSpellResistance(Unit * pVictim, SpellSchoolMask schoolMask, bool binary, SpellEntry const * spellProto) const;
         void CalcHealAbsorb(Unit* pVictim, const SpellInfo* spellProto, uint32 &healAmount, uint32 &absorb);
 
         void  UpdateSpeed(UnitMoveType mtype, bool forced);

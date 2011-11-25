@@ -2759,6 +2759,27 @@ void SpellMgr::LoadSpellCustomAttr()
             }
         }
 
+                    spellInfo->AttributesCu = SPELL_ATTR0_CU_BINARY;
+                else if (spellInfo->Effects[0].Mechanic != 0 &&
+                    spellInfo->Effects[0].Mechanic != MECHANIC_INFECTED &&
+                    spellInfo->Effects[1].Effect != SPELL_EFFECT_SCHOOL_DAMAGE)
+                    spellInfo->AttributesCu = SPELL_ATTR0_CU_BINARY;
+                else if (spellInfo->Effects[1].Mechanic != 0 &&
+                    spellInfo->Effects[1].Mechanic != MECHANIC_INFECTED)
+                    spellInfo->AttributesCu = SPELL_ATTR0_CU_BINARY;
+                else if (spellInfo->Effects[MAX_SPELL_EFFECTS].Effect = SPELL_EFFECT_DISPEL)
+                    spellInfo->AttributesCu = SPELL_ATTR0_CU_BINARY;
+                else if (spellInfo->Effects[MAX_SPELL_EFFECTS].Effect = SPELL_EFFECT_STEAL_BENEFICIAL_BUFF)
+                    spellInfo->AttributesCu = SPELL_ATTR0_CU_BINARY;
+                else if (spellInfo->Effects[MAX_SPELL_EFFECTS].Effect = SPELL_EFFECT_POWER_BURN)
+                    spellInfo->AttributesCu = SPELL_ATTR0_CU_BINARY;
+                else if (spellInfo->Effects[MAX_SPELL_EFFECTS].Effect = SPELL_EFFECT_POWER_DRAIN)
+                    spellInfo->AttributesCu = SPELL_ATTR0_CU_BINARY;
+                else if (spellInfo->Effects[MAX_SPELL_EFFECTS].ApplyAuraName = SPELL_AURA_PERIODIC_MANA_LEECH)
+                    spellInfo->AttributesCu = SPELL_ATTR0_CU_BINARY;
+                    if (spellInfo->Effects[MAX_SPELL_EFFECTS].Effect != SPELL_EFFECT_SCHOOL_DAMAGE &&
+                        spellInfo->Effects[MAX_SPELL_EFFECTS].ApplyAuraName != SPELL_AURA_PERIODIC_DAMAGE)
+                         spellInfo->AttributesCu = SPELL_ATTR0_CU_BINARY;
         if (!spellInfo->_IsPositiveEffect(EFFECT_0, false))
             spellInfo->AttributesCu |= SPELL_ATTR0_CU_NEGATIVE_EFF0;
 
