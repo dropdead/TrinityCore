@@ -1290,6 +1290,8 @@ void Guardian::UpdateAttackPowerAndDamage(bool ranged)
 
     if (GetEntry() == ENTRY_IMP)                                   // imp's attack power
         val = GetStat(STAT_STRENGTH) - 10.0f;
+    else if (GetEntry() == ENTRY_GHOUL)
+        val = GetStat(STAT_STRENGTH) + 138.0f;                     // ghoul attack power
     else
         val = 2 * GetStat(STAT_STRENGTH) - 20.0f;
 
@@ -1317,8 +1319,7 @@ void Guardian::UpdateAttackPowerAndDamage(bool ranged)
         }
         else if (IsPetGhoul()) //ghouls benefit from deathknight's attack power (may be summon pet or not)
         {
-            bonusAP = owner->GetTotalAttackPowerValue(BASE_ATTACK) * 0.22f;
-            SetBonusDamage(int32(owner->GetTotalAttackPowerValue(BASE_ATTACK) * 0.1287f));
+            float mod = 1.0f;
         }
         //demons benefit from warlocks shadow or fire damage
         else if (isPet())
