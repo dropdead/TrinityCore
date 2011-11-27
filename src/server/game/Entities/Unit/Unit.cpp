@@ -2578,38 +2578,7 @@ SpellMissInfo Unit::MagicSpellHitResult(Unit* victim, SpellInfo const* spell)
    // Roll chance
     if (rand < tmp)
         return SPELL_MISS_RESIST;
-
-    // Decrease hit chance from victim rating bonus
-    if (victim->ToPlayer())
-        hit -= int32(victim->ToPlayer()->GetRatingBonusValue(CR_HIT_TAKEN_SPELL) * 100.0f);
-
-    hit = std::min<int32>(std::max<int32>(hit, 100), 10000);
-
-    return uint32(hit);
-}
-
-SpellMissInfo Unit::MagicSpellHitResult(Unit * victim, SpellInfo const * spell)
-{
-    // Can`t miss on dead target (on skinning for example)
-    if (!victim->isAlive() && victim->GetTypeId() != TYPEID_PLAYER)
-        return SPELL_MISS_NONE;
-
-    SpellSchoolMask schoolMask = GetSpellSchoolMask(spell);
-
-    int32 ignoredResistance = 0;
-
-    AuraEffectList const & aurasA = GetAuraEffectsByType(SPELL_AURA_MOD_ABILITY_IGNORE_TARGET_RESIST);
-    for (AuraEffectList::const_iterator itr = aurasA.begin(); itr != aurasA.end(); ++itr)
-        if (((*itr)->GetMiscValue() & schoolMask) && (*itr)->IsAffectedOnSpell(spell))
-            ignoredResistance += (*itr)->GetAmount();
-
-    AuraEffectList const & aurasB = GetAuraEffectsByType(SPELL_AURA_MOD_IGNORE_TARGET_RESIST);
-    for (AuraEffectList::const_iterator itr = aurasB.begin(); itr != aurasB.end(); ++itr)
-        if ((*itr)->GetMiscValue() & schoolMask)
-            ignoredResistance += (*itr)->GetAmount();
-
-    ignoredResistance = std::min(ignoredResistance, int32(100));
-
+    
     // cast by caster in front of victim
     if (victim->HasInArc(M_PI, this) || victim->HasAuraType(SPELL_AURA_IGNORE_HIT_DIRECTION))
     {
@@ -2617,31 +2586,7 @@ SpellMissInfo Unit::MagicSpellHitResult(Unit * victim, SpellInfo const * spell)
         tmp += deflect_chance;
         if (rand < tmp)
             return SPELL_MISS_DEFLECT;
-    }
-
-    int32 deflect_chance = (victim->GetTotalAuraModifier(SPELL_AURA_DEFLECT_SPELLS) * (100 - ignoredResistance) / 100) * 100;
-
-    if (deflect_chance > 0)
-        if (victim->HasInArc(M_PI, this) || victim->HasAuraType(SPELL_AURA_IGNORE_HIT_DIRECTION))
-        {
-            int32 rand = irand(0, 10000);
-
-            if (rand < deflect_chance)
-                return SPELL_MISS_DEFLECT;
-        }
-        
-        int32 miss = (10000 - CalcMagicSpellHitChance(victim, schoolMask, spell)) * (100 - ignoredResistance) / 100;
-
-        int32 rand = irand(0, 10000);
-
-        if (rand < miss)
-            return SPELL_MISS_MISS;
-
-    // Spells with SPELL_ATTR3_IGNORE_HIT_RESULT will additionally fully ignore
-    // resist and deflect chances
-    if (spell->AttributesEx3 & SPELL_ATTR3_IGNORE_HIT_RESULT)
-        return SPELL_MISS_NONE;
-    
+    }  
     return SPELL_MISS_NONE;
 }
 
