@@ -2048,6 +2048,21 @@ void Unit::HandleProcExtraAttackFor(Unit* victim)
     }
 }
 
+bool isInEvasiveManeuvers(const Unit* victim)
+{
+    if (victim->HasAura(50240))
+    {
+
+        if (Aura* evasiveCharges = victim->GetAura(50241))
+            if (evasiveCharges->GetStackAmount() > 1)
+                evasiveCharges->SetStackAmount(evasiveCharges->GetStackAmount() - 1);
+            else
+                evasiveCharges->Remove();
+        return true;
+    }   
+    return false;
+}
+
 MeleeHitOutcome Unit::RollMeleeOutcomeAgainst(const Unit* victim, WeaponAttackType attType) const
 {
     // This is only wrapper
@@ -2123,6 +2138,9 @@ MeleeHitOutcome Unit::RollMeleeOutcomeAgainst (const Unit* victim, WeaponAttackT
         // Modify dodge chance by attacker SPELL_AURA_MOD_COMBAT_RESULT_CHANCE
         dodge_chance+= GetTotalAuraModifierByMiscValue(SPELL_AURA_MOD_COMBAT_RESULT_CHANCE, VICTIMSTATE_DODGE) * 100;
         dodge_chance = int32 (float (dodge_chance) * GetTotalAuraMultiplier(SPELL_AURA_MOD_ENEMY_DODGE));
+
+        if (isInEvasiveManeuvers(victim))
+            return MELEE_HIT_DODGE;
 
         tmp = dodge_chance;
         if ((tmp > 0)                                        // check if unit _can_ dodge
@@ -2616,6 +2634,9 @@ uint32 Unit::CalcMagicSpellHitChance(Unit * victim, SpellSchoolMask schoolMask, 
         }
     }
 
+    if (isInEvasiveManeuvers(victim))
+        return SPELL_MISS_DODGE;
+
     int32 hit = modHitChance * 100;
     // Increase hit chance from attacker SPELL_AURA_MOD_SPELL_HIT_CHANCE and attacker ratings
     hit += int32(source->m_modSpellHitChance * 100.0f);
@@ -2707,6 +2728,9 @@ SpellMissInfo Unit::SpellHitResult(Unit* victim, SpellInfo const* spell, bool Ca
     // Return evade for units in evade mode
     if (victim->GetTypeId() == TYPEID_UNIT && victim->ToCreature()->IsInEvadeMode())
         return SPELL_MISS_EVADE;
+
+    if (isInEvasiveManeuvers(victim))
+        return SPELL_MISS_RESIST;
 
     // Try victim reflect spell
     if (CanReflect)

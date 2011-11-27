@@ -3083,6 +3083,13 @@ void SpellMgr::LoadDbcDataCorrections()
             case 57993: // Envenom (Rank 4)
                 spellInfo->Dispel = 0;
                 break;
+            case 49840: // Shock Lance
+            case 49592: // Temporal rift
+            case 50328: // Leeching poison
+            case 50341: // Touch the nightmare
+            case 50344: // Dream Funnel
+            case 50232: // Searing Wrath
+                spellInfo->TargetCreatureType = CREATURE_TYPE_DRAGONKIN;
             case 49838: // Stop Time
             case 50526: // Wandering Plague
                 spellInfo->AttributesEx3 |= SPELL_ATTR3_NO_INITIAL_AGGRO;
