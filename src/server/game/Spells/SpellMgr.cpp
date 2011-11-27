@@ -2684,8 +2684,7 @@ void SpellMgr::LoadSpellCustomAttr()
                     break;                
                 case SPELL_AURA_PERIODIC_HEAL:
                 case SPELL_AURA_PERIODIC_DAMAGE_PERCENT:
-                case SPELL_AURA_PERIODIC_LEECH:
-                case SPELL_AURA_PERIODIC_TRIGGER_SPELL:               
+                case SPELL_AURA_PERIODIC_LEECH:               
                 case SPELL_AURA_PERIODIC_HEALTH_FUNNEL:
                 case SPELL_AURA_PERIODIC_ENERGIZE:
                 case SPELL_AURA_PERIODIC_TRIGGER_SPELL:
