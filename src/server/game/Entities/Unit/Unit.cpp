@@ -1620,7 +1620,6 @@ void Unit::CalcAbsorbResist(Unit* victim, SpellSchoolMask schoolMask, DamageEffe
             resistanceConstant = level * 5.0f;
 
         float averageResist = victimResistance / (victimResistance + resistanceConstant);
-    int32 baseVictimResistance = pVictim->GetResistance(GetFirstSchoolInMask(schoolMask));
         float discreteResistProbability[11];
         for (uint32 i = 0; i < 11; ++i)
         {
@@ -1654,9 +1653,6 @@ void Unit::CalcAbsorbResist(Unit* victim, SpellSchoolMask schoolMask, DamageEffe
         for (AuraEffectList::const_iterator j = ResIgnoreAuras.begin(); j != ResIgnoreAuras.end(); ++j)
             if ((*j)->GetMiscValue() & schoolMask)
                 AddPctN(damageResisted, -(*j)->GetAmount());
-
-    bool binary = (spellInfo && (uint32(sSpellMgr->GetSpellCustomAttr(spellInfo->Id) & SPELL_ATTR0_CU_BINARY) > 0));
-            damageResisted = 0;
 
         dmgInfo.ResistDamage(uint32(damageResisted));
     }
@@ -2486,7 +2482,7 @@ SpellMissInfo Unit::MagicSpellHitResult(Unit* victim, SpellInfo const* spell)
     int32 lchance = victim->GetTypeId() == TYPEID_PLAYER ? 7 : 11;
     int32 thisLevel = getLevelForTarget(victim);
     if (GetTypeId() == TYPEID_UNIT && ToCreature()->isTrigger())
-        thisLevel = std::max<int32>(thisLevel, spellInfo->SpellLevel);
+        thisLevel = std::max<int32>(thisLevel, spell->SpellLevel);
     int32 leveldif = int32(victim->getLevelForTarget(this)) - thisLevel;
 
     // Base hit chance from attacker and victim levels
@@ -2509,7 +2505,7 @@ SpellMissInfo Unit::MagicSpellHitResult(Unit* victim, SpellInfo const* spell)
         // Chance hit from victim SPELL_AURA_MOD_ATTACKER_SPELL_HIT_CHANCE auras
         modHitChance += victim->GetTotalAuraModifierByMiscMask(SPELL_AURA_MOD_ATTACKER_SPELL_HIT_CHANCE, schoolMask);
         // Reduce spell hit chance for Area of effect spells from victim SPELL_AURA_MOD_AOE_AVOIDANCE aura
-        if (spellProto->IsAOE())
+        if (spell->IsAOE())
             modHitChance -= victim->GetTotalAuraModifier(SPELL_AURA_MOD_AOE_AVOIDANCE);
 
         // Decrease hit chance from victim rating bonus
@@ -2543,14 +2539,12 @@ SpellMissInfo Unit::MagicSpellHitResult(Unit* victim, SpellInfo const* spell)
     tmp += resist_chance;
 
     // Chance resist debuff
-    if (!IsPositiveSpell(spellProto->Id))
-       //!IsPositiveSpell(spellProto->Id))
+    if (!spell->IsPositive())
     {
         bool bNegativeAura = false;
         for (uint8 i = 0; i < MAX_SPELL_EFFECTS; ++i)
         {
-            if (spellProto->EffectApplyAuraName[i] != 0)
-             // spellProto->EffectApplyAuraName[i] != 0
+            if (spell->Effects[i].ApplyAuraName != 0)
             {
                 bNegativeAura = true;
                 break;
@@ -2561,7 +2555,7 @@ SpellMissInfo Unit::MagicSpellHitResult(Unit* victim, SpellInfo const* spell)
         bool bDirectDamage = false;
         for (uint8 i = 0; i < MAX_SPELL_EFFECTS; ++i)
         {
-            if (spellProto->Effect[i] == SPELL_EFFECT_SCHOOL_DAMAGE || spellProto->Effect[i] == SPELL_EFFECT_HEALTH_LEECH)
+            if (spell->Effects[i].Effect == SPELL_EFFECT_SCHOOL_DAMAGE || spell->Effects[i].Effect == SPELL_EFFECT_HEALTH_LEECH)
             {
                 bDirectDamage = true;
                 break;
