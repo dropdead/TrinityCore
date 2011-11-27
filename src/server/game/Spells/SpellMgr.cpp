@@ -3644,6 +3644,9 @@ void SpellMgr::LoadDbcDataCorrections()
             case 56651: // master's call immunity removed before wotlk launch
                 spellInfo->EffectMiscValue[0] = 11;
                 break;
+            case 50720: // Vigilance
+                spellInfo->SpellFamilyName = SPELLFAMILY_WARRIOR;
+                break;
             default:
                 break;
         }
