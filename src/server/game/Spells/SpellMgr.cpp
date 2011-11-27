@@ -2681,17 +2681,21 @@ void SpellMgr::LoadSpellCustomAttr()
                     if (spellInfo->Speed == 0 && spellInfo->Mechanic != MECHANIC_FREEZE)// Excluimos el grupo MECHANIC_FREEZE como trampas de Hunter para el delay.
                         spellInfo->Speed = 43;// Delay spell 43 segun videos que vi es la mejor calculo que pude realizar tambien funciona bien con 42,5f
                     spellInfo->AttributesCu |= SPELL_ATTR0_CU_AURA_CC;
-                    break;
+                    break;                
                 case SPELL_AURA_PERIODIC_HEAL:
                 case SPELL_AURA_PERIODIC_DAMAGE:
                 case SPELL_AURA_PERIODIC_DAMAGE_PERCENT:
                 case SPELL_AURA_PERIODIC_LEECH:
-                case SPELL_AURA_PERIODIC_MANA_LEECH:
                 case SPELL_AURA_PERIODIC_HEALTH_FUNNEL:
                 case SPELL_AURA_PERIODIC_ENERGIZE:
+                case SPELL_AURA_PERIODIC_TRIGGER_SPELL:
                 case SPELL_AURA_OBS_MOD_HEALTH:
                 case SPELL_AURA_OBS_MOD_POWER:
                 case SPELL_AURA_POWER_BURN:
+                    spellInfo->AttributesCu |= SPELL_ATTR0_CU_NO_INITIAL_THREAT;
+                    break;
+                case SPELL_AURA_PERIODIC_MANA_LEECH:
+                    spellInfo->AttributesCu |= SPELL_ATTR0_CU_BINARY;
                     spellInfo->AttributesCu |= SPELL_ATTR0_CU_NO_INITIAL_THREAT;
                     break;
             }
@@ -2706,8 +2710,6 @@ void SpellMgr::LoadSpellCustomAttr()
                 case SPELL_EFFECT_HEAL:
                     spellInfo->AttributesCu |= SPELL_ATTR0_CU_DIRECT_DAMAGE;
                     break;
-                case SPELL_EFFECT_POWER_DRAIN:
-                case SPELL_EFFECT_POWER_BURN:
                 case SPELL_EFFECT_HEAL_MAX_HEALTH:
                 case SPELL_EFFECT_HEALTH_LEECH:
                 case SPELL_EFFECT_HEAL_PCT:
@@ -2722,6 +2724,16 @@ void SpellMgr::LoadSpellCustomAttr()
                 case SPELL_EFFECT_JUMP_DEST:
                 case SPELL_EFFECT_LEAP_BACK:
                     spellInfo->AttributesCu |= SPELL_ATTR0_CU_CHARGE;
+                    break;
+                case SPELL_EFFECT_DISPEL:
+                case SPELL_EFFECT_STEAL_BENEFICIAL_BUFF:
+                case SPELL_AURA_PERIODIC_MANA_LEECH:
+                    spellInfo->AttributesCu |= SPELL_ATTR0_CU_BINARY;
+                    break;
+                case SPELL_EFFECT_POWER_DRAIN:
+                case SPELL_EFFECT_POWER_BURN:
+                    spellInfo->AttributesCu |= SPELL_ATTR0_CU_NO_INITIAL_THREAT;
+                    spellInfo->AttributesCu |= SPELL_ATTR0_CU_BINARY;
                     break;
                 case SPELL_EFFECT_PICKPOCKET:
                     spellInfo->AttributesCu |= SPELL_ATTR0_CU_PICKPOCKET;
@@ -2757,57 +2769,15 @@ void SpellMgr::LoadSpellCustomAttr()
                     break;
                 }
             }
-        }
-
-        if (spellInfo->DmgClass == SPELL_DAMAGE_CLASS_MAGIC)
+        }       
+        switch (spellInfo->Mechanic)
         {
-            if (spellInfo->Mechanic != 0 &&
-                spellInfo->Mechanic != MECHANIC_INFECTED)
-            {
+            case MECHANIC_FEAR:
+            case MECHANIC_CHARM:
                 spellInfo->AttributesCu |= SPELL_ATTR0_CU_BINARY;
-            }
-            else if (spellInfo->Effects[0].Mechanic != 0 &&
-                spellInfo->Effects[0].Mechanic != MECHANIC_INFECTED &&
-                spellInfo->Effects[1].Effect != SPELL_EFFECT_SCHOOL_DAMAGE)
-            {
-                spellInfo->AttributesCu |= SPELL_ATTR0_CU_BINARY;
-            }
-            else if (spellInfo->Effects[1].Mechanic != 0 &&
-                spellInfo->Effects[1].Mechanic != MECHANIC_INFECTED)
-            {
-                spellInfo->AttributesCu |= SPELL_ATTR0_CU_BINARY;
-            }
-            else if (spellInfo->Effects[MAX_SPELL_EFFECTS].Effect = SPELL_EFFECT_DISPEL)
-            {
-                spellInfo->AttributesCu |= SPELL_ATTR0_CU_BINARY;
-            }
-            else if (spellInfo->Effects[MAX_SPELL_EFFECTS].Effect = SPELL_EFFECT_STEAL_BENEFICIAL_BUFF)
-            {
-                spellInfo->AttributesCu |= SPELL_ATTR0_CU_BINARY;
-            }
-            else if (spellInfo->Effects[MAX_SPELL_EFFECTS].Effect = SPELL_EFFECT_POWER_BURN)
-            {
-                spellInfo->AttributesCu |= SPELL_ATTR0_CU_BINARY;
-            }
-            else if (spellInfo->Effects[MAX_SPELL_EFFECTS].Effect = SPELL_EFFECT_POWER_DRAIN)
-            {
-                spellInfo->AttributesCu |= SPELL_ATTR0_CU_BINARY;
-            }
-            else if (spellInfo->Effects[MAX_SPELL_EFFECTS].ApplyAuraName = SPELL_AURA_PERIODIC_MANA_LEECH)
-            {
-                spellInfo->AttributesCu |= SPELL_ATTR0_CU_BINARY;
-            }
-            else if ((spellInfo->Dispel == DISPEL_POISON) ||
-                (spellInfo->Dispel == DISPEL_CURSE) ||
-                (spellInfo->Dispel == DISPEL_DISEASE))
-            {
-                if (spellInfo->Effects[MAX_SPELL_EFFECTS].Effect != SPELL_EFFECT_SCHOOL_DAMAGE &&
-                    spellInfo->Effects[MAX_SPELL_EFFECTS].ApplyAuraName != SPELL_AURA_PERIODIC_DAMAGE)
-                {
-                    spellInfo->AttributesCu |= SPELL_ATTR0_CU_BINARY;
-                }
-            }
+                break;
         }
+      
                    
         if (!spellInfo->_IsPositiveEffect(EFFECT_0, false))
             spellInfo->AttributesCu |= SPELL_ATTR0_CU_NEGATIVE_EFF0;

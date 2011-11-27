@@ -1317,7 +1317,7 @@ void Guardian::UpdateAttackPowerAndDamage(bool ranged)
             bonusAP = owner->GetTotalAttackPowerValue(RANGED_ATTACK) * 0.22f * mod;
             SetBonusDamage(int32(owner->GetTotalAttackPowerValue(RANGED_ATTACK) * 0.1287f * mod));
         }
-        else if (IsPetGhoul()) //ghouls benefit from deathknight's attack power (may be summon pet or not)
+        else if (IsPetGhoul())
         {
             float mod = 1.0f;
         }
