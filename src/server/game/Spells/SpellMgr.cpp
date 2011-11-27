@@ -2683,7 +2683,6 @@ void SpellMgr::LoadSpellCustomAttr()
                     spellInfo->AttributesCu |= SPELL_ATTR0_CU_AURA_CC;
                     break;                
                 case SPELL_AURA_PERIODIC_HEAL:
-                case SPELL_AURA_PERIODIC_DAMAGE:
                 case SPELL_AURA_PERIODIC_DAMAGE_PERCENT:
                 case SPELL_AURA_PERIODIC_LEECH:
                 case SPELL_AURA_PERIODIC_HEALTH_FUNNEL:
@@ -2695,8 +2694,17 @@ void SpellMgr::LoadSpellCustomAttr()
                     spellInfo->AttributesCu |= SPELL_ATTR0_CU_NO_INITIAL_THREAT;
                     break;
                 case SPELL_AURA_PERIODIC_MANA_LEECH:
+                case SPELL_AURA_PERIODIC_DAMAGE:
                     spellInfo->AttributesCu |= SPELL_ATTR0_CU_BINARY;
                     spellInfo->AttributesCu |= SPELL_ATTR0_CU_NO_INITIAL_THREAT;
+                    break;
+            }
+
+            switch (spellInfo->Effects[j].Mechanic)
+            {
+                case MECHANIC_SNARE:
+                case MECHANIC_ROOT:
+                    spellInfo->AttributesCu |= SPELL_ATTR0_CU_BINARY;
                     break;
             }
 
@@ -2774,6 +2782,8 @@ void SpellMgr::LoadSpellCustomAttr()
         {
             case MECHANIC_FEAR:
             case MECHANIC_CHARM:
+            case MECHANIC_SNARE:
+            case MECHANIC_FREEZE:
                 spellInfo->AttributesCu |= SPELL_ATTR0_CU_BINARY;
                 break;
         }
