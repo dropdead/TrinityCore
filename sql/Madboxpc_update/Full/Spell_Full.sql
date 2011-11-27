@@ -70,7 +70,7 @@ INSERT INTO `spell_dbc` (`Id`,`CastingTimeIndex`,`DurationIndex`,`RangeIndex`,`E
 UPDATE `creature_template` SET `spell1` = 6494 WHERE `entry` = 3968;
 DELETE FROM `conditions` WHERE `SourceEntry` = 6196;
 INSERT INTO `conditions` VALUES
-(17,0,6196,0,11,6495,1,0,24,'','Far Sight - Sentry Totem')
+(17,0,6196,0,11,6495,1,0,24,'','Far Sight - Sentry Totem');
 
 -- 13_[Paladin]Righteous_Defense.sql
 DELETE FROM `spell_script_names` WHERE `ScriptName`='spell_pal_righteous_defense';
