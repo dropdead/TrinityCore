@@ -1,3 +1,4 @@
+-- 13_[Quest][11343]The_Echo_Of_Ymiron.sql
 -- Quest  [The Echo of Ymiron] 
 -- http://www.wowhead.com/quest=11343
 DELETE FROM `creature` WHERE `id` IN (24327,35877);

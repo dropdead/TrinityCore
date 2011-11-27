@@ -1,3 +1,4 @@
+-- 08_[Quest][12532]flown_the_coop.sql
 -- Quest http://www.wowhead.com/quest=12532/flown-the-coop
 UPDATE `creature_template` SET `ScriptName` = 'npc_captured_chicken' WHERE `entry`  = 28161;
 -- Spawn

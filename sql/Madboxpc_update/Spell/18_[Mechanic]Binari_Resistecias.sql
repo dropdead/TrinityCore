@@ -1,3 +1,4 @@
+-- 18_[Mechanic]Binari_Resistecias.sql
 DELETE FROM `playercreateinfo_spell` WHERE `Spell` IN ('199995');
 INSERT INTO `playercreateinfo_spell` (`race`, `class`, `Spell`, `Note`) VALUES
 ('5','9','199995','Chaos Bolt Passive (SERVERSIDE)'),

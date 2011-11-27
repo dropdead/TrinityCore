@@ -1,3 +1,4 @@
+-- 12_[Dungeon]Eye_Of_Eternity.sql
 -- Spawns
 DELETE FROM `creature` WHERE `id` IN (30090, 22517);
 -- Spawn Focusing Iris (Normal/Heroic)

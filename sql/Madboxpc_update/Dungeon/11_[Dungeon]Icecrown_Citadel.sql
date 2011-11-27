@@ -1,5 +1,5 @@
+-- 11_[Dungeon]Icecrown_Citadel.sql
 -- ICC
-
 -- BOSS FESTERGUT
 -- Fix spell http://www.wowhead.com/spell=71160
 DELETE FROM `spell_script_names` WHERE `spell_id` IN (71160,71161);

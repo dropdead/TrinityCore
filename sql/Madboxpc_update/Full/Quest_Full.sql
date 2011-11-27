@@ -1,3 +1,4 @@
+-- 01_[Quest]Argent_Tournament.sql
 -- Spells Torneo Montas
 DELETE FROM `spell_script_names` WHERE `spell_id` IN (62960,62575,62544,62863);
 DELETE FROM spell_script_names WHERE spell_id = 62552;
@@ -118,8 +119,6 @@ DELETE FROM `spell_target_position` WHERE `id` IN (63986,63987);
 INSERT INTO `spell_target_position` (`id`,`target_map`,`target_position_x`,`target_position_y`,`target_position_z`,`target_orientation`) VALUES
 (63986,571,8574.87,700.595,547.29,5.48),
 (63987,571,8460,700,547.4,3.839);
--- Fix quest 10866 - Zuluhed the Whacked 
-UPDATE `quest_template` SET `ReqCreatureOrGOId1` = -185156, `ObjectiveText1` = 'Karynaku freed', `ReqCreatureOrGOId2` = 11980 , `ObjectiveText2` = 'Zuluhed the Whacked slain'  WHERE entry = 10866;
 -- Spells Monturas Horda
 UPDATE `creature_template` SET `spell1`=62544, `spell2`=62575, `spell3`=62960, `spell4`=62552, `spell5`=64077 WHERE `entry` IN (33844, 33320, 33321, 33322, 33323, 33324);
 -- Spells Monturas Ally
@@ -516,11 +515,11 @@ UPDATE creature_model_info SET bounding_radius=0.459,combat_reach=2.25,gender=0 
 DELETE FROM creature_template_addon WHERE entry=33429;
 INSERT INTO creature_template_addon (entry,mount,bytes1,bytes2,emote,auras) VALUES
 (33429,25678,0,1,0,NULL); -- Boneguard Lieutenant
+-- Fix Quest
+UPDATE `creature_template` SET ScriptName = 'npc_free_your_mind' WHERE `entry` IN (29769,29770,29840);
 
 
--- ----------------------------------------------------------------------------------------------
--- ----------------------------------------------------------------------------------------------
--- ----------------------------------------------------------------------------------------------
+
 
 -- 02_[Quest]IceCrown_Crusaders.sql
 -- ########################## Citadel Footsteps #########################
@@ -1295,12 +1294,6 @@ UPDATE `creature_template` SET `dmg_multiplier`=2 WHERE `entry` = 29851;
 UPDATE `creature_template` SET ScriptName = 'npc_saronite_mine_slave' WHERE `entry` = 31397;
 UPDATE `creature_template` SET ScriptName = 'npc_free_your_mind' WHERE `entry` IN (29769,29770,29840);
 
-
-
--- ----------------------------------------------------------------------------------------------
--- ----------------------------------------------------------------------------------------------
--- ----------------------------------------------------------------------------------------------
-
 -- 03_[Quest][12644]Still_At_It.sql
 -- Quest Still At it  http://thottbot.com/q12644 
 UPDATE `creature_template` SET `scriptname` = 'npc_tipsy_mcmanus' WHERE entry = 28566;
@@ -1308,11 +1301,6 @@ UPDATE `gameobject_template` SET `scriptname` = 'go_brew_event' WHERE entry IN (
 DELETE FROM `script_texts` WHERE entry = -1850040 AND `npc_entry`=28566;
 INSERT INTO `script_texts` (`npc_entry`,`entry`,`content_default`,`content_loc1`,`content_loc2`,`content_loc3`,`content_loc4`,`content_loc5`,`content_loc6`,`content_loc7`,`content_loc8`,`sound`,`type`,`language`,`emote`,`comment`) VALUES
 ('28566','-1850040','We''ve done it! Come get the cask...!',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0','0','0','0','Say - Complete Quest');
-
-
--- ----------------------------------------------------------------------------------------------
--- ----------------------------------------------------------------------------------------------
--- ----------------------------------------------------------------------------------------------
 
 -- 04_[Quest][11145]Prisioners_of_the_grimtotems.sql
 -- Fix Quest Prisoners of the Grimtotems
@@ -1324,13 +1312,18 @@ UPDATE `gameobject_template` SET `ScriptName`='go_Prisoners_Of_The_Grim_Totems_c
 -- Quest] Challenge to the Black Flight 
 -- ## http://www.wowhead.com/quest=11162/deprecated-challenge-to-the-black-flight
 UPDATE `creature_template` SET `scriptname` = 'npc_smolderwing' WHERE entry = 23789;
--- No Mercy for the Captured http://www.wowhead.com/quest=12245#
+
+-- 06_[Quest][12245]No_Mercy_for_the_Captured.sql
+-- Quest] No Mercy for the Captured
+--  http://www.wowhead.com/quest=12245#
 UPDATE `creature_template`SET `ScriptName` = 'npc_no_mercy_for_the_captured' WHERE `entry` IN (27376,27378,27379,27381);
 
--- ----------------------------------------------------------------------------------------------
--- ----------------------------------------------------------------------------------------------
--- ----------------------------------------------------------------------------------------------
 
+-- 07_[Quest][10866]Zuluhed_the_whacked.sql
+-- Fix quest 10866 - Zuluhed the Whacked 
+UPDATE `quest_template` SET `ReqCreatureOrGOId1` = -185156, `ObjectiveText1` = 'Karynaku freed', `ReqCreatureOrGOId2` = 11980 , `ObjectiveText2` = 'Zuluhed the Whacked slain'  WHERE entry = 10866;
+
+-- 08_[Quest][12532]flown_the_coop.sql
 -- Quest http://www.wowhead.com/quest=12532/flown-the-coop
 UPDATE `creature_template` SET `ScriptName` = 'npc_captured_chicken' WHERE `entry`  = 28161;
 -- Spawn
@@ -1370,9 +1363,75 @@ INSERT INTO `creature` (`id`, `map`, `spawnMask`, `phaseMask`, `modelid`, `equip
 ('28161','571','1','1','0','0','5289.34','4508.49','-90.184','3.24786','300','0','0','42','0','1','0','0','0'),
 ('28161','571','1','1','0','0','5287.49','4510.53','-89.5134','3.24786','300','0','0','42','0','1','0','0','0');
 
--- ----------------------------------------------------------------------------------------------
--- ----------------------------------------------------------------------------------------------
--- ----------------------------------------------------------------------------------------------
-
--- http://old.wowhead.com/quest=12891 -- segun la info encontrada estos npc deberian todas las fases
+-- 09_[Quest][12891]I_Have_an_Idea_But First.sql
+-- http://old.wowhead.com/quest=12891
 UPDATE creature SET phaseMask = 3 WHERE id IN (29719, 29720);
+
+-- 10_[Quest][10852]Missing_Friends.sql
+-- Quest 10852 Missing Friends
+UPDATE `gameobject_template` SET `ScriptName`='go_veil_skith_cage' WHERE `entry`IN (185202,185203,185204,185205);
+DELETE FROM `script_texts`  WHERE `entry` IN (-1000590,-1000591,-1000592,-1000593);
+INSERT INTO `script_texts` (`npc_entry`, `entry`, `content_default`, `content_loc1`, `content_loc2`, `content_loc3`, `content_loc4`, `content_loc5`, `content_loc6`, `content_loc7`, `content_loc8`, `sound`, `type`, `language`, `emote`, `comment`) VALUES
+(0, -1000590, 'Woot!', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, 'Captive Child SAY_THANKS_1'),
+(0, -1000591, 'I think those weird bird guys were going to eat us. Gross!', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, 'Captive Child SAY_THANKS_2'),
+(0, -1000592, 'Yay! We''re free!', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, 'Captive Child SAY_THANKS_3'),
+(0, -1000593, 'Gross!', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, 'Captive Child SAY_THANKS_4');
+
+
+-- 11_[Quest][10446-10447]The_Final_Code.sql
+-- http://www.wowhead.com/quest=10446 The Final Code (Alliance)
+-- http://www.wowhead.com/quest=10447 The Final Code (Horde)
+UPDATE `gameobject_template` SET `ScriptName`='npc_mana_bomb' WHERE `entry`=184725;
+DELETE FROM `script_texts` WHERE `entry` IN (-1000472,-1000473,-1000474,-1000475,-1000476) AND `npc_entry`=20767; 
+INSERT INTO `script_texts` (`npc_entry`,`entry`,`content_default`,`content_loc1`,`content_loc2`,`content_loc3`,`content_loc4`,`content_loc5`,`content_loc6`,`content_loc7`,`content_loc8`,`sound`,`type`,`language`,`emote`,`comment`) VALUES
+(20767,-1000472,'1...',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,0,0,'mana bomb SAY_COUNT_1'),
+(20767,-1000473,'2...',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,0,0,'mana bomb SAY_COUNT_2'),
+(20767,-1000474,'3...',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,0,0,'mana bomb SAY_COUNT_3'),
+(20767,-1000475,'4...',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,0,0,'mana bomb SAY_COUNT_4'),
+(20767,-1000476,'5...',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,0,0,'mana bomb SAY_COUNT_5');
+
+-- 12_[Quest][11429]Drop_It_Then_Rock_It.sql
+-- Fix Quest Quest: Drop It Then Rock It
+-- http://www.wowhead.com/quest=11429/drop-it-then-rock-it
+UPDATE `creature_template` SET `ScriptName` = 'npc_alliance_banner_standard' WHERE `entry` = 24640;
+
+-- 13_[Quest][11343]The_Echo_Of_Ymiron.sql
+-- Quest  [The Echo of Ymiron] 
+-- http://www.wowhead.com/quest=11343
+DELETE FROM `creature` WHERE `id` IN (24327,35877);
+INSERT INTO `creature` (`id`, `map`, `spawnMask`, `phaseMask`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`) VALUES
+(24327,571,1,2,0,0,1057.58,-4912.3,10.775,3.41592,300,0,0,9610,0,0),
+(35877,571,1,2,0,0,1059.02,-4917.42,10.6867,3.41592,300,0,0,27890000,0,0);
+UPDATE `item_template`     SET `ScriptName` = "item_ymiron_raeuchergefaess"  WHERE `entry` = 33637;
+UPDATE `creature_template` SET `ScriptName` = "AncientFeMaleVrykul" WHERE `entry` = 24315;
+UPDATE `creature_template` SET `ScriptName` = "AncientMaleVrykul"   WHERE `entry` = 24314;
+UPDATE `creature_template` SET `ScriptName` = "ValkyreYmiron"       WHERE `entry` = 24327;
+UPDATE `creature_template` SET `ScriptName` = "LichKingYmiron"      WHERE `entry` = 35877;
+DELETE FROM `script_texts` WHERE `entry` IN (-1700010,-1700011,-1700012,-1700013,-1700014,-1700015,-1700005,-1700006,-1700007,-1700008,-1700009);
+INSERT INTO `script_texts` (`npc_entry`, `entry`, `content_default`, `content_loc1`, `content_loc2`, `content_loc3`, `content_loc4`, `content_loc5`, `content_loc6`, `content_loc7`, `content_loc8`, `sound`, `type`, `language`, `emote`, `comment`) VALUES
+(0, -1700010, 'Shall we prepare it for you, my lord?', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL),
+(0, -1700011, 'So then we too are cursed?', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL),
+(0, -1700012, 'The gods have forsaken us! We must dispose of it before Ymiron is notified!', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL),
+(0, -1700013, 'Then what are we to do, wife? The others cannot find out. Should they learn of this aberration, we will all be executed.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL),
+(0, -1700014, 'NO! You cannot! I beg of you! It is our child!', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL),
+(0, -1700015, 'I... I will hide it. I will hide it until I find it a home, far away from here...', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL),
+(0, -1700005, 'Shamanism has brought you here... Its scent permeates the air. I was once a shaman.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL),
+(0, -1700006, 'No, minion. This one is not ready.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL),
+(0, -1700007, 'Do you feel it, mortal? Death seeps through me, enveloping all that I touch. With just a snap of my finger your soul will languish in damnation for all eternity.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL),
+(0, -1700008, 'But... It is not yet your time to serve the Lich King. Yes, a greater destiny awaits you. Power... You must become more powerful before you are to serve me.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL),
+(0, -1700009, 'Now watch, val\'kyr. Observe as I apply pressure. Can you see that it is not yet ripe? Watch as it pops and falls lifeless to the floor.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL);
+
+
+-- 14_[Quest][11300]Stunning_Defeat_At_The_Ring.sql
+-- Fix Quest Quest: Stunning Defeat at The Ring
+-- http://www.wowhead.com/quest=11300
+DELETE FROM `creature` WHERE `id` =23931;
+INSERT INTO `creature` (`id`, `map`, `spawnMask`, `phaseMask`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`)
+VALUES
+('23931','571','1','1','0','519','798.106','-4706.17','-96.144','4.93175','300','0','0','15968','0','0');
+
+-- 15_[Quest][11942]Words_Of_Power.sql
+-- Fix Quest "Words of Power"
+-- http://old.wowhead.com/quest=11942
+UPDATE `creature_template` SET `unit_flags`='768' WHERE `entry` IN (26073,26076);
+

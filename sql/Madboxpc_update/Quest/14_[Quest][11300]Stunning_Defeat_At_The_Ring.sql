@@ -1,3 +1,4 @@
+-- 14_[Quest][11300]Stunning_Defeat_At_The_Ring.sql
 -- Fix Quest Quest: Stunning Defeat at The Ring
 -- http://www.wowhead.com/quest=11300
 DELETE FROM `creature` WHERE `id` =23931;

@@ -1,3 +1,4 @@
+-- 11_[Quest][10446-10447]The_Final_Code.sql
 -- http://www.wowhead.com/quest=10446 The Final Code (Alliance)
 -- http://www.wowhead.com/quest=10447 The Final Code (Horde)
 UPDATE `gameobject_template` SET `ScriptName`='npc_mana_bomb' WHERE `entry`=184725;

@@ -1,3 +1,4 @@
+-- 01_[Quest]Argent_Tournament.sql
 -- Spells Torneo Montas
 DELETE FROM `spell_script_names` WHERE `spell_id` IN (62960,62575,62544,62863);
 DELETE FROM spell_script_names WHERE spell_id = 62552;

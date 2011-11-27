@@ -1,3 +1,4 @@
+-- 10_[Quest][10852]Missing_Friends.sql
 -- Quest 10852 Missing Friends
 UPDATE `gameobject_template` SET `ScriptName`='go_veil_skith_cage' WHERE `entry`IN (185202,185203,185204,185205);
 DELETE FROM `script_texts`  WHERE `entry` IN (-1000590,-1000591,-1000592,-1000593);

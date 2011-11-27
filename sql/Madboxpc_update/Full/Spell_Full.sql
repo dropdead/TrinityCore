@@ -57,4 +57,148 @@ UPDATE `creature_template_addon` SET `auras`='28305' WHERE `entry`=19668;
 -- 10[Priest]Vampiric_touch
 UPDATE `spell_bonus_data` SET `direct_bonus`='1.2' WHERE `entry`=64085;
 
+-- 11[Warrior]Bloodthirst.sql
+DELETE FROM `spell_linked_spell` WHERE `spell_trigger` = 23881;
+DELETE FROM `spell_bonus_data` WHERE `entry` = 23880;
+INSERT INTO `spell_bonus_data` VALUES (23880, 0, -1, -1, -1, 'Bloodthirst');
+
+-- 12[Shaman]Sentry_Totemt.sql
+DELETE FROM `spell_dbc` WHERE `id` IN (6494,6496);
+INSERT INTO `spell_dbc` (`Id`,`CastingTimeIndex`,`DurationIndex`,`RangeIndex`,`Effect1`,`EffectBasePoints1`,`EffectImplicitTargetA1`,`EffectImplicitTargetB1`,`EffectApplyAuraName1`,`SpellFamilyName`,`Comment`) VALUES
+(6494,1,5,1,6,1,1,27,4,11,'Sentry Totem Helper 1 (SERVERSIDE)'),
+(6496,1,5,1,6,1,25,0,1,11,'Sentry Totem Helper 2 (SERVERSIDE)');
+UPDATE `creature_template` SET `spell1` = 6494 WHERE `entry` = 3968;
+DELETE FROM `conditions` WHERE `SourceEntry` = 6196;
+INSERT INTO `conditions` VALUES
+(17,0,6196,0,11,6495,1,0,24,'','Far Sight - Sentry Totem')
+
+-- 13_[Paladin]Righteous_Defense.sql
+DELETE FROM `spell_script_names` WHERE `ScriptName`='spell_pal_righteous_defense';
+INSERT INTO `spell_script_names` (`spell_id`,`ScriptName`) VALUES
+(31789,'spell_pal_righteous_defense');
+
+
+-- 14_[Gral]Spell_Coef_Bonus_Proc.sql
+-- -----------------------
+-- DRUIDA
+-- -----------------------
+
+-- Druida Spells Fix Stack Sp y coeficientes.
+UPDATE `spell_bonus_data` SET `direct_bonus` = 0, `dot_bonus` = 0 WHERE `entry` IN (779,1822,60089);
+DELETE FROM `spell_bonus_data` WHERE `entry` IN (1079,9007,22568);
+INSERT INTO `spell_bonus_data` VALUES
+(1079,0,0,-1,-1,'Druid - Rip'),
+(9007,0,0,-1,-1,'Druid - Pounce Bleed'),
+(22568,0,0,-1,-1,'Druid - Ferocious Bite');
+-- Lifebloom final bloom fix
+UPDATE `spell_bonus_data` SET `direct_bonus`=0.3857 WHERE `entry`=33778 ;
+UPDATE `spell_bonus_data` SET `dot_bonus`=0.0653 WHERE `entry` IN (48450, 48451, 48628);
+
+-- -----------------------
+-- HUNTER
+-- -----------------------
+UPDATE `spell_bonus_data` SET `direct_bonus` = 0, `dot_bonus` = 0 WHERE `entry` IN (3044,3674,13812,13797,1978,42243);
+UPDATE `spell_bonus_data` SET `ap_dot_bonus` = 0.1 WHERE `entry` = 13812;
+DELETE FROM `spell_bonus_data` WHERE `entry` IN (24131,53353,53254,53215,53216,53217,53352,53209);
+INSERT INTO `spell_bonus_data` (`entry`, `direct_bonus`, `dot_bonus`, `ap_bonus`, `ap_dot_bonus`, `comments`) 
+VALUES
+(24131,0,0,-1,-1,'Hunter - Wyvern Sting (triggered)'),
+(53353,0,0,-1,-1,'Hunter - Chimera Shot (Serpent)'),
+(53209,0,0,-1,-1,'Hunter - Chimera Shot -  Rank 1'),
+(53254 ,0,0,0,0,'Hunter - Wild Quiver Auto shot (triggered)'),
+(53215,0,0,0,0,'Hunter - Wild Quiver Auto shot Rank1'),
+(53216 ,0,0,0,0,'Hunter - Wild Quiver Auto shot Rank2'),
+(53217,0,0,0,0,'Hunter - Wild Quiver Auto shot Rank3'),
+(53352,0,0,0.14,0,'Hunter - Explosive Shot (triggered)');-- Fix Explosive Shot 
+
+DELETE FROM `spell_ranks` WHERE `first_spell_id` = 24131;
+INSERT INTO `spell_ranks` VALUES
+(24131,24131,1),
+(24131,24134,2),
+(24131,24135,3),
+(24131,27069,4),
+(24131,49009,5),
+(24131,49010,6);
+
+
+-- -----------------------
+-- ROGUE
+-- -----------------------
+-- Fix Rogue - Deadly Poison No stack SP.
+UPDATE `spell_bonus_data` SET `direct_bonus` = 0, `dot_bonus` = 0 WHERE `entry` IN (2818,2819,11353,11354,25349,26968,27187,57969,57970);
+
+-- -----------------------
+-- DK
+-- -----------------------
+
+-- -----------------------
+-- Enchants
+-- -----------------------
+-- Enchants
+DELETE FROM `spell_bonus_data` WHERE `entry` IN (6297, 13897, 20004, 28005, 20006, 44525); 
+INSERT INTO `spell_bonus_data` (`entry`, `direct_bonus`, `dot_bonus`, `ap_bonus`, `ap_dot_bonus`, `comments`) VALUES
+(6297,0,0,0,0,'Enchant - Fiery Blaze'),
+(13897,0,0,0,0,'Enchant - Fiery Weapon'),
+(20004,0,0,0,0,'Enchant - Lifestealing'),
+(28005,0,0,0,0,'Enchant - Battlemaster'),
+(20006,0,0,0,0,'Enchant - Unholy Weapon'),
+(44525,0,0,0,0,'Enchant - Icebreaker');
+
+-- --------------------------
+-- Items
+-- ----------------------------
+-- Trinkets - Reign of the Unliving, Reign of the Dead
+DELETE FROM spell_bonus_data WHERE entry IN (67760,67714);
+INSERT INTO spell_bonus_data (entry,direct_bonus,dot_bonus,ap_bonus,ap_dot_bonus,comments) VALUES
+(67760,0,0,0,0, 'Item - Coliseum 25 Heroic Caster Trinket - Pillar of Flame'),
+(67714,0,0,0,0, 'Item - Coliseum 25 Normal Caster Trinket - Pillar of Flame');
+DELETE FROM spell_proc_event WHERE entry IN (67712,67758);
+INSERT INTO spell_proc_event (entry,SchoolMask,SpellFamilyName,SpellFamilyMask0,SpellFamilyMask1,SpellFamilyMask2,procFlags,procEx,ppmRate,CustomChance,Cooldown) VALUES
+(67712,0,0,0,0,0,0x00011000,0x0000002,0,0,2),
+(67758,0,0,0,0,0,0x00011000,0x0000002,0,0,2);
+
+
+-- Fix Stacks  Earth and Moon & Ebon Plague & Curse of Elements
+DELETE FROM `spell_group` WHERE `id` = 1114;
+INSERT INTO `spell_group` (`id`, `spell_id`) VALUES
+(1114,1490),
+(1114,60431),
+(1114,60432),
+(1114,60433),
+(1114,51726),
+(1114,51734),
+(1114,51735);
+DELETE FROM `spell_group_stack_rules` WHERE `group_id` = 1114;
+INSERT INTO `spell_group_stack_rules` (`group_id`, `stack_rule`) VALUES
+(1114,1);
+
+
+-- 15_[Gral]Demonic_Circle_Bota_Flag.sql
+-- Demonic Circle: Teleport
+DELETE FROM `spell_linked_spell` WHERE `spell_trigger`=48020;
+INSERT INTO `spell_linked_spell` (`spell_trigger`, `spell_effect`, `type`, `comment`) VALUES
+( 48020,-23335, 0, 'Bota la flag Demonic Circle: Teleport en WSG'),-- Warsong Gulch
+( 48020,-23333, 0, 'Bota la flag Demonic Circle: Teleport en WSG'),-- Warsong Gulch
+( 48020,-34976, 0, 'Bota la flag Demonic Circle: Teleport en EOS');-- Eye of Storm
+
+
+-- 16_[Paladinl]Hear_of_the_crusader_J_Of_just.sql
+-- Fix Heart of the Crusader and Judgements of the Just proc. 
+UPDATE `spell_proc_event` SET `procFlags` = 272, `CustomChance` = 100 WHERE `entry` IN (53695,53696,20335,20336,20337);
+
+-- 17_[Mago]]Brain_Freeze.sql
+-- Brain Freeze
+DELETE FROM `spell_proc_event` WHERE `entry` IN (44549, 44548, 44546);
+
+-- 18_[Mechanic]Binari_Resistecias.sql
+DELETE FROM `playercreateinfo_spell` WHERE `Spell` IN ('199995');
+INSERT INTO `playercreateinfo_spell` (`race`, `class`, `Spell`, `Note`) VALUES
+('5','9','199995','Chaos Bolt Passive (SERVERSIDE)'),
+('2','9','199995','Chaos Bolt Passive (SERVERSIDE)'),
+('1','9','199995','Chaos Bolt Passive (SERVERSIDE)'),
+('7','9','199995','Chaos Bolt Passive (SERVERSIDE)'),
+('10','9','199995','Chaos Bolt Passive (SERVERSIDE)');
+
+
+
 
