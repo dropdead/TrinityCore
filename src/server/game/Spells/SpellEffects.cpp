@@ -3475,6 +3475,14 @@ void Spell::EffectDispel(SpellEffIndex effIndex)
             if (owner->GetAura(56249))
                 owner->CastCustomSpell(owner, 19658, &heal_amount, NULL, NULL, true);
     }
+
+    // Dispel magic pone en combate si se usa contra enemigo
+    if (m_spellInfo->SpellFamilyName == SPELLFAMILY_PRIEST && m_spellInfo->SpellFamilyFlags[1] == 0x1)
+    {
+        m_caster->SetInCombatWith(unitTarget);
+    }
+
+
 }
 
 void Spell::EffectDualWield(SpellEffIndex /*effIndex*/)
