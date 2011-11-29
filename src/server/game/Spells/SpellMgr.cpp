@@ -2704,6 +2704,9 @@ void SpellMgr::LoadSpellCustomAttr()
             {
                 case MECHANIC_SNARE:
                 case MECHANIC_ROOT:
+                case MECHANIC_INTERRUPT:
+                case MECHANIC_SILENCE:
+                case MECHANIC_HORROR:
                     spellInfo->AttributesCu |= SPELL_ATTR0_CU_BINARY;
                     break;
             }
@@ -2784,6 +2787,7 @@ void SpellMgr::LoadSpellCustomAttr()
             case MECHANIC_CHARM:
             case MECHANIC_SNARE:
             case MECHANIC_FREEZE:
+            case MECHANIC_BANISH:
                 spellInfo->AttributesCu |= SPELL_ATTR0_CU_BINARY;
                 break;
         }
