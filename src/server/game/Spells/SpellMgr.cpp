@@ -2679,7 +2679,7 @@ void SpellMgr::LoadSpellCustomAttr()
                 case SPELL_AURA_MOD_STUN:
                 case SPELL_AURA_MOD_CONFUSE:
                     if (spellInfo->Speed == 0 && spellInfo->Mechanic != MECHANIC_FREEZE)// Excluimos el grupo MECHANIC_FREEZE como trampas de Hunter para el delay.
-                        spellInfo->Speed = 43;// Delay spell 43 segun videos que vi es la mejor calculo que pude realizar tambien funciona bien con 42,5f
+                        spellInfo->Speed = 46;// Un valor entre 43 y 50
                     spellInfo->AttributesCu |= SPELL_ATTR0_CU_AURA_CC;
                     break;                
                 case SPELL_AURA_PERIODIC_HEAL:
@@ -3015,10 +3015,6 @@ void SpellMgr::LoadDbcDataCorrections()
             case 64044: // Psychic Horror - [Priest]
             case 46968: // Shockwave - [Warrior]
                 spellInfo->speed = 0;
-                break;
-            case 1953:  // Blink - [Mago]
-            case 36554: // Shadowstep - [Rogue]
-                spellInfo->speed = 50;
                 break;
             // ###############################
             // FINAL CAMBIOS POR DELAY MAGICO
