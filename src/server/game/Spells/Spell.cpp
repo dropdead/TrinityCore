@@ -1003,9 +1003,14 @@ void Spell::AddUnitTarget(Unit* target, uint32 effectMask, bool checkIfValid /*=
             targetInfo.scaleAura = true;
     }
 
-    targetInfo.missCondition = m_originalCaster->SpellHitResult(target, m_spellInfo, m_canReflect);
-    if (m_skipCheck && targetInfo.missCondition != SPELL_MISS_IMMUNE)
-        targetInfo.missCondition = SPELL_MISS_NONE;
+    if (m_originalCaster)
+    {
+        targetInfo.missCondition = m_originalCaster->SpellHitResult(target, m_spellInfo, m_canReflect);
+        if (m_skipCheck && targetInfo.missCondition != SPELL_MISS_IMMUNE)
+            targetInfo.missCondition = SPELL_MISS_NONE;
+    }
+    else
+        targetInfo.missCondition = SPELL_MISS_EVADE; 
 
     // Spell have speed - need calculate incoming time
     // Incoming time is zero for self casts. At least I think so.
@@ -1462,7 +1467,7 @@ SpellMissInfo Spell::DoSpellHitOnUnit(Unit* unit, const uint32 effectMask, bool 
             if ((m_spellInfo->AttributesCu & SPELL_ATTR0_CU_AURA_CC) && unit->IsControlledByPlayer())
                 unit->RemoveAurasByType(SPELL_AURA_MOD_STEALTH);
 
-            bool binary = (uint32(sSpellMgr->GetSpellInfo(m_spellInfo->Id) && SPELL_ATTR0_CU_BINARY) > 0);
+            bool binary = uint32(sSpellMgr->GetSpellInfo(m_spellInfo->Id) & SPELL_ATTR0_CU_BINARY);
             m_resist = m_caster->CalcSpellResistance(unit, m_spellSchoolMask , binary, m_spellInfo);
             if (m_resist >= 100)
                 return SPELL_MISS_RESIST;
@@ -1490,7 +1495,7 @@ SpellMissInfo Spell::DoSpellHitOnUnit(Unit* unit, const uint32 effectMask, bool 
     }
     else if (!m_spellInfo->IsPositive())
     {
-        bool binary = (uint32(sSpellMgr->GetSpellInfo(m_spellInfo->Id) && SPELL_ATTR0_CU_BINARY) > 0); 
+        bool binary = uint32(sSpellMgr->GetSpellInfo(m_spellInfo->Id) & SPELL_ATTR0_CU_BINARY); 
         m_resist = m_caster->CalcSpellResistance(unit, m_spellSchoolMask , binary, m_spellInfo);
         if (m_resist >= 100)
             return SPELL_MISS_RESIST;
@@ -1546,7 +1551,7 @@ SpellMissInfo Spell::DoSpellHitOnUnit(Unit* unit, const uint32 effectMask, bool 
                     break;
                 }
             }
-
+            
             bool bDirectDamage = false;
             for (uint8 i = 0; i < MAX_SPELL_EFFECTS; ++i)
             {
@@ -3154,7 +3159,7 @@ void Spell::cancel()
         default:
             break;
     }
-
+    
     SetReferencedFromCurrent(false);
     if (m_selfContainer && *m_selfContainer == this)
         *m_selfContainer = NULL;
