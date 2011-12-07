@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2008-2011 TrinityCore <http://www.trinitycore.org/>
- * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
+ * Copyright (C) 2005-2010 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -16,5 +16,29 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "DestinationHolder.h"
+#ifndef _MMAP_FACTORY_H
+#define _MMAP_FACTORY_H
+
+#include "MMapManager.h"
+#include "UnorderedMap.h"
+#include "DetourAlloc.h"
+#include "DetourNavMesh.h"
+#include "DetourNavMeshQuery.h"
+
+namespace MMAP
+{
+    // static class
+    // holds all mmap global data
+    // access point to MMapManager singleton
+    class MMapFactory
+    {
+        public:
+            static MMapManager* createOrGetMMapManager();
+            static void clear();
+            static void preventPathfindingOnMaps(const char* ignoreMapIds);
+            static bool IsPathfindingEnabled(uint32 mapId);
+    };
+}
+
+#endif
 

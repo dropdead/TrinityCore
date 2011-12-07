@@ -319,7 +319,7 @@ public:
                     me->SetUInt32Value(UNIT_FIELD_BYTES_1, 0);
                     if (Creature* pGrauf = me->SummonCreature(CREATURE_GRAUF, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), 0, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 3*IN_MILLISECONDS))
                     {
-                        pGrauf->GetMotionMaster()->MoveFall(0);
+                        pGrauf->GetMotionMaster()->MoveFall();
                         pGrauf->HandleEmoteCommand(EMOTE_ONESHOT_FLYDEATH);
                     }
 

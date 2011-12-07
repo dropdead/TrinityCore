@@ -41,6 +41,11 @@ uint32 urand (uint32 min, uint32 max)
     return sfmtRand->URandom(min, max);
 }
 
+float frand (float min, float max)
+{
+    return mtRand->randExc (max - min) + min;
+}
+
 int32 rand32 ()
 {
     return int32(sfmtRand->BRandom());
@@ -51,7 +56,12 @@ double rand_norm(void)
     return sfmtRand->Random();
 }
 
-double rand_chance (void)
+float rand_norm_f(void)
+{
+    return (float)mtRand->randExc();
+}
+
+double rand_chance(void)
 {
     return sfmtRand->Random() * 100.0;
 }
@@ -77,6 +87,11 @@ int32 rand32()
 double rand_norm(void)
 {
     return mtRand->randExc();
+}
+
+float rand_norm_f(void)
+{
+    return (float)mtRand->randExc();
 }
 
 double rand_chance(void)

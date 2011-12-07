@@ -181,6 +181,23 @@ class boss_krystallus : public CreatureScript
         EventMap events;
         bool IsSlam;
 
+<<<<<<< HEAD
+=======
+                //clear this, if we are still performing
+                if (bIsSlam)
+                {
+                    bIsSlam = false;
+
+                    //and correct movement, if not already
+                    if (me->GetMotionMaster()->GetCurrentMovementGeneratorType() != CHASE_MOTION_TYPE)
+                    {
+                        if (me->getVictim())
+                            me->GetMotionMaster()->MoveChase(me->getVictim());
+                    }
+                }
+            }
+        }
+>>>>>>> dca2e32718af21c8bdf1dca69c323eadfda65687
     };
 
     CreatureAI* GetAI(Creature* creature) const

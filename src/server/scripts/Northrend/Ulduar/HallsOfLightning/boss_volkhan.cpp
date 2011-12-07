@@ -256,8 +256,12 @@ public:
             {
                 if (m_uiPause_Timer <= uiDiff)
                 {
+<<<<<<< HEAD
                     if (me->GetMotionMaster()->GetCurrentMovementGeneratorType() != TARGETED_MOTION_TYPE)
                     {
+=======
+                    if (me->GetMotionMaster()->GetCurrentMovementGeneratorType() != CHASE_MOTION_TYPE)
+>>>>>>> dca2e32718af21c8bdf1dca69c323eadfda65687
                         if (me->getVictim())
                             me->GetMotionMaster()->MoveChase(me->getVictim());
                     }
@@ -423,7 +427,7 @@ public:
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_STUNNED);
                 if (me->IsNonMeleeSpellCasted(false))
                     me->InterruptNonMeleeSpells(false);
-                if (me->GetMotionMaster()->GetCurrentMovementGeneratorType() == TARGETED_MOTION_TYPE)
+                if (me->GetMotionMaster()->GetCurrentMovementGeneratorType() == CHASE_MOTION_TYPE)
                     me->GetMotionMaster()->MovementExpired();
                 m_bIsFrozen = true;
             }

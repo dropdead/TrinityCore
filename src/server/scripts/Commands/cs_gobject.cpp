@@ -165,13 +165,11 @@ public:
         object->SaveToDB(map->GetId(), (1 << map->GetSpawnMode()), player->GetPhaseMaskForSpawn());
 
         // this will generate a new guid if the object is in an instance
-        if (!object->LoadFromDB(guidLow, map))
+        if (!object->LoadGameObjectFromDB(guidLow, map))
         {
             delete object;
             return false;
         }
-
-        map->AddToMap(object);
 
         // TODO: is it really necessary to add both the real and DB table guid here ?
         sObjectMgr->AddGameobjectToGrid(guidLow, sObjectMgr->GetGOData(guidLow));
@@ -403,26 +401,17 @@ public:
             return false;
         }
 
-        char* orientation = strtok(NULL, " ");
-        float o;
+        char* toZ = strtok(NULL, " ");
+        char* toY = strtok(NULL, " ");
+        char* toX = strtok(NULL, " ");
 
-        if (orientation)
-            o = (float)atof(orientation);
-        else
-        {
-            Player* player = handler->GetSession()->GetPlayer();
-            o = player->GetOrientation();
-        }
+        if (!toZ || !toY || !toX)
+            return false;
 
-        object->Relocate(object->GetPositionX(), object->GetPositionY(), object->GetPositionZ(), o);
-        object->UpdateRotationFields();
-        object->DestroyForNearbyPlayers();
-        object->UpdateObjectVisibility();
-
+        object->SetWorldRotationAngles((float)atof(toZ), (float)atof(toY), (float)atof(toX));
         object->SaveToDB();
-        object->Refresh();
 
-        handler->PSendSysMessage(LANG_COMMAND_TURNOBJMESSAGE, object->GetGUIDLow(), object->GetGOInfo()->name.c_str(), object->GetGUIDLow(), o);
+        handler->PSendSysMessage(LANG_COMMAND_TURNOBJMESSAGE, object->GetGUIDLow(), object->GetGOInfo()->name.c_str(), object->GetGUIDLow());
 
         return true;
     }
