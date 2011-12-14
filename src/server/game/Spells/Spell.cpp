@@ -5694,6 +5694,12 @@ SpellCastResult Spell::CheckPetCast(Unit* target)
         }
     }
 
+    // Chequeo de combo points (del dueño!, Wolverine bite)....... debe haber otra forma de arreglarlo
+    if (m_needComboPoints)
+        if (Creature const* plrCaster = m_caster->ToCreature())
+            if (!plrCaster->GetCharmerOrOwner()->ToPlayer()->GetComboPoints())
+                return SPELL_FAILED_CANT_DO_THAT_RIGHT_NOW;
+
     // cooldown
     if (Creature const* creatureCaster = m_caster->ToCreature())
         if (creatureCaster->HasSpellCooldown(m_spellInfo->Id))
