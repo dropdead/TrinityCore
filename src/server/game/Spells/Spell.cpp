@@ -4834,7 +4834,20 @@ SpellCastResult Spell::CheckCast(bool strict)
         if (castResult != SPELL_CAST_OK)
             return castResult;
     }
+    // Chequeo de zonales para ver si el caster puede ver el lugar donde se castea el spell
+    if (Position const* target = m_targets.GetDst())
+    {
+        float targetx = target->GetPositionX();
+        float targety = target->GetPositionY();
+        float targetz = target->GetPositionZ();
 
+        // Cuando se implementen mmaps, sacar el idplayer
+        if (!(m_spellInfo->AttributesEx2 & SPELL_ATTR2_CAN_TARGET_NOT_IN_LOS)
+            && (GetCaster()->GetTypeId() & TYPEID_PLAYER) //solo para players... mientras tanto
+            && (GetSpellInfo()->GetExplicitTargetMask() == TARGET_FLAG_DEST_LOCATION) && !m_caster->IsWithinLOS(targetx, targety, targetz))
+            return SPELL_FAILED_LINE_OF_SIGHT;
+    }
+    
     if (Unit* target = m_targets.GetUnitTarget())
     {
         SpellCastResult castResult = m_spellInfo->CheckTarget(m_caster, target, false);
@@ -4851,7 +4864,10 @@ SpellCastResult Spell::CheckCast(bool strict)
             if ((m_spellInfo->AttributesCu & SPELL_ATTR0_CU_REQ_TARGET_FACING_CASTER) && !target->HasInArc(static_cast<float>(M_PI), m_caster))
                 return SPELL_FAILED_NOT_INFRONT;
 
-            if (!(m_spellInfo->AttributesEx2 & SPELL_ATTR2_CAN_TARGET_NOT_IN_LOS) && VMAP::VMapFactory::checkSpellForLoS(m_spellInfo->Id) && !m_caster->IsWithinLOSInMap(target))
+            // Chequeo para spells single target en LOS... 
+            if (!(m_spellInfo->AttributesEx2 & SPELL_ATTR2_CAN_TARGET_NOT_IN_LOS)
+                && !(m_spellInfo->SpellIconID == 118) // Death and decay, unica exepcion para el tick del dot
+                && VMAP::VMapFactory::checkSpellForLoS(m_spellInfo->Id) && !m_caster->IsWithinLOSInMap(target))
                 return SPELL_FAILED_LINE_OF_SIGHT;
 
             // Efectos Spell Charge "No volaran hacia el target"
