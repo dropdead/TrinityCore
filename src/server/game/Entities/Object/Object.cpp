@@ -1802,9 +1802,6 @@ bool WorldObject::CanDetectStealthOf(WorldObject const* obj) const
         detectionValue += m_stealthDetect.GetValue(StealthType(i));
         detectionValue -= obj->m_stealth.GetValue(StealthType(i));
 
-        if (distance < 2.5f)              //si esta muy cerca lo detectara
-        detectionValue += 1000;
-
         // Calculate max distance
         float visibilityRange = float(detectionValue) * 0.3f + combatReach;
 
