@@ -71,19 +71,19 @@ class boss_brutallus : public CreatureScript
 public:
     boss_brutallus() : CreatureScript("boss_brutallus") {}
 
-    CreatureAI* GetAI(Creature* pCreature) const
+    CreatureAI* GetAI(Creature* creature) const
     {
-        return new boss_brutallusAI (pCreature);
+        return new boss_brutallusAI (creature);
     }
 
     struct boss_brutallusAI : public ScriptedAI
     {
         boss_brutallusAI(Creature *c) : ScriptedAI(c)
         {
-            pInstance = c->GetInstanceScript();
+            instance = c->GetInstanceScript();
         }
 
-        InstanceScript* pInstance;
+        InstanceScript* instance;
 
         Unit* Madrigosa;
 
@@ -118,25 +118,31 @@ public:
             me->CastSpell(me, SPELL_DUAL_WIELD, true);
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 
-            if(pInstance)
-                pInstance->SetData(DATA_BRUTALLUS_EVENT, NOT_STARTED);
+            if (instance)
+                instance->SetData(DATA_BRUTALLUS_EVENT, NOT_STARTED);
         }
 
         void EnterCombat(Unit* /*who*/)
         {
             DoScriptText(YELL_AGGRO, me);
 
-            if(pInstance)
-                pInstance->SetData(DATA_BRUTALLUS_EVENT, IN_PROGRESS);
+            if (instance)
+                instance->SetData(DATA_BRUTALLUS_EVENT, IN_PROGRESS);
         }
 
         void KilledUnit(Unit* /*victim*/)
         {
             switch(rand()%3)
             {
-                case 0: DoScriptText(YELL_KILL1, me); break;
-                case 1: DoScriptText(YELL_KILL2, me); break;
-                case 2: DoScriptText(YELL_KILL3, me); break;
+                case 0: 
+                    DoScriptText(YELL_KILL1, me); 
+                    break;
+                case 1: 
+                    DoScriptText(YELL_KILL2, me); 
+                    break;
+                case 2: 
+                    DoScriptText(YELL_KILL3, me); 
+                    break;
             }
         }
 
@@ -144,28 +150,23 @@ public:
         {
             DoScriptText(YELL_DEATH, me);
 
-            if(pInstance)
+            if (instance)
             {
-                pInstance->SetData(DATA_BRUTALLUS_EVENT, DONE);
-                //float x,y,z;
-                //me->GetPosition(x,y,z);
-                //me->SummonCreature(FELMYST, x,y, z+30, me->GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN, 0);
+                instance->SetData(DATA_BRUTALLUS_EVENT, DONE);
             }
         }
 
         void StartIntro()
         {
-            if(!Intro)
+            if (!Intro)
                 return;
 
-            Madrigosa = Unit::GetUnit(*me, pInstance->GetData64(DATA_MADRIGOSA));
-            if(Madrigosa)
+            Madrigosa = Unit::GetUnit(*me, instance->GetData64(DATA_MADRIGOSA));
+            if (Madrigosa)
             {
-                 //sLog->outError("Starte das Intro");
 
-                 if(!Madrigosa->isAlive())
+                 if (!Madrigosa->isAlive())
                  {
-                     //sLog->outError("Madrigosa is Tod");
                      EndIntro();
                      return;
                  }
@@ -174,9 +175,8 @@ public:
                 Madrigosa->setActive(true);
                 IsIntro = true;
         
-            }else
-            {
-                //sLog->outError("Madrigosa nicht gefunden");
+            } else
+            {               
                 EndIntro();
             }
        
@@ -184,7 +184,6 @@ public:
 
         void EndIntro()
         {
-            //sLog->outError("Beende das Intro");
             me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
             Intro = false;
             IsIntro = false;
@@ -192,10 +191,10 @@ public:
 
         void DoIntro()
         {
-            if(!Madrigosa)
+            if (!Madrigosa)
                 return;
 
-            switch(IntroPhase)
+            switch (IntroPhase)
             {
                 case 0:
                     DoScriptText(YELL_MADR_ICE_BARRIER, Madrigosa);
@@ -268,17 +267,17 @@ public:
 
         void MoveInLineOfSight(Unit *who)
         {
-            if(pInstance && Intro)
-                pInstance->SetData(DATA_BRUTALLUS_EVENT, SPECIAL);
+            if (instance && Intro)
+                instance->SetData(DATA_BRUTALLUS_EVENT, SPECIAL);
 
-            if(Intro)
+            if (Intro)
             {
-                if(who->GetTypeId() == TYPEID_PLAYER && !((Player*)who)->isGameMaster())
+                if (who->GetTypeId() == TYPEID_PLAYER && !((Player*)who)->isGameMaster())
                 {
-                    if(me->IsWithinDistInMap(who,100))
+                    if (me->IsWithinDistInMap(who,100))
                         StartIntro();
                 }
-            }else
+            } else
             {
                 ScriptedAI::MoveInLineOfSight(who);
             }
@@ -286,20 +285,18 @@ public:
 
         void UpdateAI(const uint32 diff)
         {
-            //if(Intro && !IsIntro)
-            //    StartIntro();
 
-            if(IsIntro)
+            if (IsIntro)
             {
-                if(IntroPhaseTimer <= diff)
+                if (IntroPhaseTimer <= diff)
                 {
                     DoIntro();
                 }else IntroPhaseTimer -= diff;
 
-                if(IntroPhase == 3 + 1){
-                    if(IntroFrostBoltTimer <= diff)
+                if (IntroPhase == 3 + 1){
+                    if (IntroFrostBoltTimer <= diff)
                     {
-                        if(Madrigosa){
+                        if (Madrigosa){
                             Madrigosa->CastSpell(me, SPELL_INTRO_FROSTBOLT, false);
                             IntroFrostBoltTimer = 2000;
                         }
@@ -307,35 +304,41 @@ public:
                 }
             }
 
-            if(!UpdateVictim() || IsIntro)
+            if (!UpdateVictim() || IsIntro)
                 return;
 
-            if(SlashTimer <= diff)
+            if (SlashTimer <= diff)
             {
                 DoCast(me->getVictim(), SPELL_METEOR_SLASH);
                 SlashTimer = 11000;
             }else SlashTimer -= diff;
 
-            if(StompTimer < diff)
+            if (StompTimer < diff)
             {
                 switch(rand()%3)
                 {
-                    case 0: DoScriptText(YELL_LOVE1, me); break;
-                    case 1: DoScriptText(YELL_LOVE2, me); break;
-                    case 2: DoScriptText(YELL_LOVE3, me); break;
+                    case 0: 
+                        DoScriptText(YELL_LOVE1, me); 
+                        break;
+                    case 1: 
+                        DoScriptText(YELL_LOVE2, me); 
+                        break;
+                    case 2: 
+                        DoScriptText(YELL_LOVE3, me); 
+                        break;
                 }
                 DoCast(me->getVictim(), SPELL_STOMP);
                 StompTimer = 30000;
             }else StompTimer -= diff;
 
-            if(BurnTimer <= diff)
+            if (BurnTimer <= diff)
             {
-                if(Unit *target = SelectTarget(SELECT_TARGET_RANDOM, 0, 200, true))
+                if (Unit *target = SelectTarget(SELECT_TARGET_RANDOM, 0, 200, true))
                     me->CastSpell(target, SPELL_BURN, true);
                 BurnTimer = 20000;
             }else BurnTimer -= diff;
 
-            if(BerserkTimer <= diff && !Enraged)
+            if (BerserkTimer <= diff && !Enraged)
             {
                 DoScriptText(YELL_BERSERK, me);
                 DoCast(me, SPELL_BERSERK);
