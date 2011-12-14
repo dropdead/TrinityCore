@@ -2705,7 +2705,7 @@ SpellMissInfo Unit::MagicSpellHitResult(Unit * victim, SpellInfo const * spell)
 //   Miss
 //   Dodge
 //   Parry
-// For spells
+// For spells:
 //   Resist
 SpellMissInfo Unit::SpellHitResult(Unit* victim, SpellInfo const* spell, bool CanReflect)
 {
@@ -14537,6 +14537,12 @@ void Unit::ProcDamageAndSpellFor(bool isVictim, Unit* target, uint32 procFlag, u
                     ToPlayer()->AddComboPoints(target, 1);
                     StartReactiveTimer(REACTIVE_OVERPOWER);
                 }
+                // Wolverine bite, se activa con critico de pet
+                if (procExtra & PROC_EX_CRITICAL_HIT && isHunterPet() && HasSpell(53508))
+                {
+                    ToCreature()->GetCharmerOrOwner()->ToPlayer()->AddComboPoints(GetCharmerOrOwner(), 1);
+                    StartReactiveTimer(REACTIVE_WOLVERINE);
+                }
             }
         }
     }
@@ -15117,6 +15123,10 @@ void Unit::UpdateReactives(uint32 p_time)
                 case REACTIVE_OVERPOWER:
                     if (getClass() == CLASS_WARRIOR && GetTypeId() == TYPEID_PLAYER)
                         ToPlayer()->ClearComboPoints();
+                    break;
+                case REACTIVE_WOLVERINE:
+                    if (isHunterPet())
+                        ToCreature()->GetCharmerOrOwner()->ToPlayer()->ClearComboPoints();
                     break;
                 default:
                     break;
