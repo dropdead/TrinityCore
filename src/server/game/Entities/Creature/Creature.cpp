@@ -1484,6 +1484,11 @@ void Creature::setDeathState(DeathState s)
 
     if (s == JUST_DIED)
     {
+        // Los summon de players al ser matados desaparecen "instantaneamente"
+        if (GetOwner() && GetOwner()->GetTypeId() == TYPEID_PLAYER && isSummon())
+            m_corpseDelay = 1;
+        else
+            m_corpseDelay = m_corpseDelay;
         m_corpseRemoveTime = time(NULL) + m_corpseDelay;
         m_respawnTime = time(NULL) + m_respawnDelay + m_corpseDelay;
 
