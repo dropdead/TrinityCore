@@ -27,27 +27,27 @@ EndScriptData */
 
 enum Quotes
 {
- YELL_INTRO                 =   -1580017,
- YELL_INTRO_BREAK_ICE       =   -1580018,
- YELL_INTRO_CHARGE          =   -1580019,
- YELL_INTRO_KILL_MADRIGOSA  =   -1580020,
- YELL_INTRO_TAUNT           =   -1580021,
+     YELL_INTRO                 =   -1580017,
+     YELL_INTRO_BREAK_ICE       =   -1580018,
+     YELL_INTRO_CHARGE          =   -1580019,
+     YELL_INTRO_KILL_MADRIGOSA  =   -1580020,
+     YELL_INTRO_TAUNT           =   -1580021,
 
- YELL_MADR_ICE_BARRIER      =   -1580031,
- YELL_MADR_INTRO            =   -1580032,
- YELL_MADR_ICE_BLOCK        =   -1580033,
- YELL_MADR_TRAP             =   -1580034,
- YELL_MADR_DEATH            =   -1580035,
+     YELL_MADR_ICE_BARRIER      =   -1580031,
+     YELL_MADR_INTRO            =   -1580032,
+     YELL_MADR_ICE_BLOCK        =   -1580033,
+     YELL_MADR_TRAP             =   -1580034,
+     YELL_MADR_DEATH            =   -1580035,
 
- YELL_AGGRO                 =   -1580022,
- YELL_KILL1                 =   -1580023,
- YELL_KILL2                 =   -1580024,
- YELL_KILL3                 =   -1580025,
- YELL_LOVE1                 =   -1580026,
- YELL_LOVE2                 =   -1580027,
- YELL_LOVE3                 =   -1580028,
- YELL_BERSERK               =   -1580029,
- YELL_DEATH                 =   -1580030
+     YELL_AGGRO                 =   -1580022,
+     YELL_KILL1                 =   -1580023,
+     YELL_KILL2                 =   -1580024,
+     YELL_KILL3                 =   -1580025,
+     YELL_LOVE1                 =   -1580026,
+     YELL_LOVE2                 =   -1580027,
+     YELL_LOVE3                 =   -1580028,
+     YELL_BERSERK               =   -1580029,
+     YELL_DEATH                 =   -1580030
 };
 
 enum Spells
@@ -329,21 +329,21 @@ public:
                 }
                 DoCast(me->getVictim(), SPELL_STOMP);
                 StompTimer = 30000;
-            }else StompTimer -= diff;
+            } else StompTimer -= diff;
 
             if (BurnTimer <= diff)
             {
                 if (Unit *target = SelectTarget(SELECT_TARGET_RANDOM, 0, 200, true))
                     me->CastSpell(target, SPELL_BURN, true);
                 BurnTimer = 20000;
-            }else BurnTimer -= diff;
+            } else BurnTimer -= diff;
 
             if (BerserkTimer <= diff && !Enraged)
             {
                 DoScriptText(YELL_BERSERK, me);
                 DoCast(me, SPELL_BERSERK);
                 Enraged = true;
-            }else BerserkTimer -= diff;
+            } else BerserkTimer -= diff;
 
             DoMeleeAttackIfReady();
         }
