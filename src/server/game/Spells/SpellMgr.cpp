@@ -3014,11 +3014,19 @@ void SpellMgr::LoadDbcDataCorrections()
             case 47847: // Shadow Fury - [Warlock]
             case 64044: // Psychic Horror - [Priest]
             case 46968: // Shockwave - [Warrior]
-                spellInfo->speed = 0;
+            case 33786: // Cyclone - [Druid]
+            case 44572: // Deep Freeze - [Mage]
+                spellInfo->speed = 300;
                 break;
             // ###############################
             // FINAL CAMBIOS POR DELAY MAGICO
             // ###############################
+            case 56651: //Removida imunidad a stun de master's call - [Hunter]
+                spellInfo->EffectMiscValue[0] = 11;
+                break;
+            case 48020: // Demonic circle sacaba roots - [Warlock]
+                spellInfo->EffectMiscValue[0] = 1;
+                break;
             case 67188: //Tier 9 bono 2 piezas dps - [Paladin]
             case 67118: //Tier 9 bono 4 piezas dps - [Death Knight]
             case 67150: //Tier 9 bono 2 piezas - [Hunter]
@@ -3648,9 +3656,7 @@ void SpellMgr::LoadDbcDataCorrections()
             case 72405: // Broken Frostmourne
                 spellInfo->EffectRadiusIndex[1] = EFFECT_RADIUS_200_YARDS;   // 200yd
                 break;
-            case 56651: // master's call immunity removed before wotlk launch
-                spellInfo->EffectMiscValue[0] = 11;
-                break;
+
             case 50720: // Vigilance
                 spellInfo->SpellFamilyName = SPELLFAMILY_WARRIOR;
                 break;
