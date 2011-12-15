@@ -358,7 +358,7 @@ public:
                         tempTarget->SetReactState(REACT_PASSIVE);
                         //tempTarget->SetDisplayId(DISPLAY_INVISIBLE);
                         tempTarget->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE|UNIT_FLAG_PASSIVE|UNIT_FLAG_NOT_SELECTABLE);
-                        me->SetFacing(0.0f, tempTarget);
+                        //me->SetFacing(0.0f, tempTarget); temporal comentado compilacion
                         DoCast(tempTarget, DUNGEON_MODE(SPELL_POUND, SPELL_POUND_H), false);
                     }
                     uiPoundTimer = urand(17000, 20000);

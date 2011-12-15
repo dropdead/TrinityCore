@@ -20,7 +20,7 @@
 #define TRINITYSERVER_MOVESPLINEINIT_H
 
 #include "MoveSplineInitArgs.h"
-#include "PathInfo.h"
+#include "../Pathfinding/PathInfo.h"
 class Unit;
 
 namespace Movement

@@ -21,9 +21,9 @@
 #include "Opcodes.h"
 #include "ConfusedMovementGenerator.h"
 #include "VMapFactory.h"
-#include "MoveSplineInit.h"
-#include "MoveSpline.h"
-#include "PathInfo.h"
+#include "../Spline/MoveSplineInit.h"
+#include "../Spline/MoveSpline.h"
+#include "../Pathfinding/PathInfo.h"
 
 #ifdef MAP_BASED_RAND_GEN
 #define rand_norm() unit.rand_norm()

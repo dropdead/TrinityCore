@@ -713,7 +713,7 @@ class boss_malygos : public CreatureScript
                     return;
 
                 events.Update(diff);
-                _DoAggroPulse(diff);
+                //_DoAggroPulse(diff);  temporal comentado compilacion
 
                 if (me->HasUnitState(UNIT_STAT_CASTING))
                     return;
@@ -1183,7 +1183,7 @@ class npc_power_spark : public CreatureScript
                     me->SetFlying(false);
                     me->SetReactState(REACT_PASSIVE);
                     me->GetMotionMaster()->Clear();
-                    me->GetMotionMaster()->MoveFall(FLOOR_Z);
+                    // me->GetMotionMaster()->MoveFall(FLOOR_Z);  temporal comentado compilacion
                     me->ForcedDespawn(60*IN_MILLISECONDS);
                     me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
                 }

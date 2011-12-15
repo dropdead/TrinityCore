@@ -108,7 +108,7 @@ namespace MMAP
         FILE *file = fopen(fileName, "rb");
         if (!file)
         {
-            sLog->outDebug(LOG_FILTER_MAPS, "MMAP:loadMap: Could not open mmtile file '%s'", fileName);
+            sLog->outError("MMAP:loadMap: Could not open mmtile file '%s'", fileName);
             delete [] fileName;
             return false;
         }

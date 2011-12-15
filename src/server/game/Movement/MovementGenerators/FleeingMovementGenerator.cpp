@@ -21,9 +21,9 @@
 #include "MapManager.h"
 #include "FleeingMovementGenerator.h"
 #include "ObjectAccessor.h"
-#include "MoveSplineInit.h"
-#include "MoveSpline.h"
-#include "PathInfo.h"
+#include "../Spline/MoveSplineInit.h"
+#include "../Spline/MoveSpline.h"
+#include "../Pathfinding/PathInfo.h"
 
 #define MIN_QUIET_DISTANCE 28.0f
 #define MAX_QUIET_DISTANCE 43.0f
