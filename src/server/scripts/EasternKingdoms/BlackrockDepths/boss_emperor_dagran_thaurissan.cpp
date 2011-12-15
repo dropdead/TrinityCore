@@ -51,19 +51,22 @@ public:
         InstanceScript* instance;
         uint32 HandOfThaurissan_Timer;
         uint32 AvatarOfFlame_Timer;
-        //uint32 Counter;
 
         void Reset()
         {
             HandOfThaurissan_Timer   = 4000;
-            AvatarOfFlame_Timer      = 25000;
-            //Counter                = 0;
+            AvatarOfFlame_Timer = 15000;
+            if (instance)
+                instance->SetData(DATA_EMPEROR, NOT_STARTED);
         }
 
-        void EnterCombat(Unit* /*who*/)
+        void EnterCombat(Unit * pWho)
         {
             DoScriptText(SAY_AGGRO, me);
             me->CallForHelp(VISIBLE_RANGE);
+
+             if (instance)
+                 instance->SetData(DATA_EMPEROR, IN_PROGRESS);
         }
 
         void KilledUnit(Unit* /*victim*/)
@@ -78,6 +81,9 @@ public:
                 Moira->AI()->EnterEvadeMode();
                 Moira->setFaction(35);
             }
+
+            if (instance)
+                instance->SetData(DATA_EMPEROR, DONE);            
         }
 
         void UpdateAI(const uint32 diff)
@@ -90,25 +96,14 @@ public:
             {
                 if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
                     DoCast(target, SPELL_HANDOFTHAURISSAN);
-
-                //3 Hands of Thaurissan will be casted
-                //if (Counter < 3)
-                //{
-                //    HandOfThaurissan_Timer = 1000;
-                //    ++Counter;
-                //}
-                //else
-                //{
-                    HandOfThaurissan_Timer = 5000;
-                    //Counter              = 0;
-                //}
+                    HandOfThaurissan_Timer = urand(5000,7500);
             } else HandOfThaurissan_Timer -= diff;
 
             //AvatarOfFlame_Timer
             if (AvatarOfFlame_Timer <= diff)
             {
-                DoCast(me->getVictim(), SPELL_AVATAROFFLAME);
-                AvatarOfFlame_Timer = 18000;
+                DoCast(me, SPELL_AVATAROFFLAME);
+                AvatarOfFlame_Timer = urand(12500,15000);
             } else AvatarOfFlame_Timer -= diff;
 
             DoMeleeAttackIfReady();

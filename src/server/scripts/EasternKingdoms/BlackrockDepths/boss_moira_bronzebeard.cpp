@@ -17,6 +17,7 @@
  */
 
 #include "ScriptPCH.h"
+#include "blackrock_depths.h"
 
 enum Spells
 {
@@ -40,22 +41,26 @@ public:
 
     struct boss_moira_bronzebeardAI : public ScriptedAI
     {
-        boss_moira_bronzebeardAI(Creature* creature) : ScriptedAI(creature) {}
+        boss_moira_bronzebeardAI(Creature* creature) : ScriptedAI(creature) 
+        {
+            instance = me->GetInstanceScript();
+        }
 
         uint32 Heal_Timer;
+        uint32 Renew_Timer;
         uint32 MindBlast_Timer;
         uint32 ShadowWordPain_Timer;
         uint32 Smite_Timer;
+        InstanceScript *instance;
 
         void Reset()
         {
-            Heal_Timer            = 12000;                 // These times are probably wrong
-            MindBlast_Timer       = 16000;
-            ShadowWordPain_Timer  = 2000;
-            Smite_Timer           = 8000;
+            Heal_Timer            = urand(10000,12000); 
+            Renew_Timer           = urand(12000,15000);
+            MindBlast_Timer       = urand(8000,12000);
+            ShadowWordPain_Timer  = urand(2000,4000);
+            Smite_Timer           = urand(8000,10000);
         }
-
-        void EnterCombat(Unit* /*who*/) {}
 
         void UpdateAI(const uint32 diff)
         {
@@ -67,23 +72,47 @@ public:
             if (MindBlast_Timer <= diff)
             {
                 DoCast(me->getVictim(), SPELL_MINDBLAST);
-                MindBlast_Timer = 14000;
+                MindBlast_Timer = urand(8000,12000);
             } else MindBlast_Timer -= diff;
 
             //ShadowWordPain_Timer
             if (ShadowWordPain_Timer <= diff)
             {
                 DoCast(me->getVictim(), SPELL_SHADOWWORDPAIN);
-                ShadowWordPain_Timer = 18000;
+                ShadowWordPain_Timer = urand(12000,14000);
             } else ShadowWordPain_Timer -= diff;
 
             //Smite_Timer
             if (Smite_Timer <= diff)
             {
                 DoCast(me->getVictim(), SPELL_SMITE);
-                Smite_Timer = 10000;
+                Smite_Timer = urand(8000,10000);
             } else Smite_Timer -= diff;
-        }
+
+            if (Unit *target = DoSelectLowestHpFriendly(40.0f))
+            {
+                if (Heal_Timer <= diff)
+                {
+                    DoCast(target, SPELL_HEAL);
+                    Heal_Timer = urand(8000,10000);
+                } else Heal_Timer -= diff;
+
+                if (Renew_Timer <= diff)
+                {
+                    DoCast(target, SPELL_RENEW);
+                    Renew_Timer = urand(12000,15000);
+                } else Renew_Timer -= diff;
+            }
+
+            if (instance && instance->GetData(DATA_EMPEROR) == DONE)
+            {
+                me->setFaction(35);
+                me->SetReactState(REACT_PASSIVE);
+                EnterEvadeMode();
+            }
+
+            DoMeleeAttackIfReady();
+       }
     };
 };
 
