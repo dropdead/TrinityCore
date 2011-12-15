@@ -31,7 +31,7 @@
 
 using namespace Trinity;
 
-namespace Pathfinding
+namespace MMAP
 {
     enum Spot
     {
@@ -61,7 +61,7 @@ namespace Pathfinding
 
     // see following files:
     // contrib/extractor/system.cpp
-    // src/game/GridMap.cpp
+    // src/game/Map.cpp
     static char const* MAP_VERSION_MAGIC = "v1.2";
 
     struct MeshData

@@ -39,7 +39,7 @@ union u_map_magic
 };
 
 u_map_magic MapMagic        = { {'M','A','P','S'} };
-u_map_magic MapVersionMagic = { {'v','1','.','1'} };
+u_map_magic MapVersionMagic = { {'v','2','.','1'} };
 u_map_magic MapAreaMagic    = { {'A','R','E','A'} };
 u_map_magic MapHeightMagic  = { {'M','H','G','T'} };
 u_map_magic MapLiquidMagic  = { {'M','L','I','Q'} };
@@ -67,6 +67,8 @@ Map::~Map()
 
     if (!m_scriptSchedule.empty())
         sScriptMgr->DecreaseScheduledScriptCount(m_scriptSchedule.size());
+
+    MMAP::MMapFactory::createOrGetMMapManager()->unloadMap(GetId());
 }
 
 bool Map::ExistMap(uint32 mapid, int gx, int gy)
@@ -120,10 +122,16 @@ void Map::LoadMMap(int gx, int gy)
     int mmapLoadResult = MMAP::MMapFactory::createOrGetMMapManager()->loadMap(GetId(), gy, gx);
     switch (mmapLoadResult)
     {
-    case 1: // Need to declared an enum.
-    	break;
+        case MMAP::MMAP_LOAD_RESULT_OK:
+            sLog->outDetail("MMAP loaded name:%s, id:%d, x:%d, y:%d (vmap rep.: x:%d, y:%d)", GetMapName(), GetId(), gx, gy, gx, gy);
+    	    break;
+        case MMAP::MMAP_LOAD_RESULT_ERROR:
+            sLog->outDetail("Could not load MMAP name:%s, id:%d, x:%d, y:%d (vmap rep.: x:%d, y:%d)", GetMapName(), GetId(), gx, gy, gx, gy);
+            break;
+        case MMAP::MMAP_LOAD_RESULT_IGNORED:
+            sLog->outStaticDebug("Ignored MMAP name:%s, id:%d, x:%d, y:%d (vmap rep.: x:%d, y:%d)", GetMapName(), GetId(), gx, gy, gx, gy);
+            break;
     }
-
 }
 
 void Map::LoadVMap(int gx, int gy)
@@ -194,7 +202,10 @@ void Map::LoadMapAndVMap(int gx, int gy)
 {
     LoadMap(gx, gy);
     if (i_InstanceId == 0)
+    {
         LoadVMap(gx, gy);                                   // Only load the data for the base map
+        LoadMMap(gx, gy);
+    }
 }
 
 void Map::InitStateMachine()
@@ -231,8 +242,13 @@ i_scriptLock(false)
         }
     }
 
+    for (std::map<uint32, DynamicLOSObject*>::iterator i = m_dynamicLOSObjects.begin(); i != m_dynamicLOSObjects.end(); ++i)
+        delete i->second;
+
     //lets initialize visibility distance for map
     Map::InitVisibilityDistance();
+
+    m_dynamicLOSCounter = 0;
 
     sScriptMgr->OnCreateMap(this);
 }
@@ -697,8 +713,7 @@ void Map::RemoveFromMap(T *obj, bool remove)
     }
 }
 
-void
-Map::PlayerRelocation(Player* player, float x, float y, float z, float orientation)
+void Map::PlayerRelocation(Player* player, float x, float y, float z, float orientation)
 {
     ASSERT(player);
 
@@ -722,8 +737,7 @@ Map::PlayerRelocation(Player* player, float x, float y, float z, float orientati
     player->UpdateObjectVisibility(false);
 }
 
-void
-Map::CreatureRelocation(Creature* creature, float x, float y, float z, float ang, bool respawnRelocationOnFail)
+void Map::CreatureRelocation(Creature* creature, float x, float y, float z, float ang, bool respawnRelocationOnFail)
 {
     ASSERT(CheckGridIntegrity(creature, false));
 
@@ -1174,7 +1188,7 @@ bool GridMap::loadHeihgtData(FILE* in, uint32 offset, uint32 /*size*/)
     return true;
 }
 
-bool  GridMap::loadLiquidData(FILE* in, uint32 offset, uint32 /*size*/)
+bool GridMap::loadLiquidData(FILE* in, uint32 offset, uint32 /*size*/)
 {
     map_liquidHeader header;
     fseek(in, offset, SEEK_SET);
@@ -1216,12 +1230,12 @@ uint16 GridMap::getArea(float x, float y)
     return m_area_map[lx*16 + ly];
 }
 
-float  GridMap::getHeightFromFlat(float /*x*/, float /*y*/) const
+float GridMap::getHeightFromFlat(float /*x*/, float /*y*/) const
 {
     return m_gridHeight;
 }
 
-float  GridMap::getHeightFromFloat(float x, float y) const
+float GridMap::getHeightFromFloat(float x, float y) const
 {
     if (!m_V8 || !m_V9)
         return m_gridHeight;
@@ -1303,7 +1317,7 @@ float  GridMap::getHeightFromFloat(float x, float y) const
     return a * x + b * y + c;
 }
 
-float  GridMap::getHeightFromUint8(float x, float y) const
+float GridMap::getHeightFromUint8(float x, float y) const
 {
     if (!m_uint8_V8 || !m_uint8_V9)
         return m_gridHeight;
@@ -1370,7 +1384,7 @@ float  GridMap::getHeightFromUint8(float x, float y) const
     return (float)((a * x) + (b * y) + c)*m_gridIntHeightMultiplier + m_gridHeight;
 }
 
-float  GridMap::getHeightFromUint16(float x, float y) const
+float GridMap::getHeightFromUint16(float x, float y) const
 {
     if (!m_uint16_V8 || !m_uint16_V9)
         return m_gridHeight;
@@ -1437,7 +1451,7 @@ float  GridMap::getHeightFromUint16(float x, float y) const
     return (float)((a * x) + (b * y) + c)*m_gridIntHeightMultiplier + m_gridHeight;
 }
 
-float  GridMap::getLiquidLevel(float x, float y)
+float GridMap::getLiquidLevel(float x, float y)
 {
     if (!m_liquid_map)
         return m_liquidLevel;
@@ -1456,7 +1470,7 @@ float  GridMap::getLiquidLevel(float x, float y)
     return m_liquid_map[cx_int*m_liquid_width + cy_int];
 }
 
-uint8  GridMap::getTerrainType(float x, float y)
+uint8 GridMap::getTerrainType(float x, float y)
 {
     if (!m_liquid_type)
         return 0;
@@ -1857,7 +1871,7 @@ bool Map::CheckGridIntegrity(Creature* c, bool moved) const
     return true;
 }
 
-const char* Map::GetMapName() const
+char const* Map::GetMapName() const
 {
     return i_mapEntry ? i_mapEntry->name[sWorld->GetDefaultDbcLocale()] : "UNNAMEDMAP\x0";
 }
@@ -2661,20 +2675,17 @@ void BattlegroundMap::RemoveAllPlayers()
                     player->TeleportTo(player->GetBattlegroundEntryPoint());
 }
 
-Creature*
-Map::GetCreature(uint64 guid)
+Creature* Map::GetCreature(uint64 guid)
 {
     return ObjectAccessor::GetObjectInMap(guid, this, (Creature*)NULL);
 }
 
-GameObject*
-Map::GetGameObject(uint64 guid)
+GameObject* Map::GetGameObject(uint64 guid)
 {
     return ObjectAccessor::GetObjectInMap(guid, this, (GameObject*)NULL);
 }
 
-DynamicObject*
-Map::GetDynamicObject(uint64 guid)
+DynamicObject* Map::GetDynamicObject(uint64 guid)
 {
     return ObjectAccessor::GetObjectInMap(guid, this, (DynamicObject*)NULL);
 }
@@ -2683,4 +2694,152 @@ void Map::UpdateIteratorBack(Player* player)
 {
     if (m_mapRefIter == player->GetMapRef())
         m_mapRefIter = m_mapRefIter->nocheck_prev();
+}
+
+/*
+ * ****************** *
+ * DYNAMIC LOS SYSTEM *
+ * ****************** *
+ */
+uint32 Map::AddDynLOSObject(float x, float y, float radius)
+{
+    DynamicLOSObject* obj = new DynamicLOSObject();
+    obj->SetCoordinates(x, y);
+    obj->SetRadius(radius);
+
+    // Add the dynamic object to the map
+    m_dynamicLOSObjects[++m_dynamicLOSCounter] = obj;
+
+    return m_dynamicLOSCounter;
+}
+
+uint32 Map::AddDynLOSObject(float x, float y, float z, float radius, float height)
+{
+    DynamicLOSObject* obj = new DynamicLOSObject();
+    obj->SetCoordinates(x, y);
+    obj->SetZ(z);
+    obj->SetHeight(height);
+    obj->SetRadius(radius);
+
+    // Add the dynamic object to the map
+    m_dynamicLOSObjects[++m_dynamicLOSCounter] = obj;
+
+    return m_dynamicLOSCounter;
+}
+
+void Map::SetDynLOSObjectState(uint32 id, bool state)
+{
+    std::map<uint32, DynamicLOSObject*>::iterator iter = m_dynamicLOSObjects.find(id);
+    if (iter != m_dynamicLOSObjects.end())
+        iter->second->SetActiveState(state);
+}
+
+bool Map::GetDynLOSObjectState(uint32 id)
+{
+    std::map<uint32, DynamicLOSObject*>::iterator iter = m_dynamicLOSObjects.find(id);
+    if (iter != m_dynamicLOSObjects.end())
+        return (iter->second->IsActive());
+    return false;
+}
+
+bool Map::IsInDynLOS(float x, float y, float z, float x2, float y2, float z2)
+{
+    if (!m_dynamicLOSCounter)
+        return true;
+
+    for (std::map<uint32, DynamicLOSObject*>::iterator iter = m_dynamicLOSObjects.begin(); iter != m_dynamicLOSObjects.end(); ++iter)
+        if (iter->second->IsActive() && iter->second->IsBetween(x, y, z, x2, y2, z2))
+            return false;
+
+    return true;
+}
+
+DynamicLOSObject::DynamicLOSObject()
+{
+    _x = 0.0f;
+    _y = 0.0f;
+    _z = 0.0f;
+    _height = 0.0f;
+    _radius = 0.0f;
+    _active = false;
+}
+
+bool DynamicLOSObject::IsBetween(float x, float y, float z, float x2, float y2, float z2)
+{
+    if (IsInside(x, y) || IsInside(x2, y2))
+    {
+        if(HasHeightInfo() && IsOverOrUnder(z2))
+            return false;
+
+        return true;
+    }
+
+    // For a real handling of Z coord is necessary to do some research from this point
+    // i.e. A player over a huge round plattaform, placed near the edge; and other player placed  down the plattaform at the oposing extreme just next to the edge;
+    // both may be able to attack each other, even when the plattaform height should prevent that.
+    if ((std::max(x, x2) < (_x - _radius))
+        || (std::min(x, x2) > (_x + _radius))
+        || (std::max(y, y2) < (_y - _radius))
+        || (std::min(y, y2) > (_y + _radius)))
+        return false;
+
+
+    float angleToMe = atan2(_x - x, _y - y);
+    angleToMe = (angleToMe >= 0) ? angleToMe : 2 * M_PI + angleToMe;
+
+    float angleToDest = atan2(x2 - x, y2 - y);
+    angleToDest = (angleToDest >= 0) ? angleToDest : 2 * M_PI + angleToDest;
+
+    return (fabs(sin(angleToMe - angleToDest)) * GetDistance(x, y) < _radius);
+}
+
+bool DynamicLOSObject::IsInside(float x, float y)
+{
+    return (((x-_x)*(x-_x)+(y-_y)*(y-_y))<(_radius*_radius));
+}
+
+bool DynamicLOSObject::IsOverOrUnder(float z)
+{
+    return ((z < _z+_height) && (z > _z));
+}
+
+float DynamicLOSObject::GetDistance(float x, float y)
+{
+    return sqrtf((x-_x)*(x-_x)+(y-_y)*(y-_y));
+}
+
+bool DynamicLOSObject::IsActive()
+{
+    return _active;
+}
+
+void DynamicLOSObject::SetActiveState(bool state)
+{
+    _active = state;
+}
+
+void DynamicLOSObject::SetCoordinates(float x, float y)
+{
+    _x = x;
+    _y = y;
+}
+
+void DynamicLOSObject::SetRadius(float r)
+{
+    _radius = r;
+}
+
+void DynamicLOSObject::SetZ(float z)
+{
+    _z = z;
+}
+
+void DynamicLOSObject::SetHeight(float h)
+{
+    _height = h;
+}
+
+bool DynamicLOSObject::HasHeightInfo()
+{
+    return (_z != 0 || _height != 0);
 }

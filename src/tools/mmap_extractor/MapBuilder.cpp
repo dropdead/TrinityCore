@@ -21,13 +21,17 @@
 
 #include "MapTree.h"
 #include "ModelInstance.h"
+#include "LoginDatabase.h"
 
 #include "DetourNavMeshBuilder.h"
 #include "DetourCommon.h"
 
+// These make the linker happy.
+LoginDatabaseWorkerPool LoginDatabase;
+
 using namespace VMAP;
 
-namespace Pathfinding
+namespace MMAP
 {
     MapBuilder::MapBuilder(float maxWalkableAngle, bool skipLiquid,
         bool skipContinents, bool skipJunkMaps, bool skipBattlegrounds,
@@ -163,7 +167,7 @@ namespace Pathfinding
 
         // make sure we process maps which don't have tiles
         // initialize the static tree, which loads WDT models
-        if(!m_terrainBuilder->loadVMap(mapID, 64, 64, meshData))
+        if (!m_terrainBuilder->loadVMap(mapID, 64, 64, meshData))
             return;
 
         // get the coord bounds of the model data

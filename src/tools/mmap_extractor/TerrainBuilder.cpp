@@ -25,7 +25,7 @@
 #include "MapTree.h"
 #include "ModelInstance.h"
 
-namespace Pathfinding
+namespace MMAP
 {
     TerrainBuilder::TerrainBuilder(bool skipLiquid) : m_skipLiquid (skipLiquid){ }
     TerrainBuilder::~TerrainBuilder() { }
@@ -85,8 +85,8 @@ namespace Pathfinding
         if (!mapFile)
             return false;
 
-        Trinity::map_fileheader fheader;
-        fread(&fheader, sizeof(Trinity::map_fileheader), 1, mapFile);
+        map_fileheader fheader;
+        fread(&fheader, sizeof(map_fileheader), 1, mapFile);
 
         if (fheader.versionMagic != *((uint32 const*)(MAP_VERSION_MAGIC)))
         {
@@ -95,9 +95,9 @@ namespace Pathfinding
             return false;
         }
 
-        Trinity::map_heightHeader hheader;
+        map_heightHeader hheader;
         fseek(mapFile, fheader.heightMapOffset, SEEK_SET);
-        fread(&hheader, sizeof(Trinity::map_heightHeader), 1, mapFile);
+        fread(&hheader, sizeof(map_heightHeader), 1, mapFile);
 
         bool haveTerrain = !(hheader.flags & MAP_HEIGHT_NO_HEIGHT);
         bool haveLiquid = fheader.liquidMapOffset && !m_skipLiquid;
@@ -200,9 +200,9 @@ namespace Pathfinding
         // liquid data
         if (haveLiquid)
         {
-            Trinity::map_liquidHeader lheader;
+            map_liquidHeader lheader;
             fseek(mapFile, fheader.liquidMapOffset, SEEK_SET);
-            fread(&lheader, sizeof(Trinity::map_liquidHeader), 1, mapFile);
+            fread(&lheader, sizeof(map_liquidHeader), 1, mapFile);
 
             float* liquid_map = NULL;
 
@@ -295,7 +295,7 @@ namespace Pathfinding
         // make a copy of liquid vertices
         // used to pad right-bottom frame due to lost vertex data at extraction
         float* lverts_copy = NULL;
-        if(meshData.liquidVerts.size())
+        if (meshData.liquidVerts.size())
         {
             lverts_copy = new float[meshData.liquidVerts.size()];
             memcpy(lverts_copy, lverts, sizeof(float)*meshData.liquidVerts.size());
@@ -319,25 +319,25 @@ namespace Pathfinding
                     liquidType = getLiquidType(i, liquid_type);
                     switch (liquidType)
                     {
-                    default:
-                        useLiquid = false;
-                        break;
-                    case MAP_LIQUID_TYPE_WATER:
-                    case MAP_LIQUID_TYPE_OCEAN:
-                        // merge different types of water
-                        liquidType = NAV_WATER;
-                        break;
-                    case MAP_LIQUID_TYPE_MAGMA:
-                        liquidType = NAV_MAGMA;
-                        break;
-                    case MAP_LIQUID_TYPE_SLIME:
-                        liquidType = NAV_SLIME;
-                        break;
-                    case MAP_LIQUID_TYPE_DARK_WATER:
-                        // players should not be here, so logically neither should creatures
-                        useTerrain = false;
-                        useLiquid = false;
-                        break;
+                        default:
+                            useLiquid = false;
+                            break;
+                        case MAP_LIQUID_TYPE_WATER:
+                        case MAP_LIQUID_TYPE_OCEAN:
+                            // merge different types of water
+                            liquidType = NAV_WATER;
+                            break;
+                        case MAP_LIQUID_TYPE_MAGMA:
+                            liquidType = NAV_MAGMA;
+                            break;
+                        case MAP_LIQUID_TYPE_SLIME:
+                            liquidType = NAV_SLIME;
+                            break;
+                        case MAP_LIQUID_TYPE_DARK_WATER:
+                            // players should not be here, so logically neither should creatures
+                            useTerrain = false;
+                            useLiquid = false;
+                            break;
                     }
                 }
 
@@ -354,7 +354,7 @@ namespace Pathfinding
                     for(uint32 idx = 0; idx < 3; idx++)
                     {
                         float h = lverts_copy[ltris[idx]*3 + 1];
-                        if(h != INVALID_MAP_LIQ_HEIGHT && h < INVALID_MAP_LIQ_HEIGHT_MAX)
+                        if (h != INVALID_MAP_LIQ_HEIGHT && h < INVALID_MAP_LIQ_HEIGHT_MAX)
                         {
                             quadHeight += h;
                             validCount++;
@@ -362,19 +362,19 @@ namespace Pathfinding
                     }
 
                     // update vertex height data
-                    if(validCount > 0 && validCount < 3)
+                    if (validCount > 0 && validCount < 3)
                     {
                         quadHeight /= validCount;
                         for(uint32 idx = 0; idx < 3; idx++)
                         {
                             float h = lverts[ltris[idx]*3 + 1];
-                            if(h == INVALID_MAP_LIQ_HEIGHT || h > INVALID_MAP_LIQ_HEIGHT_MAX)
+                            if (h == INVALID_MAP_LIQ_HEIGHT || h > INVALID_MAP_LIQ_HEIGHT_MAX)
                                 lverts[ltris[idx]*3 + 1] = quadHeight;
                         }
                     }
 
                     // no valid vertexes - don't use this poly at all
-                    if(validCount == 0)
+                    if (validCount == 0)
                         useLiquid = false;
                 }
 
@@ -390,10 +390,10 @@ namespace Pathfinding
                     for(uint32 x = 0; x < 3; x++)
                     {
                         float h = lverts[ltris[x]*3 + 1];
-                        if(minLLevel > h)
+                        if (minLLevel > h)
                             minLLevel = h;
 
-                        if(maxLLevel < h)
+                        if (maxLLevel < h)
                             maxLLevel = h;
                     }
 
@@ -402,19 +402,19 @@ namespace Pathfinding
                     for(uint32 x = 0; x < 6; x++)
                     {
                         float h = tverts[ttris[x]*3 + 1];
-                        if(maxTLevel < h)
+                        if (maxTLevel < h)
                             maxTLevel = h;
 
-                        if(minTLevel > h)
+                        if (minTLevel > h)
                             minTLevel = h;
                     }
 
                     // terrain under the liquid?
-                    if(minLLevel > maxTLevel)
+                    if (minLLevel > maxTLevel)
                         useTerrain = false;
 
                     //liquid under the terrain?
-                    if(minTLevel > maxLLevel)
+                    if (minTLevel > maxLLevel)
                         useLiquid = false;
                 }
 
@@ -436,7 +436,7 @@ namespace Pathfinding
             }
         }
 
-        if(lverts_copy)
+        if (lverts_copy)
             delete [] lverts_copy;
 
         return meshData.solidTris.size() || meshData.liquidTris.size();
@@ -807,7 +807,7 @@ namespace Pathfinding
     void TerrainBuilder::loadOffMeshConnections(uint32 mapID, uint32 tileX, uint32 tileY, MeshData &meshData, const char* offMeshFilePath)
     {
         // no meshfile input given?
-        if(offMeshFilePath == NULL)
+        if (offMeshFilePath == NULL)
             return;
 
         FILE* fp = fopen(offMeshFilePath, "rb");
@@ -825,11 +825,11 @@ namespace Pathfinding
             float p0[3], p1[3];
             int mid, tx, ty;
             float size;
-            if(10 != sscanf(buf, "%d %d,%d (%f %f %f) (%f %f %f) %f", &mid, &tx, &ty,
+            if (10 != sscanf(buf, "%d %d,%d (%f %f %f) (%f %f %f) %f", &mid, &tx, &ty,
                 &p0[0], &p0[1], &p0[2], &p1[0], &p1[1], &p1[2], &size))
                 continue;
 
-            if(mapID == mid, tileX == tx, tileY == ty)
+            if (mapID == mid, tileX == tx, tileY == ty)
             {
                 meshData.offMeshConnections.append(p0[1]);
                 meshData.offMeshConnections.append(p0[2]);
