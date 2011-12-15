@@ -657,6 +657,7 @@ uint32 BattlegroundMgr::CreateBattleground(CreateBattlegroundData& data)
     bg->SetTeamStartLoc(ALLIANCE, data.Team1StartLocX, data.Team1StartLocY, data.Team1StartLocZ, data.Team1StartLocO);
     bg->SetTeamStartLoc(HORDE,    data.Team2StartLocX, data.Team2StartLocY, data.Team2StartLocZ, data.Team2StartLocO);
     bg->SetLevelRange(data.LevelMin, data.LevelMax);
+    bg->SetHonorMod(data.honor_extra_mod);
     bg->SetScriptId(data.scriptId);
 
     // add bg to update list
@@ -670,11 +671,12 @@ void BattlegroundMgr::CreateInitialBattlegrounds()
 {
     uint32 oldMSTime = getMSTime();
 
+    float honor_extra_mod;
     uint8 selectionWeight;
     BattlemasterListEntry const* bl;
 
-    //                                               0   1                  2                  3       4       5                 6               7              8            9       10
-    QueryResult result = WorldDatabase.Query("SELECT id, MinPlayersPerTeam, MaxPlayersPerTeam, MinLvl, MaxLvl, AllianceStartLoc, AllianceStartO, HordeStartLoc, HordeStartO, Weight, ScriptName FROM battleground_template");
+    //                                               0   1                  2                  3       4       5                 6               7              8            9       10          11
+    QueryResult result = WorldDatabase.Query("SELECT id, MinPlayersPerTeam, MaxPlayersPerTeam, MinLvl, MaxLvl, AllianceStartLoc, AllianceStartO, HordeStartLoc, HordeStartO, Weight, ScriptName, honor_extra_mod FROM battleground_template");
 
     if (!result)
     {
@@ -708,6 +710,7 @@ void BattlegroundMgr::CreateInitialBattlegrounds()
         data.MaxPlayersPerTeam = fields[2].GetUInt32();
         data.LevelMin = fields[3].GetUInt32();
         data.LevelMax = fields[4].GetUInt32();
+        data.honor_extra_mod = fields[11].GetFloat();
         //check values from DB
         if (data.MaxPlayersPerTeam == 0 || data.MinPlayersPerTeam == 0 || data.MinPlayersPerTeam > data.MaxPlayersPerTeam)
         {

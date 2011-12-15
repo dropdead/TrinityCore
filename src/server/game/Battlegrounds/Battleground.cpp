@@ -203,6 +203,7 @@ Battleground::Battleground()
     m_StartMessageIds[BG_STARTING_EVENT_SECOND] = LANG_BG_WS_START_ONE_MINUTE;
     m_StartMessageIds[BG_STARTING_EVENT_THIRD]  = LANG_BG_WS_START_HALF_MINUTE;
     m_StartMessageIds[BG_STARTING_EVENT_FOURTH] = LANG_BG_WS_HAS_BEGUN;
+    honor_extra_mod = 1; // Honor Extra Para los fin de semanas
 }
 
 Battleground::~Battleground()
@@ -1360,6 +1361,7 @@ void Battleground::UpdatePlayerScore(Player* Source, uint32 type, uint32 value, 
             // do not add honor in arenas
             if (isBattleground())
             {
+                value = value * honor_extra_mod;
                 // reward honor instantly
                 if (doAddHonor)
                     Source->RewardHonor(NULL, 1, value);    // RewardHonor calls UpdatePlayerScore with doAddHonor = false

@@ -338,7 +338,8 @@ class Battleground
 
         /* Battleground */
         // Get methods:
-        char const* GetName() const         { return m_Name; }
+        char const* GetName() const     { return m_Name; }
+        float ExtraHonorMod() const     { return honor_extra_mod; }
         BattlegroundTypeId GetTypeID(bool GetRandom = false) const { return GetRandom ? m_RandomTypeID : m_TypeID; }
         BattlegroundBracketId GetBracketId() const { return m_BracketId; }
         uint32 GetInstanceID() const        { return m_InstanceID; }
@@ -366,6 +367,7 @@ class Battleground
 
         // Set methods:
         void SetName(char const* Name)      { m_Name = Name; }
+        void SetHonorMod(float mod)         { honor_extra_mod = mod; }
         void SetTypeID(BattlegroundTypeId TypeID) { m_TypeID = TypeID; }
         void SetRandomTypeID(BattlegroundTypeId TypeID) { m_RandomTypeID = TypeID; }
         //here we can count minlevel and maxlevel for players
@@ -698,6 +700,7 @@ class Battleground
         float m_TeamStartLocY[BG_TEAMS_COUNT];
         float m_TeamStartLocZ[BG_TEAMS_COUNT];
         float m_TeamStartLocO[BG_TEAMS_COUNT];
+        float honor_extra_mod;
         uint32 ScriptId;
 };
 #endif
