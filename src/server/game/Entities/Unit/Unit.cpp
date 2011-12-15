@@ -6106,6 +6106,7 @@ bool Unit::HandleDummyAuraProc(Unit* victim, uint32 damage, AuraEffect* triggere
                 { 
                     triggered_spell_id = 60478; 
                     break; 
+                }
                 // Glyph of Succubus
                 case 56250:
                 {

@@ -22,7 +22,7 @@
 #include "SharedDefines.h"
 #include "DetourNavMesh.h"
 #include "DetourNavMeshQuery.h"
-#include "MoveSplineInitArgs.h"
+#include "../Spline/MoveSplineInitArgs.h"
 
 using Movement::Vector3;
 using Movement::PointsArray;
