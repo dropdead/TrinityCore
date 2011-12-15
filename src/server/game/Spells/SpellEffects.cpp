@@ -1067,6 +1067,16 @@ void Spell::EffectDummy(SpellEffIndex effIndex)
                     m_caster->CastSpell(m_caster, 42337, true, NULL);
                     return;
                 }
+                case 45980:                                 // Fix Quest Re Cursive 
+                {
+                    if (!unitTarget)
+                        return;
+                    Player* player = m_caster->ToPlayer();
+                    player->CastSpell(player, 46022, false);
+                    if (Creature* creature = player->FindNearestCreature(25773, 10.0f, true))
+                        player->KilledMonsterCredit(creature->GetEntry(), creature->GetGUID());
+                    unitTarget->DestroyForPlayer(player);
+                }
                 case 47170:                                 // Impale Leviroth
                 {
                     if (!unitTarget || (unitTarget->GetEntry() != 26452 && unitTarget->HealthAbovePct(95)))
