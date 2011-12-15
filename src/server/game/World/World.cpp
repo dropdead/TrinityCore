@@ -75,12 +75,10 @@
 #include "CreatureTextMgr.h"
 #include "SmartAI.h"
 #include "Channel.h"
-<<<<<<< HEAD
 #include "WardenCheckMgr.h"
 #include "Warden.h"
-=======
 #include "Memory.h"
->>>>>>> dca2e32718af21c8bdf1dca69c323eadfda65687
+
 
 volatile bool World::m_stopEvent = false;
 uint8 World::m_ExitCode = SHUTDOWN_EXIT_CODE;

@@ -252,7 +252,6 @@ class boss_malygos : public CreatureScript
                 summons.Summon(summon);
             }
 
-<<<<<<< HEAD
             void SummonedCreatureDespawn(Creature* summon)
             {
                 switch (summon->GetEntry())
@@ -272,12 +271,6 @@ class boss_malygos : public CreatureScript
                 }
                 summons.Despawn(summon);
             }
-=======
-            _cannotMove = true;
-
-            me->SetFlying(true);
-        }
->>>>>>> dca2e32718af21c8bdf1dca69c323eadfda65687
 
             void KilledUnit(Unit* victim)
             {
@@ -510,18 +503,11 @@ class boss_malygos : public CreatureScript
                         {
                             std::list<Unit*> targetList;
 
-<<<<<<< HEAD
                             // get all player drakes with threat
                             const std::list<HostileReference*>& threatlist = me->getThreatManager().getThreatList();
                             for (std::list<HostileReference*>::const_iterator itr = threatlist.begin(); itr != threatlist.end(); ++itr)
                                 if ((*itr)->getTarget()->ToCreature() && (*itr)->getTarget()->GetEntry() == NPC_WYRMREST_SKYTALON)
                                     targetList.push_back((*itr)->getTarget());
-=======
-            me->RemoveUnitMovementFlag(MOVEMENTFLAG_LEVITATING);
-            me->SetFlying(false);
-
-            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
->>>>>>> dca2e32718af21c8bdf1dca69c323eadfda65687
 
                             if (targetList.empty())
                                 return;
@@ -590,19 +576,12 @@ class boss_malygos : public CreatureScript
                 if (sparkList.empty())
                     return;
 
-<<<<<<< HEAD
                 for (std::set<uint64>::const_iterator itr = sparkList.begin(); itr != sparkList.end(); ++itr)
                     if (Creature* spark = me->GetCreature(*me, *itr))
                     {
                         // spark already "dead"
                         if (spark->HasAura(SPELL_POWER_SPARK_PLAYERS))
                             continue;
-=======
-        void PrepareForVortex()
-        {
-            me->AddUnitMovementFlag(MOVEMENTFLAG_LEVITATING);
-            me->SetFlying(true);
->>>>>>> dca2e32718af21c8bdf1dca69c323eadfda65687
 
                         spark->AI()->DoAction(move ? ACTION_MOVESPARK : ACTION_STOPSPARK);
 
@@ -702,33 +681,12 @@ class boss_malygos : public CreatureScript
 
             void SpellHitTarget(Unit* target, SpellInfo const* spell)
             {
-<<<<<<< HEAD
                 if (spell->Id == SPELL_ARCANE_BOMB)
                 {
                     target->CastSpell(target, SPELL_ARCANE_BOMB_KNOCKBACK, true);
                     target->CastSpell(target, SPELL_ARCANE_OVERLOAD, true);
                     target->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
                 }
-=======
-                case MOVE_VORTEX:
-                    me->GetMotionMaster()->MoveIdle();
-                    ExecuteVortex();
-                    break;
-                case MOVE_DEEP_BREATH_ROTATION:
-                    _currentPos = _currentPos == MALYGOS_MAX_WAYPOINTS - 1 ? 0 : _currentPos+1;
-                    me->GetMotionMaster()->MovementExpired();
-                    me->GetMotionMaster()->MovePoint(MOVE_DEEP_BREATH_ROTATION, MalygosPhaseTwoWaypoints[_currentPos]);
-                    break;
-                case MOVE_INIT_PHASE_ONE:
-                    me->SetInCombatWithZone();
-                    break;
-                case MOVE_CENTER_PLATFORM:
-                    // Malygos is already flying here, there is no need to set it again.
-                    _cannotMove = false;
-                    // malygos will move into center of platform and then he does not chase dragons, he just turns to his current target.
-                    me->GetMotionMaster()->MoveIdle();
-                    break;
->>>>>>> dca2e32718af21c8bdf1dca69c323eadfda65687
             }
 
             uint64 GetGUID(int32 /*id*/ = 0)
@@ -736,22 +694,16 @@ class boss_malygos : public CreatureScript
                 return surgeTargets[targetCount++];
             }
 
-<<<<<<< HEAD
             Unit* SelectVehicleBaseOrPlayer()
             {
                 if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM))
                 {
                     if (Unit* vehicle = target->GetVehicleBase())
                         return vehicle;
-=======
-            me->AddUnitMovementFlag(MOVEMENTFLAG_LEVITATING);
-            me->SetFlying(true);
->>>>>>> dca2e32718af21c8bdf1dca69c323eadfda65687
 
                     return target;
                 }
 
-<<<<<<< HEAD
                 return NULL;
             }
 
@@ -759,24 +711,9 @@ class boss_malygos : public CreatureScript
             {
                 if (phase == PHASE_NONE || (phase != PHASE_NONE && !UpdateVictim()))
                     return;
-=======
-            for (uint8 i = 0; i < 2; i++)
-            {
-                // Starting position. One starts from the first waypoint and another from the last.
-                uint8 pos = !i ? MAX_HOVER_DISK_WAYPOINTS-1 : 0;
-                if (Creature* summon = me->SummonCreature(NPC_HOVER_DISK_CASTER, HoverDiskWaypoints[pos]))
-                    if (summon->IsAIEnabled)
-                        summon->AI()->DoAction(ACTION_HOVER_DISK_START_WP_1+i);
-
-                // not sure about its position.
-                if (Creature* summon = me->SummonCreature(NPC_HOVER_DISK_MELEE, HoverDiskWaypoints[0]))
-                    summon->SetInCombatWithZone();
-            }
-        }
->>>>>>> dca2e32718af21c8bdf1dca69c323eadfda65687
 
                 events.Update(diff);
-                //_DoAggroPulse(diff);
+                _DoAggroPulse(diff);
 
                 if (me->HasUnitState(UNIT_STAT_CASTING))
                     return;
@@ -1149,7 +1086,6 @@ class npc_alexstrasza : public CreatureScript
                             //me->SummonGameObject(RAID_MODE<uint32>(GO_HEART_OF_MAGIC_10, GO_HEART_OF_MAGIC_25), Locations[5].GetPositionX() + 15.0f,
                             //    Locations[5].GetPositionY(), Locations[5].GetPositionZ(), 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0);
 
-<<<<<<< HEAD
                             // custom
                             if (Creature* temporary = me->SummonCreature(NPC_ALEXSTRASZAS_GIFT, Locations[0]))
                             {
@@ -1168,10 +1104,6 @@ class npc_alexstrasza : public CreatureScript
                                 _instance->SetBossState(BOSS_MALYGOS, DONE);
                                 _instance->SaveToDB();
                             }
-=======
-                        malygos->RemoveUnitMovementFlag(MOVEMENTFLAG_LEVITATING);
-                        malygos->SetFlying(false);
->>>>>>> dca2e32718af21c8bdf1dca69c323eadfda65687
 
                             _stepTimer = 23*IN_MILLISECONDS;
                             break;
@@ -1316,15 +1248,10 @@ class npc_vortex_vehicle : public CreatureScript
                     me->SetOrientation(_angle);
                     me->SendMovementFlagUpdate();
 
-<<<<<<< HEAD
                     _turnTimer = 100;
                 }
                 else
                     _turnTimer -= diff;
-=======
-                if (me->GetMotionMaster()->GetCurrentMovementGeneratorType() != CHASE_MOTION_TYPE)
-                    me->GetMotionMaster()->MoveFollow(malygos, 0.0f, 0.0f);
->>>>>>> dca2e32718af21c8bdf1dca69c323eadfda65687
             }
 
         private:

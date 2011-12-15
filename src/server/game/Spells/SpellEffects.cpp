@@ -6453,18 +6453,19 @@ void Spell::EffectCharge(SpellEffIndex /*effIndex*/)
         float angle = unitTarget->GetAngle(m_caster) - unitTarget->GetOrientation();
         Position pos;
 
-<<<<<<< HEAD
+
         unitTarget->GetContactPoint(m_caster, pos.m_positionX, pos.m_positionY, pos.m_positionZ);
         unitTarget->GetFirstCollisionPosition(pos, unitTarget->GetObjectSize(), angle);
 
         m_caster->GetMotionMaster()->MoveCharge(pos.m_positionX, pos.m_positionY, pos.m_positionZ + unitTarget->GetObjectSize());
-        
-=======
+ 
+        /*
         float x, y, z;
         unitTarget->GetContactPoint(m_caster, x, y, z);
         //m_caster->GetMotionMaster()->MoveCharge(x, y, z);
         unitTarget->MonsterMoveWithSpeed(x, y, z, 24.f, true, true);
->>>>>>> dca2e32718af21c8bdf1dca69c323eadfda65687
+        */
+
     }
 
     if (effectHandleMode == SPELL_EFFECT_HANDLE_HIT_TARGET)

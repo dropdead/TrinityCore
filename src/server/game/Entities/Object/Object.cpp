@@ -313,17 +313,10 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags) const
         unit->BuildMovementPacket(data);
 
         *data << ((Unit*)this)->GetSpeed(MOVE_WALK);
-<<<<<<< HEAD
         *data << ((Unit*)this)->GetSpeed(MOVE_RUN);        
         *data << ((Unit*)this)->GetSpeed(MOVE_RUN_BACK);
         *data << ((Unit*)this)->GetSpeed(MOVE_SWIM_BACK);
         *data << ((Unit*)this)->GetSpeed(MOVE_SWIM);
-=======
-        *data << ((Unit*)this)->GetSpeed(MOVE_RUN);
-        *data << ((Unit*)this)->GetSpeed(MOVE_RUN_BACK);
-        *data << ((Unit*)this)->GetSpeed(MOVE_SWIM);
-        *data << ((Unit*)this)->GetSpeed(MOVE_SWIM_BACK);
->>>>>>> dca2e32718af21c8bdf1dca69c323eadfda65687
         *data << ((Unit*)this)->GetSpeed(MOVE_FLIGHT);
         *data << ((Unit*)this)->GetSpeed(MOVE_FLIGHT_BACK);
         *data << ((Unit*)this)->GetSpeed(MOVE_TURN_RATE);

@@ -38,14 +38,14 @@ class instance_halls_of_lightning : public InstanceMapScript
 public:
     instance_halls_of_lightning() : InstanceMapScript("instance_halls_of_lightning", 602) { }
 
-    InstanceScript* GetInstanceScript(InstanceMap* pMap) const
+    InstanceScript* GetInstanceScript(InstanceMap* map) const
     {
-        return new instance_halls_of_lightning_InstanceMapScript(pMap);
+        return new instance_halls_of_lightning_InstanceMapScript(map);
     }
 
     struct instance_halls_of_lightning_InstanceMapScript : public InstanceScript
     {
-        instance_halls_of_lightning_InstanceMapScript(Map* pMap) : InstanceScript(pMap) {}
+        instance_halls_of_lightning_InstanceMapScript(Map* map) : InstanceScript(map) {}
 
         uint32 m_auiEncounter[MAX_ENCOUNTER];
 
@@ -80,7 +80,7 @@ public:
 
         void OnCreatureCreate(Creature* creature)
         {
-            switch(creature->GetEntry())
+            switch (creature->GetEntry())
             {
                 case NPC_BJARNGRIM:
                     m_uiGeneralBjarngrimGUID = creature->GetGUID();
@@ -102,7 +102,7 @@ public:
 
         void OnGameObjectCreate(GameObject* go)
         {
-            switch(go->GetEntry())
+            switch (go->GetEntry())
             {
                 case GO_BJARNGRIM_DOOR:
                     m_uiBjarngrimDoorGUID = go->GetGUID();
@@ -140,7 +140,7 @@ public:
 
         void SetData(uint32 uiType, uint32 uiData)
         {
-            switch(uiType)
+            switch (uiType)
             {
                 case TYPE_BJARNGRIM:
                     if (uiData == DONE)
@@ -180,7 +180,7 @@ public:
 
         uint32 GetData(uint32 uiType)
         {
-            switch(uiType)
+            switch (uiType)
             {
                 case TYPE_BJARNGRIM:
                     return m_auiEncounter[0];
@@ -196,7 +196,7 @@ public:
 
         uint64 GetData64(uint32 uiData)
         {
-            switch(uiData)
+            switch (uiData)
             {
                 case DATA_BJARNGRIM:
                     return m_uiGeneralBjarngrimGUID;
