@@ -183,12 +183,6 @@ bool Player::UpdateAllStats()
     return true;
 }
 
-void Player::ApplySpellPenetrationBonus(int32 amount, bool apply)
-{
-   ApplyModInt32Value(PLAYER_FIELD_MOD_TARGET_RESISTANCE, -amount, apply);
-   m_spellPenetrationItemMod += apply ? amount : -amount;
-}
-
 void Player::UpdateResistances(uint32 school)
 {
     if (school > SPELL_SCHOOL_NORMAL)
@@ -1317,7 +1311,7 @@ void Guardian::UpdateAttackPowerAndDamage(bool ranged)
             bonusAP = owner->GetTotalAttackPowerValue(RANGED_ATTACK) * 0.22f * mod;
             SetBonusDamage(int32(owner->GetTotalAttackPowerValue(RANGED_ATTACK) * 0.1287f * mod));
         }
-        else if (IsPetGhoul())
+        else if (IsPetGhoul()) //ghouls benefit from deathknight's attack power (may be summon pet or not)
         {
             float mod = 1.0f;
         }
