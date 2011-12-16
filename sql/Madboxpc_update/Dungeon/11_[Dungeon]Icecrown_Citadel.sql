@@ -30,3 +30,9 @@ UPDATE `creature_template` SET  `mindmg` =  '1509',`maxdmg` =  '2683',`dmg_multi
 UPDATE `creature_template` SET  `mindmg` =  '1509',`maxdmg` =  '2683',`dmg_multiplier` =  '38' WHERE `entry` =36626;-- Valor Anterior 35
 -- Sister Svalna
 UPDATE `creature_template` SET  `mindmg` =  '1509',`maxdmg` =  '2683',`dmg_multiplier` =  '10.5' WHERE  `entry` =37126;-- Valor Anterior 7.5
+
+-- Gral.
+-- Solcuion para las arañas Nerub'ar Broodkeeper que no se les podian pegar. http://old.wowhead.com/npc=36725
+UPDATE `creature_template` SET `position_z` = 35.24 WHERE `guid` IN (201170,201106);
+UPDATE `creature_template` SET `position_z` = 44.57 WHERE `guid` IN (200949,200956);
+UPDATE `creature_template` SET `position_z` = 42.1 WHERE `guid` IN (200912,200934);
