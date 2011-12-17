@@ -35,14 +35,14 @@ class instance_culling_of_stratholme : public InstanceMapScript
 public:
     instance_culling_of_stratholme() : InstanceMapScript("instance_culling_of_stratholme", 595) { }
 
-    InstanceScript* GetInstanceScript(InstanceMap* pMap) const
+    InstanceScript* GetInstanceScript(InstanceMap* map) const
     {
-        return new instance_culling_of_stratholme_InstanceMapScript(pMap);
+        return new instance_culling_of_stratholme_InstanceMapScript(map);
     }
 
     struct instance_culling_of_stratholme_InstanceMapScript : public InstanceScript
     {
-        instance_culling_of_stratholme_InstanceMapScript(Map* pMap) : InstanceScript(pMap) {}
+        instance_culling_of_stratholme_InstanceMapScript(Map* map) : InstanceScript(map) {}
 
         uint64 uiArthas;
         uint64 uiMeathook;
@@ -83,29 +83,34 @@ public:
             return false;
         }
 
-        void OnCreatureCreate(Creature* pCreature)
+        void OnCreatureCreate(Creature* creature)
         {
-            switch(pCreature->GetEntry())
+            switch (creature->GetEntry())
             {
                 case NPC_ARTHAS:
-                    uiArthas = pCreature->GetGUID();
+                    uiArthas = creature->GetGUID();
                     break;
                 case NPC_MEATHOOK:
-                    uiMeathook = pCreature->GetGUID();
+                    uiMeathook = creature->GetGUID();
                     break;
                 case NPC_SALRAMM:
-                    uiSalramm = pCreature->GetGUID();
+                    uiSalramm = creature->GetGUID();
                     break;
                 case NPC_EPOCH:
-                    uiEpoch = pCreature->GetGUID();
+                    uiEpoch = creature->GetGUID();
                     break;
                 case NPC_MAL_GANIS:
-                    uiMalGanis = pCreature->GetGUID();
+                    uiMalGanis = creature->GetGUID();
                     break;
-                case NPC_INFINITE:                                  // default unattackable
-                    uiInfinite = pCreature->GetGUID();
-                    pCreature->SetVisible(false);
-                    pCreature->setFaction(35);
+                case NPC_INFINITE:
+                    uiInfinite = creature->GetGUID();
+                    creature->SetVisible(false);
+                    creature->setFaction(35);
+                    break;
+                case NPC_ZOMBIE:
+                    if (m_auiEncounter[6] == NOT_STARTED && creature->GetPositionX() < 2205.0f && creature->GetPositionY() < 1320.0f)
+                        creature->UpdateEntry(roll_chance_i(50) ? 28167 : 28169);
+                    creature->SetCorpseDelay(3);
                     break;
             }
         }
@@ -119,66 +124,66 @@ public:
 
             for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
             {
-                if (Player* i_pl = i->getSource())
-                    i_pl->KilledMonsterCredit(entry, 0);
+                if (Player* player = i->getSource())
+                    player->KilledMonsterCredit(entry, 0);
             }
         }
 
-        void OnGameObjectCreate(GameObject* pGo)
+        void OnGameObjectCreate(GameObject* go)
         {
-            switch(pGo->GetEntry())
+            switch (go->GetEntry())
             {
                 case GO_SHKAF_GATE:
-                    uiShkafGate = pGo->GetGUID();
+                    uiShkafGate = go->GetGUID();
                     break;
                 case GO_MALGANIS_GATE_1:
-                    uiMalGanisGate1 = pGo->GetGUID();
+                    uiMalGanisGate1 = go->GetGUID();
                     break;
                 case GO_MALGANIS_GATE_2:
-                    uiMalGanisGate2 = pGo->GetGUID();
+                    uiMalGanisGate2 = go->GetGUID();
                     break;
                 case GO_EXIT_GATE:
-                    uiExitGate = pGo->GetGUID();
+                    uiExitGate = go->GetGUID();
                     if (m_auiEncounter[4] == DONE)
                         HandleGameObject(uiExitGate, true);
                     break;
                 case GO_MALGANIS_CHEST_N:
                 case GO_MALGANIS_CHEST_H:
-                    uiMalGanisChest = pGo->GetGUID();
+                    uiMalGanisChest = go->GetGUID();
                     if (m_auiEncounter[4] == DONE)
-                        pGo->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_INTERACT_COND);
+                        go->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_INTERACT_COND);
                     break;
             }
         }
 
         void SetData(uint32 type, uint32 data)
         {
-            switch(type)
+            switch (type)
             {
                 case DATA_CRATES_EVENT:
-                    switch(data)
+                    switch (data)
                     {
-                    case 0: //Entfernt Worldstate
-                        DoUpdateWorldState(WORLDSTATE_NUMBER_CRATES_SHOW, 0);
-                        break;
-                    case 1: //Addiert ein Punkt
-                        uiCountCrates++;
-                        DoUpdateWorldState(WORLDSTATE_NUMBER_CRATES_COUNT, uiCountCrates);
-                        if(uiCountCrates >= 5)
-                        {
-                            m_auiEncounter[0] = DONE;
-                            GiveQuestKillAllInInstance(CREDIT_DISPELLING_ILLUSIONS);
-                            SaveToDB();
-                        }
-                        break;
-                    case 2: //Startet den Worldstate
-                        uiCountCrates = 0;
-                        m_auiEncounter[0] = IN_PROGRESS;
-                        DoUpdateWorldState(WORLDSTATE_NUMBER_CRATES_SHOW, 1);
-                        DoUpdateWorldState(WORLDSTATE_NUMBER_CRATES_COUNT, uiCountCrates);
-                        break;
+                        case 0: // Entfernt Worldstate
+                            DoUpdateWorldState(WORLDSTATE_NUMBER_CRATES_SHOW, 0);
+                            break;
+                        case 1: // Addiert ein Punkt
+                            ++uiCountCrates;
+                            DoUpdateWorldState(WORLDSTATE_NUMBER_CRATES_COUNT, uiCountCrates);
+                            if (uiCountCrates >= 5)
+                            {
+                                m_auiEncounter[0] = DONE;
+                                GiveQuestKillAllInInstance(CREDIT_DISPELLING_ILLUSIONS);
+                                SaveToDB();
+                            }
+                            break;
+                        case 2: // Startet den Worldstate
+                            uiCountCrates = 0;
+                            m_auiEncounter[0] = IN_PROGRESS;
+                            DoUpdateWorldState(WORLDSTATE_NUMBER_CRATES_SHOW, 1);
+                            DoUpdateWorldState(WORLDSTATE_NUMBER_CRATES_COUNT, uiCountCrates);
+                            break;
                     }
-                break;
+                    break;
                 case DATA_MEATHOOK_EVENT:
                     m_auiEncounter[1] = data;
                     break;
@@ -190,7 +195,7 @@ public:
                     break;
                 case DATA_MAL_GANIS_EVENT:
                     m_auiEncounter[4] = data;
-                    switch (m_auiEncounter[4])
+                    switch (data)
                     {
                         case NOT_STARTED:
                             HandleGameObject(uiMalGanisGate2, true);
@@ -202,27 +207,28 @@ public:
                             GiveQuestKillAllInInstance(CREDIT_A_ROYAL_ESCORT);
                             HandleGameObject(uiExitGate, true);
                             HandleGameObject(uiMalGanisGate2, true);
-                            if (GameObject* pGo = instance->GetGameObject(uiMalGanisChest))
-                                pGo->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_INTERACT_COND);
+                            if (GameObject* go = instance->GetGameObject(uiMalGanisChest))
+                                go->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_INTERACT_COND);
                             break;
                     }
                     break;
                 case DATA_INFINITE_EVENT:
                     m_auiEncounter[5] = data;
-                    switch (m_auiEncounter[5])
+                    switch (data)
                     {
                         case DONE:
                             uiCountdownMinute = 0;
                             DoUpdateWorldState(WORLDSTATE_NUMBER_INFINITE_SHOW, 0);
                             break;
-                        case IN_PROGRESS: //make visible
+                        case IN_PROGRESS: // make visible
                         {
-                            if (Creature* pCreature = instance->GetCreature(uiInfinite))
+                            if (Creature* creature = instance->GetCreature(uiInfinite))
                             {
-                                pCreature->SetVisible(true);
-                                pCreature->RestoreFaction();
+                                creature->SetVisible(true);
+                                creature->RestoreFaction();
                             }
-                        }   break;
+                            break;
+                        }
                     }
                     break;
                 case DATA_ARTHAS_EVENT:
@@ -236,7 +242,7 @@ public:
 
         uint32 GetData(uint32 type)
         {
-            switch(type)
+            switch (type)
             {
                 case DATA_CRATES_EVENT:               return m_auiEncounter[0];
                 case DATA_MEATHOOK_EVENT:             return m_auiEncounter[1];
@@ -252,7 +258,7 @@ public:
 
         uint64 GetData64(uint32 identifier)
         {
-            switch(identifier)
+            switch (identifier)
             {
                 case DATA_ARTHAS:                     return uiArthas;
                 case DATA_MEATHOOK:                   return uiMeathook;
@@ -326,7 +332,7 @@ public:
                 {
                     if (uiCountdownTimer < diff)
                     {
-                        uiCountdownMinute--;
+                        --uiCountdownMinute;
 
                         if (uiCountdownMinute)
                         {

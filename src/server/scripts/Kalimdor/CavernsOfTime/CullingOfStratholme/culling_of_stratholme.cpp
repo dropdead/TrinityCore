@@ -88,7 +88,6 @@ enum NPCs
     NPC_INFINITE_HUNTER                        = 27743,
     NPC_INFINITE_AGENT                         = 27744,
     NPC_TIME_RIFT                              = 28409,
-    NPC_ZOMBIE                                 = 27737,
     NPC_GHOUL                                  = 28249,
     NPC_NECROMANCER                            = 28200,
     NPC_STALKER                                = 28199,
@@ -749,13 +748,21 @@ public:
                             JumpToNextStep(11000);
                             break;
                         case 37:
-                            if (Creature* pMalganis = Unit::GetCreature(*me, uiMalganisGUID))
+                            if (Creature* malganis = Unit::GetCreature(*me, uiMalganisGUID))
                             {
-                                if (Creature* pZombie = GetClosestCreatureWithEntry(pMalganis, NPC_CITY_MAN, 100.0f))
-                                    pZombie->UpdateEntry(NPC_ZOMBIE, 0);
-                                else if (Creature* pZombie = GetClosestCreatureWithEntry(pMalganis, NPC_CITY_MAN2, 100.0f))
-                                    pZombie->UpdateEntry(NPC_ZOMBIE, 0);
-                                else //There's no one else to transform
+                                if (Creature* cityMan = GetClosestCreatureWithEntry(malganis, NPC_CITY_MAN, 100.0f))
+                                {
+                                    cityMan->UpdateEntry(NPC_ZOMBIE, 0);
+                                    cityMan->AIM_Initialize();
+                                    cityMan->Motion_Initialize();
+                                }
+                                else if (Creature* cityMan2 = GetClosestCreatureWithEntry(malganis, NPC_CITY_MAN2, 100.0f))
+                                {
+                                    cityMan2->UpdateEntry(NPC_ZOMBIE, 0);
+                                    cityMan2->AIM_Initialize();
+                                    cityMan2->Motion_Initialize();
+                                }
+                                else // There's no one else to transform
                                     uiStep++;
                             }
                             else

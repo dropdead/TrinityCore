@@ -713,7 +713,7 @@ class boss_malygos : public CreatureScript
                     return;
 
                 events.Update(diff);
-                //_DoAggroPulse(diff);
+                _DoAggroPulse(diff);
 
                 if (me->HasUnitState(UNIT_STAT_CASTING))
                     return;
