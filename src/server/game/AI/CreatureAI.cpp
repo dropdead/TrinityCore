@@ -25,6 +25,7 @@
 #include "Log.h"
 #include "MapReference.h"
 #include "Player.h"
+#include "Group.h"
 
 //Disable CreatureAI when charmed
 void CreatureAI::OnCharmed(bool /*apply*/)
@@ -148,6 +149,25 @@ void CreatureAI::DoAttackerAreaInCombat(Unit* attacker, float range, Unit* pUnit
                 i_pl->SetInCombatWith(pUnit);
                 pUnit->AddThreat(i_pl, 0.0f);
             }
+    }
+}
+void CreatureAI::DoAttackerGroupInCombat(Player* attacker)
+{
+    if (attacker)
+    {
+        if (Group* pGroup = attacker->GetGroup() )
+        {
+            for (GroupReference* itr = pGroup->GetFirstMember(); itr != NULL; itr = itr->next())
+            {
+                Player* pGroupGuy = itr->getSource();
+                if (pGroupGuy && pGroupGuy->isAlive() && pGroupGuy->GetMapId() == me->GetMapId())
+                {
+                    me->SetInCombatWith(pGroupGuy);
+                    pGroupGuy->SetInCombatWith(me);
+                    me->AddThreat(pGroupGuy, 0.0f);
+                }
+            }
+        }
     }
 }
 
