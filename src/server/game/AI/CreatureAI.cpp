@@ -160,6 +160,7 @@ void CreatureAI::DoAttackerGroupInCombat(Player* attacker)
             for (GroupReference* itr = pGroup->GetFirstMember(); itr != NULL; itr = itr->next())
             {
                 Player* pGroupGuy = itr->getSource();
+
                 if (pGroupGuy && pGroupGuy->isAlive() && pGroupGuy->GetMapId() == me->GetMapId())
                 {
                     me->SetInCombatWith(pGroupGuy);
