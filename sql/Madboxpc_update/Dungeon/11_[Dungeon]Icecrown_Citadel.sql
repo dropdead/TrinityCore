@@ -129,9 +129,9 @@ UPDATE `creature_template` SET  `mindmg` =  '1527',`maxdmg` =  '1710',`dmg_multi
 UPDATE `creature_template` SET  `mindmg` =  '1527',`maxdmg` =  '1710',`dmg_multiplier` =  '26' WHERE `entry` =39168;
 -- Gral.
 -- Solcuion para las arañas Nerub'ar Broodkeeper que no se les podian pegar. http://old.wowhead.com/npc=36725
-UPDATE `creature_template` SET `position_z` = 35.24 WHERE `guid` IN (201170,201106);
-UPDATE `creature_template` SET `position_z` = 44.57 WHERE `guid` IN (200949,200956);
-UPDATE `creature_template` SET `position_z` = 42.1 WHERE `guid` IN (200912,200934);
+UPDATE `creature` SET `position_z` = 35.24 WHERE `guid` IN (201170,201106);
+UPDATE `creature` SET `position_z` = 44.57 WHERE `guid` IN (200949,200956);
+UPDATE `creature` SET `position_z` = 42.1 WHERE `guid` IN (200912,200934);
 
 -- Scriptnames y ajustes:
 
