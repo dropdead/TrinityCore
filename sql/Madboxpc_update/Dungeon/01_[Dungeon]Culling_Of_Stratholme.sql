@@ -128,3 +128,6 @@ INSERT INTO `creature` (`id`, `map`, `spawnMask`, `phaseMask`, `modelid`, `equip
 ('32273','595','2','1','0','1839','2323.24','1294.86','130.681','4.74126','300','0','0','417911','0','0','0','0','0');
 -- Fix CoS reward dungeon finder
 UPDATE `instance_encounters` SET `creditType`=0, `creditEntry`=26533 WHERE `entry` IN (296, 300);
+
+UPDATE `creature` SET `id`=27737, `modelid`=0, `spawntimesecs`=30, `spawndist`=5, `MovementType`=1 WHERE `id` IN (28167,28169);
+DELETE FROM `disables` WHERE `sourceType`=4 AND `entry`=7180;

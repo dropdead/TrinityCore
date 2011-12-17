@@ -6486,17 +6486,18 @@ void Spell::EffectCharge(SpellEffIndex /*effIndex*/)
 {
     if (effectHandleMode == SPELL_EFFECT_HANDLE_LAUNCH_TARGET)
     {
-        if (!unitTarget)
+        Unit* target = m_targets.GetUnitTarget();
+
+        if (!target)
             return;
         
-        float angle = unitTarget->GetAngle(m_caster) - unitTarget->GetOrientation();
+        float angle = target->GetAngle(m_caster) - target->GetOrientation();
         Position pos;
 
         target->GetContactPoint(m_caster, pos.m_positionX, pos.m_positionY, pos.m_positionZ);
         target->GetFirstCollisionPosition(pos, target->GetObjectSize(), angle);
-
+        
         m_caster->GetMotionMaster()->MoveCharge(pos.m_positionX, pos.m_positionY, pos.m_positionZ + target->GetObjectSize());
-
     }
 
     if (effectHandleMode == SPELL_EFFECT_HANDLE_HIT_TARGET)
