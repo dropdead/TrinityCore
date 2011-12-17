@@ -1,1597 +1,2754 @@
-#include "ScriptPCH.h"
-
-/* SQL IR AGREGANDO LOS ENTRY.
-UPDATE `creature_template` SET `ScriptName` = 'mobs_icecrown_citadel' 
-WHERE `entry` IN 
-(37007,36724,37012,36725,
- 36805,36808,36807,36811,36829,
- 37022,37038,10404,37023,36880, 
- 37664,37595,37663,37901,37571,37662,37666,37665,
- 38125,37127,37132,37134,37133);
-
+/*
+ * Copyright (C) 2008-2011 TrinityCore <http://www.trinitycore.org/>
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-// Añadir las spells de los trash.
-// porfavor realizarlo de forma ordenanda y con su corespondiente nombre si es posible comentar
-// de que trash son las spells.
-// Referencias
-// http://www.youtube.com/watch?v=dYXY7QsAI98 Valithria Dreamwalker Trash
-// http://www.youtube.com/watch?v=-y1jiiaUfC8 Crimson Halls Trash
 
-enum spells
+#include "ScriptPCH.h"
+ 
+enum Spells
 {
-    SPELL_SOUL_FEAST_ALL          = 71203, // http://old.wowhead.com/spell=71203
-    // Npc Deathbound Ward                  
-    SPELL_SABER_LASH_ALL          = 71021, // http://old.wowhead.com/spell=71021
-    SPELL_DISRUPTING_SHOUT_ALL    = 71022, // http://old.wowhead.com/spell=71022
-    // Npc Servant of the Throne
-    SPELL_GLACIAL_BLAST           = 71029, // http://old.wowhead.com/spell=71029
-    // Npc Ancient Skeletal Soldier
-    SPELL_SHIELD_BASH             = 70964, // http://old.wowhead.com/spell=70964
-    // Npc Nerub'ar Broodkeeper
-    SPELL_CRYPT_SCARABS           = 70965, // http://old.wowhead.com/spell=70965
-    SPELL_DARK_MENDING            = 71020, // http://old.wowhead.com/spell=71020
-    SPELL_WEB_WRAP                = 70980, // http://old.wowhead.com/spell=70980
-    // Npc Deathspeaker Servant
-    SPELL_CHAOS_BOLT              = 69576, // http://old.wowhead.com/spell=69576
-    SPELL_CURSE_OF_AGONY          = 69404, // http://old.wowhead.com/spell=69404
-    SPELL_CONSUMING_SHADOWS       = 69405, // http://old.wowhead.com/spell=69405
-    // Npc Deathspeaker Zealot
-    SPELL_SHADOW_CLEAVE           = 69492, // http://old.wowhead.com/spell=69492
-    // Npc Deathspeaker Disciple
-    SPELL_DARK_BLESSING           = 69391, // http://old.wowhead.com/spell=69391
-    SPELL_SHADOW_MEND             = 69389, // http://old.wowhead.com/spell=69389
-    // Npc Deathspeaker Attendant
-    SPELL_SHADOW_NOVA             = 69355, // http://old.wowhead.com/spell=69355
-    // Npc Deathspeaker Attendant y Deathspeaker Disciple
-    SPELL_SHADOW_BOLT             = 69387, // http://old.wowhead.com/spell=69387
-    // Npc Deathspeaker High Priest
-    SPELL_AURA_OF_DARKNESS        = 69491, // http://old.wowhead.com/spell=69491
-    SPELL_DARK_RECKONING          = 69483, // http://old.wowhead.com/spell=69483
-    // Npc Val'kyr Herald
-    SPELL_SEVERED_ESSENCE         = 71906, // http://old.wowhead.com/spell=71906
-    // Npc Blighted Abomination
-    SPELL_CLEAVE                  = 40504, // http://old.wowhead.com/spell=40504
-    SPELL_PLAGUE_CLOUD            = 71150, // http://old.wowhead.com/spell=71150
-    SPELL_SCOURGE_HOOK            = 71140, // http://old.wowhead.com/spell=71140
-    // Npc Vengeful Fleshreaper
-    SPELL_LEAPING_FACE_MAUL       = 71164, // http://old.wowhead.com/spell=71164
-    // Npc Pustulating Horror
-    SPELL_BUBBLING_PUS            = 71089, // http://old.wowhead.com/spell=71089
-    SPELL_BLIGHT_BOMB             = 71088, // http://old.wowhead.com/spell=71088
-    // Npc Plague Scientist
-    SPELL_COMBOBULATING_SPRAY     = 71103, // http://old.wowhead.com/spell=71103
-    SPELL_PLAGUE_BLAST            = 73079, // http://old.wowhead.com/spell=73079 
-    SPELL_PLAGUE_STREAM           = 69871, // http://old.wowhead.com/spell=69871
-    // Npc Decaying Colossus
-    SPELL_MASSIVE_STOMP           = 71114, // http://old.wowhead.com/spell=71114
-    // Npc Darkfallen Archmage, Darkfallen Blood Knight, Darkfallen Noble
-    SPELL_SIPHON_ESSENCE          = 70299, // http://old.wowhead.com/spell=70299
-    //Npc Darkfallen Archmage
-    SPELL_AMPLIFY_MAGIC           = 70408, // http://old.wowhead.com/spell=70408
-    SPELL_BLAST_WAVE              = 70407, // http://old.wowhead.com/spell=70407
-    SPELL_FIREBALL                = 70409, // http://old.wowhead.com/spell=70409
-    SPELL_POLYMORPH_SPIDER        = 70410, // http://old.wowhead.com/spell=70410
-    // Npc Darkfallen Blood Knight y Darkfallen Tactician
-    SPELL_UNHOLY_STRIKE           = 70437, // http://old.wowhead.com/spell=70437
-    // Npc Darkfallen Blood Knight
-    SPELL_VAMPIRIC_AURA           = 71736, // http://old.wowhead.com/spell=71736
-    SPELL_BLOOD_MIRROR_DAMAGE     = 70445, // http://old.wowhead.com/spell=70445
-    SPELL_BLOOD_MIRROR_BUFF       = 70451, // http://old.wowhead.com/spell=70451
-    SPELL_BLOOD_MIRROR_DUMMY      = 70450, // http://old.wowhead.com/spell=70450
-    // Npc Darkfallen Noble
-    SPELL_SHADOW_BOLT_1           = 72960, // http://old.wowhead.com/spell=72960
-    SPELL_CHAINS_OF_SHADOW        = 70645, // http://old.wowhead.com/spell=70645
-    // Npc Vampiric Fiend
-    SPELL_DISEASE_CLOUD           = 41290, // http://old.wowhead.com/spell=41290
-    SPELL_LEECHING_ROT            = 70671, // http://old.wowhead.com/spell=70671
-    // Npc Darkfallen Advisor
-    SPELL_SHROUD_OF_PROTECTION    = 72065, // http://old.wowhead.com/spell=72065
-    SPELL_SHROUD_OF_SPELL_WARDING = 72066, // http://old.wowhead.com/spell=72066
-    SPELL_LICH_SLAP               = 72057, // http://old.wowhead.com/spell=72057
-    // Npc Darkfallen Commander
-    SPELL_BATTLE_SHOUT            = 70750, // http://old.wowhead.com/spell=70750
-    SPELL_VAMPIRE_RUSH            = 70449, // http://old.wowhead.com/spell=70449
-    // Npc Darkfallen Tactician
-    SPELL_SHADOWSTEP              = 70431, // http://old.wowhead.com/spell=70431
-    SPELL_BLOOD_SAP               = 70432, // http://old.wowhead.com/spell=70432
-    // Npc Darkfallen Lieutenant
-    SPELL_REND_FLESH              = 70435, // http://old.wowhead.com/spell=70435
-    SPELL_VAMPIRIC_CURSE          = 70423, // http://old.wowhead.com/spell=70423
-    //Npc Ymirjar Frostbinder y Ymirjar Deathbringer
-    SPELL_SPIRIT_STREAM           = 69929, // http://old.wowhead.com/spell=69929
-    // Npc Ymirjar Deathbringer
-    SPELL_BANISH                  = 71298, // http://old.wowhead.com/spell=71298
-    SPELL_DEATHS_EMBRACE          = 71299, // http://old.wowhead.com/spell=71299
-    SPELL_SHADOW_BOLT_2           = 71296, // http://old.wowhead.com/spell=71296
-    SPELL_SUMMON_YMIRJAR          = 71303, // http://old.wowhead.com/spell=71303
-    // Npc Ymirjar Frostbinder
-    SPELL_ARCTIC_CHILL            = 71270, // http://old.wowhead.com/spell=71270
-    SPELL_FROZEN_ORB              = 71274, // http://old.wowhead.com/spell=71274
-    SPELL_TWISTED_WINDS           = 71306, // http://old.wowhead.com/spell=71306
-    // Npc Ymirjar Battle-Maiden
-    SPELL_ADRENALINE_RUSH         = 71258, // http://old.wowhead.com/spell=71258
-    SPELL_BARBARIC_STRIKE         = 71257, // http://old.wowhead.com/spell=71257
-    // Npc Ymirjar Huntress
-    SPELL_ICE_TRAP                = 71249, // http://old.wowhead.com/spell=71249
-    SPELL_RAPID_SHOT              = 71251, // http://old.wowhead.com/spell=71251
-    SPELL_SHOOT                   = 71253, // http://old.wowhead.com/spell=71253
-    SPELL_VOLLEY                  = 71252, // http://old.wowhead.com/spell=71252
-    SPELL_SUMMON_WARHAWK          = 71705, // http://old.wowhead.com/spell=71705
-    // Npc Ymirjar Warlord
-    SPELL_WHIRLWIND               = 41056  // http://old.wowhead.com/spell=41056
+/*-----Trash de Martillo de la Luz-----*/
+    //## Ancient Skeletal Soldier ##
+    SPELL_SHIELD_BASH             = 70964,
+
+    //## Deathbound Ward ##
+    SPELL_SABER_LASH              = 71021,
+    SPELL_DISRUPTING_SHOUT        = 71022,
+
+    //## Nerubar Broodkeeper ##
+    SPELL_CRYPT_SCARABS           = 70965,
+    SPELL_DARK_MENDING            = 71020,
+    SPELL_WEB_WRAP                = 70980,
+
+    //## Servant of the Throne ##
+    SPELL_GLACIAL_BLAST           = 71029,
+/*
+    //## The Damned ##
+    SPELL_BONE_FLURRY             = 70960,
+    SPELL_SHATTERED_BONES         = 70961,
+    SPELL_SHATTERED_BONES_VISUAL  = 70963,
+*/
+/*--Trash de Oratorio de los Malditos--*/
+    // ## Deathspeaker Servant ##
+    SPELL_CHAOS_BOLT_10M          = 69576,    
+    SPELL_CHAOS_BOLT_25M          = 71108,
+    SPELL_CONSUMING_SHADOWS       = 69405,
+    SPELL_CURSE_OF_AGONY_10M      = 69404,
+    SPELL_CURSE_OF_AGONY_25M      = 71112,
+
+    // ## Deathspeaker Disciple ##
+    SPELL_SHADOW_BOLT_DEATHSPEAKER= 69387, //tambien la usa deathspeaker attendant   
+    SPELL_DARK_BLESSING           = 69391,
+    SPELL_SHADOW_MEND_10M         = 69389,
+    SPELL_SHADOW_MEND_25M         = 71107,
+
+    //## Deathspeaker Attendant ##
+    SPELL_SHADOW_NOVA_10M         = 69355,
+    SPELL_SHADOW_NOVA_25M         = 71106,
+
+    //## Deathspeaker Zealot ##
+    SPELL_SHADOW_CLEAVE           = 69492,
+
+    //## Deathspeaker High Priest ##
+    SPELL_DARK_RECKONING          = 69483,
+    SPELL_AURA_OF_DARKNESS        = 69491,
+
+/*---------Trash de La Espiral---------*/
+	//## Valkyr Herald ##
+    SPELL_SEVERED_ESSENCE_10M     = 71906,
+    SPELL_SEVERED_ESSENCE_25M     = 71942,
+
+/*----Trash de Talleres de la Peste----*/
+    //## Blighted Abomination ##
+    SPELL_CLEAVE                  = 40504,
+    SPELL_PLAGUE_CLOUD            = 71150,
+    SPELL_SCOURGE_HOOK            = 71140,
+
+    //## Vengeful Fleshreaper ##
+    SPELL_LEAPING_FACE_MAUL       = 71164,
+    SPELL_DEVOUR_HUMANOID         = 71164,
+
+    //## Plague Scientist ##
+    SPELL_PLAGUE_BLAST            = 73079,
+    SPELL_PLAGUE_STREAM           = 69871,
+    SPELL_COMBOBULATING_SPRAY     = 71103,
+
+    //## Pustulating Horror ##
+    SPELL_BLIGHT_BOMB             = 71088,
+    SPELL_BUBBLING_PUS_10M        = 71089,
+    SPELL_BUBBLING_PUS_25M        = 71090,
+
+    //## Decaying Colossus ##
+    SPELL_MASSIVE_STOMP_10M       = 71114,
+    SPELL_MASSIVE_STOMP_25M       = 71115,
+
+/*--------Trash de Salas Carmesi--------*/
+    //## Darkfallen Archmage ##
+    SPELL_AMPLIFY_MAGIC_10M       = 70408,
+    SPELL_AMPLIFY_MAGIC_25M       = 72336,
+    SPELL_BLAST_WAVE_10M          = 70407,
+    SPELL_BLAST_WAVE_25M          = 71151,
+    SPELL_FIREBALL_10M            = 70409,
+    SPELL_FIREBALL_25M            = 71153,
+    SPELL_POLYMORPH_SPIDER        = 70410,
+    //esta spell hay que ver como se usa y su interaccion con el orbe
+    SPELL_SIPHON_ESSENCE          = 70299, //tambien la usa Darkfallen Blood Knight y Darkfallen Noble
+
+    //## Darkfallen Blood Knight ##
+    SPELL_VAMPIRIC_AURA           = 71736,
+    SPELL_UNHOLY_STRIKE           = 70437, //tambien la usa el Darkfallen Tactician
+    SPELL_BLOOD_MIRROR_DAMAGE     = 70445,
+    SPELL_BLOOD_MIRROR_BUFF       = 70451,
+    SPELL_BLOOD_MIRROR_DUMMY      = 70450,
+
+    //## Darkfallen Noble ##
+    SPELL_CHAINS_OF_SHADOW        = 70645,
+    SPELL_SHADOW_BOLT_10M         = 72960,
+    SPELL_SHADOW_BOLT_25M         = 72961,
+
+    //## Npc Vampiric Fiend ##
+    SPELL_DISEASE_CLOUD           = 41290,
+    SPELL_LEECHING_ROT            = 70671,
+
+    //## Darkfallen Advisor ##
+    SPELL_LICH_SLAP_10M           = 72057,
+    SPELL_LICH_SLAP_25M           = 72421,
+    SPELL_SHROUD_OF_PROTECTION    = 72065,
+    SPELL_SHROUD_OF_SPELL_WARDING = 72066,
+
+    //## Darkfallen Commander ##
+    SPELL_VAMPIRE_RUSH_10M        = 70449,
+    SPELL_VAMPIRE_RUSH_25M        = 71155,
+    SPELL_BATTLE_SHOUT            = 70750,
+
+    //## Darkfallen Lieutenant ##
+    SPELL_VAMPIRIC_CURSE          = 70423,
+    SPELL_REND_FLESH_10M          = 70435,
+    SPELL_REND_FLESH_25M          = 71154,
+
+    //## Darkfallen Tactician ##
+    SPELL_SHADOWSTEP              = 70431,
+    SPELL_BLOOD_SAP               = 70432,
+
+/*---Trash de Camaras de Alaescarcha---*/
+    //## Ymirjar Deathbringer ##
+    SPELL_BANISH                  = 71298,
+    SPELL_DEATHS_EMBRACE_10M      = 71299,
+    SPELL_DEATHS_EMBRACE_25M      = 71300,
+    SPELL_SHADOW_BOLT_YMIRJAR_10M = 71296,
+    SPELL_SHADOW_BOLT_YMIRJAR_25M = 71297,
+    SPELL_SUMMON_YMIRJAR          = 71303,
+
+    //## Ymirjar Frostbinder ##
+    SPELL_ARCTIC_CHILL            = 71270,
+    SPELL_FROZEN_ORB              = 71274,
+    SPELL_TWISTED_WINDS           = 71306,
+    SPELL_SPIRIT_STREAM           = 69929, // tambien la usa Ymirjar Deathbringer
+
+    //## Ymirjar Battle-Maiden ##
+    SPELL_ADRENALINE_RUSH         = 71258,
+    SPELL_BARBARIC_STRIKE         = 71257,
+
+    //## Ymirjar Huntress ##
+    SPELL_ICE_TRAP                = 71249,
+    SPELL_RAPID_SHOT              = 71251,
+    SPELL_SHOOT                   = 71253,
+    SPELL_VOLLEY                  = 71252,
+    SPELL_SUMMON_WARHAWK          = 71705,
+
+    //## Ymirjar Warlord ##
+    SPELL_WHIRLWIND               = 41056,
+
     // Npc Empowering Orb Visual Stalker
+    // aun sin datos adicionales de este npc
+
+/* esta spell tienen todos los npcs para credito de
+muerte con la cadena de quest de la shadowmourne */
+    SPELL_SOUL_FEAST_ALL          = 71203
 };
 
 enum npcs
 {
-    // Light's Hammer
-    NPC_DEATHBOUND_WARD          = 37007, // http://old.wowhead.com/npc=37007
-    NPC_SERVANT_OF_THE_THRONE    = 36724, // http://old.wowhead.com/npc=36724
-    NPC_ANCIENT_SKELETAL_SOLDIER = 37012, // http://old.wowhead.com/npc=37012
-    NPC_NERUBAR_BROODKEEPER      = 36725, // http://old.wowhead.com/npc=36725
-    // Oratory of the Damned
-    NPC_DEATHSPEAKER_SERVANT     = 36805, // http://old.wowhead.com/npc=36805
-    NPC_DEATHSPEAKER_ZEALOT      = 36808, // http://old.wowhead.com/npc=36808
-    NPC_DEATHSPEAKER_DISCIPLE    = 36807, // http://old.wowhead.com/npc=36807
-    NPC_DEATHSPEAKER_ATTENDANT   = 36811, // http://old.wowhead.com/npc=36811
-    NPC_DEATHSPEAKER_HIGH_PRIEST = 36829, // http://old.wowhead.com/npc=36829
-    // The Spire
-    NPC_VALKYR_HERALD            = 37098, // http://old.wowhead.com/npc=37098
-    // The Plagueworks
-    NPC_BLIGHTED_ABOMINATION     = 37022, // http://old.wowhead.com/npc=37022
-    NPC_VENGEFUL_FLESHREAPER     = 37038, // http://old.wowhead.com/npc=37038
-    NPC_PUSTULATING_HORROR       = 10404, // http://old.wowhead.com/npc=10404
-    NPC_PLAGUE_SCIENTIST         = 37023, // http://old.wowhead.com/npc=37023
-    NPC_DECAYING_COLOSSUS        = 36880, // http://old.wowhead.com/npc=36880
-    // The Crimson Hall
-    NPC_DARKFALLEN_ARCHMAGE      = 37664, // http://old.wowhead.com/npc=37664
-    NPC_DARKFALLEN_BLOOD_KNIGHT  = 37595, // http://old.wowhead.com/npc=37595
-    NPC_DARKFALLEN_NOBLE         = 37663, // http://old.wowhead.com/npc=37663
-    NPC_VAMPIRIC_FIEND           = 37901, // http://old.wowhead.com/npc=37901
-    NPC_DARKFALLEN_ADVISOR       = 37571, // http://old.wowhead.com/npc=37571
-    NPC_DARKFALLEN_COMMANDER     = 37662, // http://old.wowhead.com/npc=37662
-    NPC_DARKFALLEN_TACTICIAN     = 37666, // http://old.wowhead.com/npc=37666
-    NPC_DARKFALLEN_LIEUTENANT    = 37665, // http://old.wowhead.com/npc=37665
-    // The Frostwing Halls
-    NPC_YMIRJAR_DEATHBRINGER     = 38125, // http://old.wowhead.com/npc=38125
-    NPC_YMIRJAR_FROSTBINDER      = 37127, // http://old.wowhead.com/npc=37127
-    NPC_YMIRJAR_BATTLE_MAIDEN    = 37132, // http://old.wowhead.com/npc=37132
-    NPC_YMIRJAR_HUNTRESS         = 37134, // http://old.wowhead.com/npc=37134
-    NPC_YMIRJAR_WARLORD          = 37133  // http://old.wowhead.com/npc=37133
+/*-----Trash de Martillo de la Luz-----*/
+    NPC_DEATHBOUND_WARD          = 37007,
+    NPC_SERVANT_OF_THE_THRONE    = 36724,
+    NPC_ANCIENT_SKELETAL_SOLDIER = 37012,
+    NPC_NERUBAR_BROODKEEPER      = 36725,
+/*--Trash de Oratorio de los Malditos--*/
+    NPC_DEATHSPEAKER_SERVANT     = 36805,
+    NPC_DEATHSPEAKER_ZEALOT      = 36808,
+    NPC_DEATHSPEAKER_DISCIPLE    = 36807,
+    NPC_DEATHSPEAKER_ATTENDANT   = 36811,
+    NPC_DEATHSPEAKER_HIGH_PRIEST = 36829,
+/*---------Trash de La Espiral---------*/
+    NPC_VALKYR_HERALD            = 37098,
+/*----Trash de Talleres de la Peste----*/
+    NPC_BLIGHTED_ABOMINATION     = 37022,
+    NPC_VENGEFUL_FLESHREAPER     = 37038,
+    NPC_PUSTULATING_HORROR       = 10404,
+    NPC_PLAGUE_SCIENTIST         = 37023,
+    NPC_DECAYING_COLOSSUS        = 36880,
+/*--------Trash de Salas Carmesi--------*/
+    NPC_DARKFALLEN_ARCHMAGE      = 37664,
+    NPC_DARKFALLEN_BLOOD_KNIGHT  = 37595,
+    NPC_DARKFALLEN_NOBLE         = 37663,
+    NPC_VAMPIRIC_FIEND           = 37901,
+    NPC_DARKFALLEN_ADVISOR       = 37571,
+    NPC_DARKFALLEN_COMMANDER     = 37662,
+    NPC_DARKFALLEN_TACTICIAN     = 37666,
+    NPC_DARKFALLEN_LIEUTENANT    = 37665,
+/*---Trash de Camaras de Alaescarcha---*/
+    NPC_YMIRJAR_DEATHBRINGER     = 38125,
+    NPC_YMIRJAR_FROSTBINDER      = 37127,
+    NPC_YMIRJAR_BATTLE_MAIDEN    = 37132,
+    NPC_YMIRJAR_HUNTRESS         = 37134,
+    NPC_YMIRJAR_WARLORD          = 37133
 
     //Empowering Orb Visual Stalker 38463
 };
 
-struct mobs_icecrown_citadelAI : public ScriptedAI
+//#########  Ancient Skeletal Soldier ##############
+class npc_ancient_skeletal_soldier_icc : public CreatureScript
 {
-    mobs_icecrown_citadelAI(Creature *c) : ScriptedAI(c)
-    {
-        if(c->GetMap()->IsDungeon())
-            instance = c->GetInstanceScript();
-
-        c->setActive(true);
-    }
-
-    void EnterCombat(Unit *who)
-    {
-        DoAttackerAreaInCombat(who, 100);
-        Unit *target = SelectTarget(SELECT_TARGET_RANDOM, 0);
-    }
-
-    bool DoCastTry(Unit *victim, uint32 spellId, bool triggered = false)
-    {
-        if(me->IsNonMeleeSpellCasted(false) && !triggered) return false;
-
-        DoCast(victim,spellId,triggered);
-        return true;
-    }
-
-    bool DoCastTryAOE(uint32 spellId, bool triggered = false)
-    {
-        if(me->IsNonMeleeSpellCasted(false) && !triggered) return false;
-
-        DoCastAOE(spellId,triggered);
-        return true;
-    }
-
-    Creature* SelectRandomFriendlyMissingBuff(uint32 spell)
-    {
-        std::list<Creature*> lst = DoFindFriendlyMissingBuff(40.0f, spell);
-        std::list<Creature*>::const_iterator itr = lst.begin();
-        if (lst.empty())
-            return NULL;
-        advance(itr, rand()%lst.size());
-        return (*itr);
-    }
-
-    uint32 EnemiesInRange(float distance)
-    {
-        std::list<HostileReference*> const& tList = me->getThreatManager().getThreatList();
-        std::list<HostileReference*>::const_iterator iter;
-        uint32 count = 0;
-        Unit* target;
-        for (iter = tList.begin(); iter!=tList.end(); ++iter)
+    public:
+        npc_ancient_skeletal_soldier_icc() : CreatureScript("npc_ancient_skeletal_soldier_icc") { }
+ 
+        struct npc_ancient_skeletal_soldier_iccAI : public ScriptedAI
         {
-            target = Unit::GetUnit((*me), (*iter)->getUnitGuid());
-                if (target && me->GetDistance2d(target) < distance)
-                    ++count;
+            npc_ancient_skeletal_soldier_iccAI(Creature* pCreature) : ScriptedAI(pCreature) {}
+
+            uint32 m_uiBASH_Timer;
+
+            void Reset()
+            {
+                m_uiBASH_Timer = 5000; //inicia en 5 segundos
+            }
+ 
+            void JustDied(Unit* killer)
+            {
+                DoCast(me,SPELL_SOUL_FEAST_ALL);
+            }
+
+            void UpdateAI(const uint32 uiDiff)
+            {
+            if (!UpdateVictim())
+                return;
+ 
+            if (m_uiBASH_Timer <= uiDiff)
+            {
+                DoCast(me->getVictim(), SPELL_SHIELD_BASH);
+                //repite cada 10 segundos
+                m_uiBASH_Timer = 10000;
+            }
+            else
+               m_uiBASH_Timer -= uiDiff;
+ 
+            DoMeleeAttackIfReady();
+            }
+        };
+ 
+        CreatureAI *GetAI(Creature *creature) const
+        {
+            return new npc_ancient_skeletal_soldier_iccAI(creature);
         }
-        return count;
-    }
-
-    uint32 PlayersCountRange(float dist) const
-    {
-        std::list<Player*> players;
-        Trinity::AnyPlayerInObjectRangeCheck checker(me, dist);
-        Trinity::PlayerListSearcher<Trinity::AnyPlayerInObjectRangeCheck> searcher(me, players, checker);
-        me->VisitNearbyWorldObject(dist, searcher);
-
-        return players.size();
-    }
-
-    InstanceScript* instance;
 };
 
-class mobs_icecrown_citadel : public CreatureScript
+//#########  Deathbound Ward ##############
+class npc_deathbound_ward_icc : public CreatureScript
 {
-public:
-    mobs_icecrown_citadel() : CreatureScript("mobs_icecrown_citadel") { }
-
-    CreatureAI* GetAI(Creature* creature) const
-    {
-        switch (creature->GetEntry())
+    public:
+        npc_deathbound_ward_icc() : CreatureScript("npc_deathbound_ward_icc") { }
+ 
+        struct npc_deathbound_ward_iccAI : public ScriptedAI
         {
-            case NPC_DEATHBOUND_WARD: 
-                return new mob_icecrown_citadel_Deathbound_WardAI (creature);
-            case NPC_SERVANT_OF_THE_THRONE: 
-                return new mob_icecrown_citadel_Servant_of_the_ThroneAI (creature);
-            case NPC_ANCIENT_SKELETAL_SOLDIER: 
-                return new mob_icecrown_citadel_Ancient_Skeletal_SoldierAI (creature);
-            case NPC_NERUBAR_BROODKEEPER: 
-                return new mob_icecrown_citadel_Nerubar_BroodkeeperAI (creature);
-            case NPC_DEATHSPEAKER_SERVANT: 
-                return new mob_icecrown_citadel_Deathspeaker_ServantAI (creature);
-            case NPC_DEATHSPEAKER_ZEALOT: 
-                return new mob_icecrown_citadel_Deathspeaker_ZealotAI (creature);
-            case NPC_DEATHSPEAKER_DISCIPLE: 
-                return new mob_icecrown_citadel_Deathspeaker_DiscipleAI (creature);
-            case NPC_DEATHSPEAKER_ATTENDANT: 
-                return new mob_icecrown_citadel_Deathspeaker_AttendantAI (creature);
-            case NPC_DEATHSPEAKER_HIGH_PRIEST:
-                return new mob_icecrown_citadel_Deathspeaker_High_PriestAI (creature);
-            case NPC_BLIGHTED_ABOMINATION:
-                return new mob_icecrown_citadel_Blighted_AbominationAI (creature);
-            case NPC_PUSTULATING_HORROR:
-                return new mob_icecrown_citadel_Pustulating_HorrorAI (creature);
-            case NPC_PLAGUE_SCIENTIST:
-                return new mob_icecrown_citadel_Plague_ScientistAI (creature);
-            case NPC_DARKFALLEN_ARCHMAGE:
-                return new mob_icecrown_citadel_Darkfallen_ArchmageAI (creature);
-            case NPC_DARKFALLEN_BLOOD_KNIGHT:
-                return new mob_icecrown_citadel_Darkfallen_Blood_KnightAI (creature);
-            case NPC_DARKFALLEN_NOBLE:
-                return new mob_icecrown_citadel_Darkfallen_NobleAI (creature);
-            case NPC_VAMPIRIC_FIEND:
-                return new mob_icecrown_citadel_Vampiric_FiendAI (creature);
-            case NPC_DARKFALLEN_ADVISOR:
-                return new mob_icecrown_citadel_Darkfallen_AdvisorAI (creature);
-            case NPC_DARKFALLEN_COMMANDER:
-                return new mob_icecrown_citadel_Darkfallen_CommanderAI (creature);
-            case NPC_DARKFALLEN_TACTICIAN:
-                return new mob_icecrown_citadel_Darkfallen_TacticianAI (creature);
-            case NPC_DARKFALLEN_LIEUTENANT:
-                return new mob_icecrown_citadel_Darkfallen_LieutenantAI (creature);
-            case NPC_YMIRJAR_DEATHBRINGER:
-                return new mob_icecrown_citadel_Ymirjar_DeathbringerAI (creature);
-            case NPC_YMIRJAR_FROSTBINDER:
-                return new mob_icecrown_citadel_Ymirjar_FrostbinderAI (creature);
-            case NPC_YMIRJAR_BATTLE_MAIDEN:
-                return new mob_icecrown_citadel_Ymirjar_Battle_MaidenAI (creature);
-            case NPC_YMIRJAR_HUNTRESS:
-                return new mob_icecrown_citadel_Ymirjar_HuntressAI (creature);
-            case NPC_YMIRJAR_WARLORD:
-                return new mob_icecrown_citadel_Ymirjar_WarlordAI (creature);
-            default:
-                return new mob_icecrown_citadel_Ymirjar_WarlordAI (creature);
-        }
-    }
+            npc_deathbound_ward_iccAI(Creature* pCreature) : ScriptedAI(pCreature) {}
 
-    struct mob_icecrown_citadel_Deathbound_WardAI: public mobs_icecrown_citadelAI
-    {
-        mob_icecrown_citadel_Deathbound_WardAI(Creature *c) : mobs_icecrown_citadelAI(c) 
-        { 
-            // Estas flags en la DB
-            me->RemoveFlag(UNIT_DYNAMIC_FLAGS, UNIT_FLAG_UNK_15 | UNIT_FLAG_UNK_6);
-        }
+            uint32 m_uiDisrupting_Shout_Timer;
+            uint32 m_uiSaber_Lash_Timer;
 
-        uint32 Disrupting_Shout;
-        uint32 Saber_Lash;
-
-        void Reset()
-        {
-            Disrupting_Shout    = 10*IN_MILLISECONDS;
-            Saber_Lash          = 7*IN_MILLISECONDS;
-        }
-
-        /*void JustDied(Unit* killer)
-        {
-            // aca falta agregar 	50000 yards (Anywhere)
-        }*/
-
-        void UpdateAI(const uint32 diff)
-        {
-            if (!UpdateVictim())
-                return;
-
-            if (Saber_Lash <= diff)
+            void Reset()
             {
-                if (DoCastTry(me,SPELL_SABER_LASH_ALL))
-                    Saber_Lash = 7*IN_MILLISECONDS;
-            }else Saber_Lash -= diff;
-
-            if (Disrupting_Shout <= diff)
+                m_uiDisrupting_Shout_Timer = 10000; //resetea en 10
+                m_uiSaber_Lash_Timer = 7000;
+            }
+ 
+            void UpdateAI(const uint32 uiDiff)
             {
-                // Random al interrumpir spells con Disrupting_Shout
-                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 1,40,false))
-                    if (DoCastTry(target,(SPELL_DISRUPTING_SHOUT_ALL)))
-                        Disrupting_Shout = 10*IN_MILLISECONDS;
-            }else Disrupting_Shout -= diff;
+                if (!UpdateVictim())
+                    return;
 
-            mobs_icecrown_citadelAI::UpdateAI(diff);
-        }
-    };
-
-    struct mob_icecrown_citadel_Servant_of_the_ThroneAI: public mobs_icecrown_citadelAI
-    {
-        mob_icecrown_citadel_Servant_of_the_ThroneAI(Creature *c) : mobs_icecrown_citadelAI(c) 
-        { }
-
-        uint32 Glacial_Blast;
-
-        void Reset()
-        {
-            Glacial_Blast    = 1*IN_MILLISECONDS;
-        }
-
-        void JustDied(Unit* killer)
-        {
-            if (PlayersCountRange(500.0f))// 500 yardas
-                return;
-
-            DoCast(me,SPELL_SOUL_FEAST_ALL);
-        }
-
-        void UpdateAI(const uint32 diff)
-        {
-            if (!UpdateVictim())
-                return;
-
-            if (Glacial_Blast <= diff)
-            {
-                if (DoCastTry(me->getVictim(),SPELL_GLACIAL_BLAST))
-                    Glacial_Blast = 6*IN_MILLISECONDS;
-            }else Glacial_Blast -= diff;
-
-            DoMeleeAttackIfReady();
-
-            mobs_icecrown_citadelAI::UpdateAI(diff);
-        }
-    };
-
-    struct mob_icecrown_citadel_Ancient_Skeletal_SoldierAI: public mobs_icecrown_citadelAI
-    {
-        mob_icecrown_citadel_Ancient_Skeletal_SoldierAI(Creature *c) : mobs_icecrown_citadelAI(c) 
-        { }
-
-        uint32 SHIELD_BASH;
-
-        void Reset()
-        {
-            SHIELD_BASH    = 5*IN_MILLISECONDS;
-        }
-
-        void JustDied(Unit* killer)
-        {
-            if (PlayersCountRange(500.0f))// 500 yardas
-                return;
-
-            DoCast(me,SPELL_SOUL_FEAST_ALL);
-        }
-
-        void UpdateAI(const uint32 diff)
-        {
-            if (!UpdateVictim())
-                return;
-
-            if (SHIELD_BASH <= diff)
-            {
-                if (DoCastTry(me->getVictim(),SPELL_SHIELD_BASH))
-                    SHIELD_BASH = urand(10*IN_MILLISECONDS, 15*IN_MILLISECONDS);
-            }else SHIELD_BASH -= diff;
-
-            DoMeleeAttackIfReady();
-
-            mobs_icecrown_citadelAI::UpdateAI(diff);
-        }
-    };
-
-    struct mob_icecrown_citadel_Nerubar_BroodkeeperAI: public mobs_icecrown_citadelAI
-    {
-        mob_icecrown_citadel_Nerubar_BroodkeeperAI(Creature *c) : mobs_icecrown_citadelAI(c) 
-        { }
-
-        uint32 CRYPT_SCARABS;
-        uint32 DARK_MENDING;
-        uint32 WEB_WRAP;
-
-        void Reset()
-        {
-            CRYPT_SCARABS  = 1*IN_MILLISECONDS;
-            DARK_MENDING   = urand(5*IN_MILLISECONDS, 8*IN_MILLISECONDS);
-            WEB_WRAP       = urand(5*IN_MILLISECONDS, 8*IN_MILLISECONDS);
-        }
-
-        void JustDied(Unit* killer)
-        {
-            if (PlayersCountRange(500.0f))// 500 yardas
-                return;
-
-            DoCast(me,SPELL_SOUL_FEAST_ALL);
-        }
-
-        void UpdateAI(const uint32 diff)
-        {
-            if (!UpdateVictim())
-                return;
-
-            if (WEB_WRAP <= diff)
-            {
-                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
-                    if (DoCastTry(target,SPELL_WEB_WRAP))
-                        WEB_WRAP = urand(5*IN_MILLISECONDS, 8*IN_MILLISECONDS);
-            }else WEB_WRAP -= diff;
-
-            if (DARK_MENDING <= diff)
-            {
-                if (Unit* target = urand(0, 1) ? SelectTarget(SELECT_TARGET_RANDOM, 0) : DoSelectLowestHpFriendly(40.0f))
-                    if (DoCastTry(target,SPELL_DARK_MENDING))
-                        DARK_MENDING = urand(5*IN_MILLISECONDS, 8*IN_MILLISECONDS);
-            }else DARK_MENDING -= diff;
-
-            if (CRYPT_SCARABS <= diff)
-            {
-                if (DoCastTry(me->getVictim(),SPELL_CRYPT_SCARABS))
-                    CRYPT_SCARABS = 2*IN_MILLISECONDS;
-            }else CRYPT_SCARABS -= diff;
-
-            mobs_icecrown_citadelAI::UpdateAI(diff);
-        }
-    };
-
-    struct mob_icecrown_citadel_Deathspeaker_ServantAI: public mobs_icecrown_citadelAI
-    {
-        mob_icecrown_citadel_Deathspeaker_ServantAI(Creature *c) : mobs_icecrown_citadelAI(c) 
-        { }
-
-        uint32 CHAOS_BOLT;
-        uint32 CURSE_OF_AGONY;
-        uint32 CONSUMING_SHADOWS;
-        
-        void Reset()
-        {
-            CHAOS_BOLT         = 2*IN_MILLISECONDS;
-            CURSE_OF_AGONY     = urand(3*IN_MILLISECONDS, 5*IN_MILLISECONDS);
-            CONSUMING_SHADOWS  = urand(3*IN_MILLISECONDS, 5*IN_MILLISECONDS);
-        }
-
-        void JustDied(Unit* killer)
-        {
-            if (PlayersCountRange(500.0f))// 500 yardas
-                return;
-
-            DoCast(me,SPELL_SOUL_FEAST_ALL);
-        }
-
-        void UpdateAI(const uint32 diff)
-        {
-            if (!UpdateVictim())
-                return;
-
-            if (CONSUMING_SHADOWS <= diff)
-            {
-                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
-                    if (DoCastTry(target,SPELL_CONSUMING_SHADOWS))
-                        CONSUMING_SHADOWS = urand(8*IN_MILLISECONDS, 15*IN_MILLISECONDS);
-            }else CONSUMING_SHADOWS -= diff;
-
-            if (CURSE_OF_AGONY <= diff)
-            {
-                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
-                        if (DoCastTry(target,SPELL_CURSE_OF_AGONY))
-                            CURSE_OF_AGONY = urand(15*IN_MILLISECONDS, 20*IN_MILLISECONDS);
-            }else CURSE_OF_AGONY -= diff;
-
-            if (CHAOS_BOLT <= diff)
-            {
-                if (DoCastTry(me->getVictim(),SPELL_CHAOS_BOLT))
-                    CHAOS_BOLT = urand(3*IN_MILLISECONDS, 4*IN_MILLISECONDS);
-
-            }else CHAOS_BOLT -= diff;
-
-            DoMeleeAttackIfReady();
-
-            mobs_icecrown_citadelAI::UpdateAI(diff);
-        }
-    };
-
-    struct mob_icecrown_citadel_Deathspeaker_ZealotAI: public mobs_icecrown_citadelAI
-    {
-        mob_icecrown_citadel_Deathspeaker_ZealotAI(Creature *c) : mobs_icecrown_citadelAI(c) 
-        { }
-
-        uint32 SHADOW_CLEAVE;
-
-        void Reset()
-        {
-            SHADOW_CLEAVE    = 6*IN_MILLISECONDS;
-        }
-
-        void JustDied(Unit* killer)
-        {
-            if (PlayersCountRange(500.0f))// 500 yardas
-                return;
-
-            DoCast(me,SPELL_SOUL_FEAST_ALL);
-        }
-
-        void UpdateAI(const uint32 diff)
-        {
-            if (!UpdateVictim())
-                return;
-
-            if (SHADOW_CLEAVE <= diff)
-            {
-                if (DoCastTry(me->getVictim(),SPELL_SHADOW_CLEAVE))
-                    SHADOW_CLEAVE = 6*IN_MILLISECONDS;
-
-            }else SHADOW_CLEAVE -= diff;
-
-            DoMeleeAttackIfReady();
-
-            mobs_icecrown_citadelAI::UpdateAI(diff);
-        }
-    };
-
-    struct mob_icecrown_citadel_Deathspeaker_DiscipleAI: public mobs_icecrown_citadelAI
-    {
-        mob_icecrown_citadel_Deathspeaker_DiscipleAI(Creature *c) : mobs_icecrown_citadelAI(c) 
-        { }
-
-        uint32 DARK_BLESSING;
-        uint32 SHADOW_MEND;
-        uint32 SHADOW_BOLT;
-        
-        void Reset()
-        {
-            SHADOW_BOLT      = 2*IN_MILLISECONDS;
-            SHADOW_MEND      = urand(3*IN_MILLISECONDS, 5*IN_MILLISECONDS);
-            DARK_BLESSING    = urand(3*IN_MILLISECONDS, 5*IN_MILLISECONDS);
-        }
-
-        void JustDied(Unit* killer)
-        {
-            if (PlayersCountRange(500.0f))// 500 yardas
-                return;
-
-            DoCast(me,SPELL_SOUL_FEAST_ALL);
-        }
-
-        void UpdateAI(const uint32 diff)
-        {
-            if (!UpdateVictim())
-                return;
-
-            if (DARK_BLESSING <= diff)
-            {
-                if (Unit* target = urand(0, 1) ? SelectTarget(SELECT_TARGET_RANDOM, 0) : SelectRandomFriendlyMissingBuff(SPELL_DARK_BLESSING))
-                    if (DoCastTry(target,SPELL_DARK_BLESSING))
-                        DARK_BLESSING = urand(8*IN_MILLISECONDS, 15*IN_MILLISECONDS);
-            }else DARK_BLESSING -= diff;
-
-            if (SHADOW_MEND <= diff)
-            {
-                if (Unit* target = urand(0, 1) ? SelectTarget(SELECT_TARGET_RANDOM, 0) : DoSelectLowestHpFriendly(40.0f))
-                    if (DoCastTry(target,SPELL_SHADOW_MEND))
-                        SHADOW_MEND = urand(5*IN_MILLISECONDS, 8*IN_MILLISECONDS);
-            }else SHADOW_MEND -= diff;
-
-            if (SHADOW_BOLT <= diff)
-            {
-                if (DoCastTry(me->getVictim(),SPELL_SHADOW_BOLT))
-                    SHADOW_BOLT = urand(2*IN_MILLISECONDS, 3*IN_MILLISECONDS);
-
-            }else SHADOW_BOLT -= diff;
-
-            mobs_icecrown_citadelAI::UpdateAI(diff);
-        }
-    };
-
-    struct mob_icecrown_citadel_Deathspeaker_AttendantAI: public mobs_icecrown_citadelAI
-    {
-        mob_icecrown_citadel_Deathspeaker_AttendantAI(Creature *c) : mobs_icecrown_citadelAI(c) 
-        { }
-
-        uint32 SHADOW_NOVA;
-        uint32 SHADOW_BOLT;
-        
-        void Reset()
-        {
-            SHADOW_BOLT      = 2*IN_MILLISECONDS;
-            SHADOW_NOVA      = urand(5*IN_MILLISECONDS, 10*IN_MILLISECONDS);
-        }
-
-        void JustDied(Unit* killer)
-        {
-            if (PlayersCountRange(500.0f))// 500 yardas
-                return;
-
-            DoCast(me,SPELL_SOUL_FEAST_ALL);
-        }
-
-        void UpdateAI(const uint32 diff)
-        {
-            if (!UpdateVictim())
-                return;
-
-            if (SHADOW_NOVA <= diff)
-            {
-                if (EnemiesInRange(10.0f) > 2)
-                    if (DoCastTryAOE(SPELL_SHADOW_NOVA))
-                        SHADOW_NOVA = urand(5*IN_MILLISECONDS, 10*IN_MILLISECONDS);
-
-            }else SHADOW_NOVA -= diff;
-
-            if (SHADOW_BOLT <= diff)
-            {
-                if (DoCastTry(me->getVictim(),SPELL_SHADOW_BOLT))
-                    SHADOW_BOLT = urand(2*IN_MILLISECONDS, 3*IN_MILLISECONDS);
-
-            }else SHADOW_BOLT -= diff;
-
-            mobs_icecrown_citadelAI::UpdateAI(diff);
-        }
-    };
-
-    struct mob_icecrown_citadel_Deathspeaker_High_PriestAI: public mobs_icecrown_citadelAI
-    {
-        mob_icecrown_citadel_Deathspeaker_High_PriestAI(Creature *c) : mobs_icecrown_citadelAI(c) 
-        { }
-
-        uint32 DARK_RECKONING;
-        
-        void Reset()
-        {
-            DARK_RECKONING    = 2*IN_MILLISECONDS;
-        }
-
-        void EnterCombat(Unit* /*target*/)
-        {
-            DoCast(me, SPELL_AURA_OF_DARKNESS);
-        }
-
-        void JustDied(Unit* killer)
-        {
-            if (PlayersCountRange(500.0f))// 500 yardas
-                return;
-
-            DoCast(me,SPELL_SOUL_FEAST_ALL);
-        }
-
-        void UpdateAI(const uint32 diff)
-        {
-            if (!UpdateVictim())
-                return;
-
-            if (DARK_RECKONING <= diff)
-            {
-                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
-                    if (DoCastTry(target,SPELL_DARK_RECKONING))
-                        DARK_RECKONING = urand(10*IN_MILLISECONDS, 12*IN_MILLISECONDS);
-
-            }else DARK_RECKONING -= diff;
-
-            DoMeleeAttackIfReady();
-
-            mobs_icecrown_citadelAI::UpdateAI(diff);
-        }
-    };
-
-    struct mob_icecrown_citadel_Blighted_AbominationAI: public mobs_icecrown_citadelAI
-    {
-        mob_icecrown_citadel_Blighted_AbominationAI(Creature *c) : mobs_icecrown_citadelAI(c) 
-        { }
-
-        uint32 CLEAVE;
-        uint32 SCOURGE_HOOK;
-        
-        void Reset()
-        {
-            SCOURGE_HOOK    = 5*IN_MILLISECONDS;
-            CLEAVE          = 4*IN_MILLISECONDS;
-        }
-
-        void JustDied(Unit* killer)
-        {
-            if (PlayersCountRange(500.0f))// 500 yardas
-                return;
-
-            DoCast(me,SPELL_SOUL_FEAST_ALL);
-        }
-
-        void UpdateAI(const uint32 diff)
-        {
-            if (!UpdateVictim())
-                return;
-
-            if (SCOURGE_HOOK <= diff)
-            {
-                if (DoCastTryAOE(SPELL_PLAGUE_CLOUD))
+                if (m_uiDisrupting_Shout_Timer <= uiDiff)
                 {
-                    Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0);
-                    if (DoCastTry(target,SPELL_SCOURGE_HOOK))
-                        SCOURGE_HOOK = urand(12*IN_MILLISECONDS, 20*IN_MILLISECONDS);
+                    DoCastAOE(SPELL_DISRUPTING_SHOUT);
+                    //cada 15 segundos interrumpe a todo el mundo en rango
+                    m_uiDisrupting_Shout_Timer = 15000;
                 }
+                else
+                    m_uiDisrupting_Shout_Timer -= uiDiff;
 
-            }else SCOURGE_HOOK -= diff;
-
-            if (CLEAVE <= diff)
-            {
-                if (DoCastTry(me->getVictim(),SPELL_CLEAVE))
-                    CLEAVE = 6*IN_MILLISECONDS;
-
-            }else CLEAVE -= diff;
-
-            DoMeleeAttackIfReady();
-
-            mobs_icecrown_citadelAI::UpdateAI(diff);
-        }
-    };
-
-    struct mob_icecrown_citadel_Pustulating_HorrorAI: public mobs_icecrown_citadelAI
-    {
-        mob_icecrown_citadel_Pustulating_HorrorAI(Creature *c) : mobs_icecrown_citadelAI(c) 
-        { }
-
-        uint32 BUBBLING_PUS;
-
+                if (m_uiSaber_Lash_Timer <= uiDiff)
+                {
+                    DoCast(me->getVictim(), SPELL_SABER_LASH);
+                    //cada 7 segundos al tanke
+                    m_uiSaber_Lash_Timer = 7000;
+                }
+                else
+                    m_uiSaber_Lash_Timer -= uiDiff;
         
-        void Reset()
+                DoMeleeAttackIfReady();   
+            }
+        };
+ 
+        CreatureAI *GetAI(Creature *creature) const
         {
-            BUBBLING_PUS = 5*IN_MILLISECONDS;
+            return new npc_deathbound_ward_iccAI(creature);
         }
+};
 
-        void JustDied(Unit* killer)
+//#########  Nerubar Broodkeeper ##############
+class npc_nerubar_broodkeeper_icc : public CreatureScript
+{
+    public:
+        npc_nerubar_broodkeeper_icc() : CreatureScript("npc_nerubar_broodkeeper_icc") { }
+ 
+        struct npc_nerubar_broodkeeper_iccAI : public ScriptedAI
         {
-            if (PlayersCountRange(500.0f))// 500 yardas
-                return;
+            npc_nerubar_broodkeeper_iccAI(Creature* pCreature) : ScriptedAI(pCreature) {}
 
-            DoCast(me,SPELL_SOUL_FEAST_ALL);
-        }
+            uint32 m_uiSCARABS_Timer;
+            uint32 m_uiMENDING_Timer;
+            uint32 m_uiWRAPS_Timer;
 
-        void UpdateAI(const uint32 diff)
-        {
-            if (!UpdateVictim())
-                return;
-
-            if (HealthBelowPct(15))
+            void Reset()
             {
-                DoCastTryAOE(SPELL_BLIGHT_BOMB);
-                BUBBLING_PUS = 15*IN_MILLISECONDS;
+                m_uiSCARABS_Timer = 1000; //inicia en 1 segundo
+                m_uiMENDING_Timer = urand(5000, 8000); //entre 5 a 8 segs
+                m_uiWRAPS_Timer = urand(5000, 8000); //entre 5 a 8 segs
+            }
+ 
+            void JustDied(Unit* killer)
+            {
+                DoCast(me,SPELL_SOUL_FEAST_ALL);
             }
 
-            if (BUBBLING_PUS <= diff)
+            void UpdateAI(const uint32 uiDiff)
             {
-                if (Unit* target = SelectTarget(SELECT_TARGET_NEAREST, 0))
-                    if (DoCastTry(target,SPELL_BUBBLING_PUS))
-                        BUBBLING_PUS = urand(15*IN_MILLISECONDS, 25*IN_MILLISECONDS);
-
-            }else BUBBLING_PUS -= diff;
-
-            DoMeleeAttackIfReady();
-
-            mobs_icecrown_citadelAI::UpdateAI(diff);
-        }
-    };
-
-    struct mob_icecrown_citadel_Plague_ScientistAI: public mobs_icecrown_citadelAI
-    {
-        mob_icecrown_citadel_Plague_ScientistAI(Creature *c) : mobs_icecrown_citadelAI(c) 
-        { }
-
-        uint32 COMBOBULATING_SPRAY;
-        uint32 PLAGUE_BLAST;
-        uint32 PLAGUE_STREAM;
-        uint32 PLAGUE_STREAM_OUT;
-        
-        void Reset()
-        {
-            COMBOBULATING_SPRAY   = urand(5*IN_MILLISECONDS, 8*IN_MILLISECONDS);
-            PLAGUE_BLAST          = 2*IN_MILLISECONDS;
-            PLAGUE_STREAM         = urand(8*IN_MILLISECONDS, 12*IN_MILLISECONDS);
-            PLAGUE_STREAM_OUT     = 24*IN_MILLISECONDS;
-        }
-
-        void JustDied(Unit* killer)
-        {
-            if (PlayersCountRange(500.0f))// 500 yardas
-                return;
-
-            DoCast(me,SPELL_SOUL_FEAST_ALL);
-        }
-
-        void UpdateAI(const uint32 diff)
-        {
             if (!UpdateVictim())
                 return;
-
-            if (COMBOBULATING_SPRAY <= diff)
+ 
+            if (m_uiWRAPS_Timer <= uiDiff)
             {
                 if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
-                    if (DoCastTry(target,SPELL_COMBOBULATING_SPRAY))
-                        COMBOBULATING_SPRAY = urand(8*IN_MILLISECONDS, 12*IN_MILLISECONDS);
-            }else COMBOBULATING_SPRAY -= diff;
-
-            if (PLAGUE_STREAM <= diff)
+                           DoCast(target, SPELL_WEB_WRAP);
+                //repite entre 5 u 8 segundos
+                m_uiWRAPS_Timer = urand(5000, 8000);
+            }
+            else
+               m_uiWRAPS_Timer -= uiDiff;
+  
+            if (m_uiMENDING_Timer <= uiDiff)
             {
-                if (PLAGUE_STREAM_OUT > diff)
+                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
+                           DoCast(target, SPELL_DARK_MENDING);
+                //repite entre 5 u 8 segundos
+                m_uiMENDING_Timer = urand(5000, 8000);
+            }
+            else
+               m_uiMENDING_Timer -= uiDiff;
+
+            if (m_uiSCARABS_Timer <= uiDiff)
+            {
+                DoCast(me->getVictim(), SPELL_CRYPT_SCARABS);
+                //cada 2 segundos
+                m_uiSCARABS_Timer = 2000;
+            }
+            else
+               m_uiSCARABS_Timer -= uiDiff;
+ 
+            DoMeleeAttackIfReady();
+            }
+        };
+ 
+        CreatureAI *GetAI(Creature *creature) const
+        {
+            return new npc_nerubar_broodkeeper_iccAI(creature);
+        }
+};
+
+//#########  Servant of the Throne ##############
+class npc_servant_of_the_throne_icc : public CreatureScript
+{
+    public:
+        npc_servant_of_the_throne_icc() : CreatureScript("npc_servant_of_the_throne_icc") { }
+
+        struct npc_servant_of_the_throne_iccAI : public ScriptedAI
+        {
+            npc_servant_of_the_throne_iccAI(Creature* pCreature) : ScriptedAI(pCreature) {}
+
+            uint32 m_uiGlacial_Blast_Timer;
+
+            void Reset()
+            {
+                m_uiGlacial_Blast_Timer = 1000; //inicia pegando practicamente       
+            }
+
+            void JustDied(Unit* killer)
+            {
+                DoCast(me,SPELL_SOUL_FEAST_ALL);
+            }
+
+            void UpdateAI(const uint32 uiDiff)
+            {
+                if (!UpdateVictim())
+                    return;
+
+                if (m_uiGlacial_Blast_Timer <= uiDiff)
                 {
-                    if (Unit* target = urand(0, 1) ? SelectTarget(SELECT_TARGET_RANDOM, 0) : SelectRandomFriendlyMissingBuff(SPELL_PLAGUE_STREAM))
-                        if (DoCastTry(target,SPELL_PLAGUE_STREAM))
-                            PLAGUE_STREAM_OUT = 5*IN_MILLISECONDS;
-                }else
-                {
-                    me->CastStop(SPELL_PLAGUE_BLAST);
-                    PLAGUE_STREAM = urand(15*IN_MILLISECONDS, 20*IN_MILLISECONDS);
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
+                           DoCast(target, SPELL_GLACIAL_BLAST);
+                    //cada 6 segundos
+                    m_uiGlacial_Blast_Timer = 6000;
                 }
-            }else PLAGUE_STREAM -= diff;
+                else
+                   m_uiGlacial_Blast_Timer -= uiDiff;
 
-            if (PLAGUE_BLAST <= diff)
-            {
-                if (DoCastTry(me->getVictim(),SPELL_PLAGUE_BLAST))
-                    PLAGUE_BLAST = urand(2*IN_MILLISECONDS, 3*IN_MILLISECONDS);
+                DoMeleeAttackIfReady();   
+            }
+        };
 
-            }else PLAGUE_BLAST -= diff;
-
-            mobs_icecrown_citadelAI::UpdateAI(diff);
+        CreatureAI *GetAI(Creature *creature) const
+        {
+            return new npc_servant_of_the_throne_iccAI(creature);
         }
-    };
+};
+/*
+//#########  The Damned ##############
+class npc_the_damned_icc : public CreatureScript
+{
+    public:
+        npc_the_damned_icc() : CreatureScript("npc_the_damned_icc") { }
 
-    struct mob_icecrown_citadel_Decaying_ColossusAI: public mobs_icecrown_citadelAI
-    {
-        mob_icecrown_citadel_Decaying_ColossusAI(Creature *c) : mobs_icecrown_citadelAI(c) 
-        { }
-
-        uint32 MASSIVE_STOMP;
-
+        struct npc_the_damned_iccAI : public ScriptedAI
+        {
+            npc_the_damned_iccAI(Creature* pCreature) : ScriptedAI(pCreature) {}
         
-        void Reset()
-        {
-            MASSIVE_STOMP = 5*IN_MILLISECONDS;
-        }
+            uint32 m_uiBone_Flurry_Timer;
 
-        void JustDied(Unit* killer)
-        {
-            if (PlayersCountRange(500.0f))// 500 yardas
-                return;
-
-            DoCast(me,SPELL_SOUL_FEAST_ALL);
-
-
-        }
-
-        void UpdateAI(const uint32 diff)
-        {
-            if (!UpdateVictim())
-                return;
-
-            if (MASSIVE_STOMP <= diff)
+            void Reset()
             {
-                if (DoCastTry(me->getVictim(),SPELL_MASSIVE_STOMP))
-                    MASSIVE_STOMP = urand(15*IN_MILLISECONDS, 25*IN_MILLISECONDS);
+                m_uiBone_Flurry_Timer = 20000;    
+            }
 
-            }else MASSIVE_STOMP -= diff;
-
-            DoMeleeAttackIfReady();
-
-            mobs_icecrown_citadelAI::UpdateAI(diff);
-        }
-    };
-
-    struct mob_icecrown_citadel_Darkfallen_ArchmageAI: public mobs_icecrown_citadelAI
-    {
-        mob_icecrown_citadel_Darkfallen_ArchmageAI(Creature *c) : mobs_icecrown_citadelAI(c) 
-        { }
-
-        uint32 AMPLIFY_MAGIC;
-        uint32 BLAST_WAVE;
-        uint32 POLYMORPH_SPIDER;
-        uint32 FIREBALL;
-        
-        void Reset()
-        {
-            AMPLIFY_MAGIC    = urand(15*IN_MILLISECONDS, 20*IN_MILLISECONDS);
-            BLAST_WAVE       = urand(10*IN_MILLISECONDS, 20*IN_MILLISECONDS);
-            POLYMORPH_SPIDER = urand(12*IN_MILLISECONDS, 20*IN_MILLISECONDS);
-            FIREBALL         = 2*IN_MILLISECONDS;
-        }
-
-        void JustDied(Unit* killer)
-        {
-            if (PlayersCountRange(500.0f))// 500 yardas
-                return;
-
-            DoCast(me,SPELL_SOUL_FEAST_ALL);
-        }
-
-        void UpdateAI(const uint32 diff)
-        {
-            if (!UpdateVictim())
-                return;
-
-            if (AMPLIFY_MAGIC <= diff)
+            void JustDied(Unit * killer)
             {
-               if (DoCastTry(me->getVictim(),SPELL_AMPLIFY_MAGIC))
-                        AMPLIFY_MAGIC = urand(15*IN_MILLISECONDS, 20*IN_MILLISECONDS);
+                DoCast(me,SPELL_SOUL_FEAST_ALL);
+                DoCastAOE(SPELL_SHATTERED_BONES);
+		        DoCast(me, SPELL_SHATTERED_BONES_VISUAL);
+                DoCast(me, SPELL_SHATTERED_BONES_VISUAL);
+                DoCast(me, SPELL_SHATTERED_BONES_VISUAL);
+                DoCast(me, SPELL_SHATTERED_BONES_VISUAL);
+            }
 
-            }else AMPLIFY_MAGIC -= diff;
-
-            if (BLAST_WAVE <= diff)
+            void UpdateAI(const uint32 uiDiff)
             {
-                if (EnemiesInRange(10.0f) > 2)
-                    if (DoCastTryAOE(SPELL_BLAST_WAVE))
-                        BLAST_WAVE = urand(10*IN_MILLISECONDS, 20*IN_MILLISECONDS);
+                if (!UpdateVictim())
+                    return;
 
-            }else BLAST_WAVE -= diff;
+                if (m_uiBone_Flurry_Timer <= uiDiff)
+                {
+                    DoCast(me, SPELL_BONE_FLURRY);
+                    //repite entre 20 a 30 segundos
+                    m_uiBone_Flurry_Timer = urand(20000, 30000);
+                }
+                else
+                    m_uiBone_Flurry_Timer -= uiDiff;
+ 
+                DoMeleeAttackIfReady();   
+            }
+        };
+ 
+        CreatureAI *GetAI(Creature *creature) const
+        {
+            return new npc_the_damned_iccAI(creature);
+        }
+};
+*/
+//#########  Deathspeaker Servant 10 man ##############
+class npc_deathspeaker_servant_10man_icc : public CreatureScript
+{
+    public:
+        npc_deathspeaker_servant_10man_icc() : CreatureScript("npc_deathspeaker_servant_10man_icc") { }
 
-            if (POLYMORPH_SPIDER <= diff)
+        struct npc_deathspeaker_servant_10man_iccAI : public ScriptedAI
+        {
+            npc_deathspeaker_servant_10man_iccAI(Creature* pCreature) : ScriptedAI(pCreature) {}
+
+            uint32 m_uiCHAOS_Timer;
+            uint32 m_uiCONSUMING_Timer;
+            uint32 m_uiCURSE_Timer;
+
+            void Reset()
             {
-                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
-                    if (DoCastTry(target,SPELL_POLYMORPH_SPIDER))
-                        POLYMORPH_SPIDER = urand(12*IN_MILLISECONDS, 20*IN_MILLISECONDS);
+                m_uiCHAOS_Timer = 2000;
+                m_uiCONSUMING_Timer = urand(3000, 5000); //iniciando rapidamente
+                m_uiCURSE_Timer = urand(3000, 5000); //iniciando rapidamente
+            }
 
-            }else POLYMORPH_SPIDER -= diff;
-
-            if (FIREBALL <= diff)
+            void JustDied(Unit* killer)
             {
-                if (DoCastTry(me->getVictim(),SPELL_FIREBALL))
-                    FIREBALL = urand(3*IN_MILLISECONDS, 4*IN_MILLISECONDS);
+                DoCast(me,SPELL_SOUL_FEAST_ALL);
+            }
 
-            }else FIREBALL -= diff;
-
-            mobs_icecrown_citadelAI::UpdateAI(diff);
-        }
-    };
-
-    struct mob_icecrown_citadel_Darkfallen_Blood_KnightAI: public mobs_icecrown_citadelAI
-    {
-        mob_icecrown_citadel_Darkfallen_Blood_KnightAI(Creature *c) : mobs_icecrown_citadelAI(c) 
-        { }
-
-        uint32 UNHOLY_STRIKE;
-        uint32 BLOOD_MIRROR;
-        
-        void Reset()
-        {
-            UNHOLY_STRIKE  = urand(2*IN_MILLISECONDS, 3*IN_MILLISECONDS);
-            BLOOD_MIRROR   = urand(4*IN_MILLISECONDS, 5*IN_MILLISECONDS);
-        }
-
-        void JustDied(Unit* killer)
-        {
-            if (PlayersCountRange(500.0f))// 500 yardas
-                return;
-
-            DoCast(me,SPELL_SOUL_FEAST_ALL);
-        }
-
-        void EnterCombat(Unit* /*target*/)
-        {
-            DoCast(me, SPELL_VAMPIRIC_AURA);
-        }
-
-        void UpdateAI(const uint32 diff)
-        {
-            if (!UpdateVictim())
-                return;
-
-            if (BLOOD_MIRROR <= diff)
+            void UpdateAI(const uint32 uiDiff)
             {
-                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
-                    if (DoCastTry(me->getVictim(),SPELL_BLOOD_MIRROR_DUMMY))
+                if (!UpdateVictim())
+                    return;
+
+                if (m_uiCHAOS_Timer <= uiDiff)
+                {
+                    DoCast(me->getVictim(), SPELL_CHAOS_BOLT_10M);
+                    //repite entre 3 a 4 segundos para darle holgura
+                    m_uiCHAOS_Timer = urand(3000, 4000);
+                }
+                else
+                    m_uiCHAOS_Timer -= uiDiff;
+
+                if (m_uiCONSUMING_Timer <= uiDiff)
+                {
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
+                            DoCast(target, SPELL_CONSUMING_SHADOWS);
+                    //repite entre 8 a 15 segs
+                    m_uiCONSUMING_Timer = urand(8000, 15000);
+                }
+                else
+                    m_uiCONSUMING_Timer -= uiDiff;
+
+                if (m_uiCURSE_Timer <= uiDiff)
+                {
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
+                        DoCast(target, SPELL_CURSE_OF_AGONY_10M);
+         
+                    m_uiCURSE_Timer = urand(15000, 20000);
+                }
+                else
+                    m_uiCURSE_Timer -= uiDiff;
+
+                DoMeleeAttackIfReady();   
+            }
+        };
+ 
+        CreatureAI *GetAI(Creature *creature) const
+        {
+            return new npc_deathspeaker_servant_10man_iccAI(creature);
+        }
+};
+
+//#########  Deathspeaker Servant 25 man ##############
+class npc_deathspeaker_servant_25man_icc : public CreatureScript
+{
+    public:
+        npc_deathspeaker_servant_25man_icc() : CreatureScript("npc_deathspeaker_servant_25man_icc") { }
+
+        struct npc_deathspeaker_servant_25man_iccAI : public ScriptedAI
+        {
+            npc_deathspeaker_servant_25man_iccAI(Creature* pCreature) : ScriptedAI(pCreature) {}
+
+            uint32 m_uiCHAOS_Timer;
+            uint32 m_uiCONSUMING_Timer;
+            uint32 m_uiCURSE_Timer;
+
+            void Reset()
+            {
+                m_uiCHAOS_Timer = 2000;
+                m_uiCONSUMING_Timer = urand(2000, 3000); //iniciando rapido
+                m_uiCURSE_Timer = urand(2000, 3000); //iniciando rapido
+            }
+
+            void JustDied(Unit* killer)
+            {
+                DoCast(me,SPELL_SOUL_FEAST_ALL);
+            }
+
+            void UpdateAI(const uint32 uiDiff)
+            {
+                if (!UpdateVictim())
+                    return;
+
+                if (m_uiCHAOS_Timer <= uiDiff)
+                {
+                    DoCast(me->getVictim(), SPELL_CHAOS_BOLT_25M);
+                    //entre 4 a 6 segs
+                    m_uiCHAOS_Timer = (4000, 6000);
+                }
+                else
+                    m_uiCHAOS_Timer -= uiDiff;
+
+                if (m_uiCONSUMING_Timer <= uiDiff)
+                {
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
+                        DoCast(target, SPELL_CONSUMING_SHADOWS);
+                    //entre 6 a 10 segundos, es 25man eh
+                    m_uiCONSUMING_Timer = urand(6000, 10000);
+                }
+                else
+                    m_uiCONSUMING_Timer -= uiDiff;
+
+                if (m_uiCURSE_Timer <= uiDiff)
+                {
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
+                        DoCast(target, SPELL_CURSE_OF_AGONY_25M);
+                    //repite entre 10 a 15 segs
+                    m_uiCURSE_Timer = urand(10000, 15500);
+                }
+                else
+                    m_uiCURSE_Timer -= uiDiff;
+ 
+                DoMeleeAttackIfReady();   
+            }
+        };
+ 
+        CreatureAI *GetAI(Creature *creature) const
+        {
+            return new npc_deathspeaker_servant_25man_iccAI(creature);
+        }
+};
+
+//#########  Deathspeaker Disciple 10 man ##############
+class npc_deathspeaker_disciple_10man_icc : public CreatureScript
+{
+    public:
+        npc_deathspeaker_disciple_10man_icc() : CreatureScript("npc_deathspeaker_disciple_10man_icc") { }
+
+        struct npc_deathspeaker_disciple_10man_iccAI : public ScriptedAI
+        {
+            npc_deathspeaker_disciple_10man_iccAI(Creature* pCreature) : ScriptedAI(pCreature) {}
+ 
+            uint32 m_uiBOLT_Timer;
+            uint32 m_uiBLESSING_Timer;
+            uint32 m_uiMEND_Timer;
+
+            void Reset()
+            {
+                m_uiBOLT_Timer = 2000;
+                m_uiBLESSING_Timer = urand(3000, 5000);
+                m_uiMEND_Timer = urand(5000, 10000);
+            }
+
+            void JustDied(Unit* killer)
+            {
+                DoCast(me,SPELL_SOUL_FEAST_ALL);
+            }
+
+            void UpdateAI(const uint32 uiDiff)
+            {
+                if (!UpdateVictim())
+                    return;
+
+                if (m_uiBOLT_Timer <= uiDiff)
+                {
+                    DoCast(me->getVictim(), SPELL_SHADOW_BOLT_DEATHSPEAKER);
+                    //repite entre 3 a 7 segs
+                    m_uiBOLT_Timer = urand(3000, 7000);
+                }
+                else
+                    m_uiBOLT_Timer -= uiDiff;
+
+                if (m_uiBLESSING_Timer <= uiDiff)
+                {
+                    DoCast(me, SPELL_DARK_BLESSING);
+                    //repite entre 8 a 15 segs
+                    m_uiBLESSING_Timer = urand(8000, 15000);
+                }
+                else
+                    m_uiBLESSING_Timer -= uiDiff;
+ 
+                if (m_uiMEND_Timer <= uiDiff)
+                {
+                    DoCast(me, SPELL_SHADOW_MEND_10M);
+                    //repite entre 8 a 15 segs
+                    m_uiMEND_Timer = urand(8000, 10000);
+                }
+                else
+                    m_uiMEND_Timer -= uiDiff;
+ 
+                DoMeleeAttackIfReady();   
+            }
+        };
+ 
+        CreatureAI *GetAI(Creature *creature) const
+        {
+            return new npc_deathspeaker_disciple_10man_iccAI(creature);
+        }
+};
+
+//#########  Deathspeaker Disciple 25 man ##############
+class npc_deathspeaker_disciple_25man_icc : public CreatureScript
+{
+    public:
+        npc_deathspeaker_disciple_25man_icc() : CreatureScript("npc_deathspeaker_disciple_25man_icc") { }
+
+        struct npc_deathspeaker_disciple_25man_iccAI : public ScriptedAI
+        {
+            npc_deathspeaker_disciple_25man_iccAI(Creature* pCreature) : ScriptedAI(pCreature) {}
+
+            uint32 m_uiBOLT_Timer;
+            uint32 m_uiBLESSING_Timer;
+            uint32 m_uiMEND_Timer;
+
+            void Reset()
+            {
+                m_uiBOLT_Timer = 2000;
+                m_uiBLESSING_Timer = urand(1000, 3000); // inicia rapido
+                m_uiMEND_Timer = urand(3000, 5000); //inicia rapido
+            }
+
+            void JustDied(Unit* killer)
+            {
+                DoCast(me,SPELL_SOUL_FEAST_ALL);
+            }
+
+            void UpdateAI(const uint32 uiDiff)
+            {
+                if (!UpdateVictim())
+                    return;
+
+                if (m_uiBOLT_Timer <= uiDiff)
+                {
+                    DoCast(me->getVictim(), SPELL_SHADOW_BOLT_DEATHSPEAKER);
+                    //repite entre 2 a 3 segs
+                    m_uiBOLT_Timer = urand(2000, 3000);
+                }
+                else
+                    m_uiBOLT_Timer -= uiDiff;
+
+                if (m_uiBLESSING_Timer <= uiDiff)
+                {
+                    DoCast(me, SPELL_DARK_BLESSING);
+                    //repite entre 8 a 10 segs
+                    m_uiBLESSING_Timer = urand(8000, 10000);
+                }
+                else
+                    m_uiBLESSING_Timer -= uiDiff;
+
+                if (m_uiMEND_Timer <= uiDiff)
+                {
+                    DoCast(me, SPELL_SHADOW_MEND_25M);
+                    //repite entre 5 a 8 segs
+                    m_uiMEND_Timer = urand(5000, 8000);
+                }
+                else
+                    m_uiMEND_Timer -= uiDiff;
+
+                DoMeleeAttackIfReady();   
+            }
+        };
+
+        CreatureAI *GetAI(Creature *creature) const
+        {
+            return new npc_deathspeaker_disciple_25man_iccAI(creature);
+        }
+};
+
+//#########  Deathspeaker Attendant 10 man ##############
+class npc_deathspeaker_attendant_10man_icc : public CreatureScript
+{
+    public:
+        npc_deathspeaker_attendant_10man_icc() : CreatureScript("npc_deathspeaker_attendant_10man_icc") { }
+
+        struct npc_deathspeaker_attendant_10man_iccAI : public ScriptedAI
+        {
+            npc_deathspeaker_attendant_10man_iccAI(Creature* pCreature) : ScriptedAI(pCreature) {}
+
+            uint32 m_uiBOLT_Timer;
+            uint32 m_uiNOVA_Timer;
+
+            void Reset()
+            {
+                m_uiBOLT_Timer = 2000;
+                m_uiNOVA_Timer = urand(5000, 10000);
+            }
+
+            void JustDied(Unit* killer)
+            {
+                DoCast(me,SPELL_SOUL_FEAST_ALL);
+            }
+
+            void UpdateAI(const uint32 uiDiff)
+            {
+                if (!UpdateVictim())
+                    return;
+
+                if (m_uiBOLT_Timer <= uiDiff)
+                {
+                    DoCast(me->getVictim(), SPELL_SHADOW_BOLT_DEATHSPEAKER);
+                    //repite cada 3 a 5 segs
+                    m_uiBOLT_Timer = urand(3000, 5000);
+                }
+                else
+                    m_uiBOLT_Timer -= uiDiff;
+
+                if (m_uiNOVA_Timer <= uiDiff)
+                {
+                    DoCastAOE(SPELL_SHADOW_NOVA_10M);
+                    //repite cada 5 a 10 segs
+                    m_uiNOVA_Timer = urand(5000, 10000);
+                }
+                else
+                    m_uiNOVA_Timer -= uiDiff;
+ 
+                DoMeleeAttackIfReady();   
+            }
+        };
+
+        CreatureAI *GetAI(Creature *creature) const
+        {
+            return new npc_deathspeaker_attendant_10man_iccAI(creature);
+        }
+};
+
+//#########  Deathspeaker Attendant 25 man ##############
+class npc_deathspeaker_attendant_25man_icc : public CreatureScript
+{
+    public:
+        npc_deathspeaker_attendant_25man_icc() : CreatureScript("npc_deathspeaker_attendant_25man_icc") { }
+
+        struct npc_deathspeaker_attendant_25man_iccAI : public ScriptedAI
+        {
+            npc_deathspeaker_attendant_25man_iccAI(Creature* pCreature) : ScriptedAI(pCreature) {}
+
+            uint32 m_uiBOLT_Timer;
+            uint32 m_uiNOVA_Timer;
+
+            void Reset()
+            {
+                m_uiBOLT_Timer = 2000;
+                m_uiNOVA_Timer = urand(5000, 8000);
+            }
+
+            void JustDied(Unit* killer)
+            {
+                DoCast(me,SPELL_SOUL_FEAST_ALL);
+            }
+
+            void UpdateAI(const uint32 uiDiff)
+            {
+                if (!UpdateVictim())
+                    return;
+
+                if (m_uiBOLT_Timer <= uiDiff)
+                {
+                    DoCast(me->getVictim(), SPELL_SHADOW_BOLT_DEATHSPEAKER);
+                    //entre cada 2 a 3 segs
+                    m_uiBOLT_Timer = urand(2000, 3000);
+                }
+                else
+                    m_uiBOLT_Timer -= uiDiff;
+
+                if (m_uiNOVA_Timer <= uiDiff)
+                {
+                    DoCastAOE(SPELL_SHADOW_NOVA_25M);
+                    //entre cada 5 a 10 segs
+                    m_uiNOVA_Timer = urand(5000, 10000);
+                }
+                else
+                    m_uiNOVA_Timer -= uiDiff;
+ 
+                DoMeleeAttackIfReady();   
+            }
+        };
+
+        CreatureAI *GetAI(Creature *creature) const
+        {
+            return new npc_deathspeaker_attendant_25man_iccAI(creature);
+        }
+};
+
+//#########  Deathspeaker Zealot ##############
+class npc_deathspeaker_zealot_icc : public CreatureScript
+{
+    public:
+        npc_deathspeaker_zealot_icc() : CreatureScript("npc_deathspeaker_zealot_icc") { }
+
+        struct npc_deathspeaker_zealot_iccAI : public ScriptedAI
+        {
+            npc_deathspeaker_zealot_iccAI(Creature* pCreature) : ScriptedAI(pCreature) {}
+
+            uint32 m_uiCLEAVE_Timer;
+
+            void Reset()
+            {
+                m_uiCLEAVE_Timer = 6000;
+            }
+
+            void JustDied(Unit* killer)
+            {
+                DoCast(me,SPELL_SOUL_FEAST_ALL);
+            }
+
+            void UpdateAI(const uint32 uiDiff)
+            {
+                if (!UpdateVictim())
+                    return;
+
+                if (m_uiCLEAVE_Timer <= uiDiff)
+                {
+                    DoCast(me->getVictim(), SPELL_SHADOW_CLEAVE);
+                    //cada 6 segs
+                    m_uiCLEAVE_Timer = 6000;
+                }
+                else
+                    m_uiCLEAVE_Timer -= uiDiff;
+
+                DoMeleeAttackIfReady();   
+            }
+        };
+
+        CreatureAI *GetAI(Creature *creature) const
+        {
+            return new npc_deathspeaker_zealot_iccAI(creature);
+        }
+};
+
+//#########  Deathspeaker High Priest ##############
+class npc_deathspeaker_high_priest_icc : public CreatureScript
+{
+    public:
+        npc_deathspeaker_high_priest_icc() : CreatureScript("npc_deathspeaker_high_priest_icc") { }
+ 
+        struct npc_deathspeaker_high_priest_iccAI : public ScriptedAI
+        {
+            npc_deathspeaker_high_priest_iccAI(Creature* pCreature) : ScriptedAI(pCreature) {}
+
+            uint32 m_uiRECKONING_Timer;
+            uint32 m_uiAURA_Timer;
+
+            void Reset()
+            {
+                m_uiRECKONING_Timer = 2000; //inicia rapidamente
+                m_uiAURA_Timer = 1000;
+            }
+
+            void JustDied(Unit* killer)
+            {
+                DoCast(me,SPELL_SOUL_FEAST_ALL);
+            }
+
+            void UpdateAI(const uint32 uiDiff)
+            {
+                if (!UpdateVictim())
+                    return;
+
+                if (m_uiAURA_Timer <= uiDiff)
+                {
+                    DoCast(me, SPELL_AURA_OF_DARKNESS);
+                    //cada 12 a 18 segs el aura of darkness
+                    m_uiAURA_Timer = urand(12000, 18000);
+                }
+                else
+                    m_uiAURA_Timer -= uiDiff;
+
+                if (m_uiRECKONING_Timer <= uiDiff)
+                {
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
+                        DoCast(target, SPELL_DARK_RECKONING);
+                    //repite cada 10 a 12 segs
+                    m_uiRECKONING_Timer = urand(10000, 12000);
+                }
+                else
+                    m_uiRECKONING_Timer -= uiDiff;
+
+                DoMeleeAttackIfReady();   
+            }
+        };
+
+        CreatureAI *GetAI(Creature *creature) const
+        {
+            return new npc_deathspeaker_high_priest_iccAI(creature);
+        }
+};
+
+//#########  Valkyr Herald 10 man ##############
+class npc_valkyr_herald_10man_icc : public CreatureScript
+{
+    public:
+        npc_valkyr_herald_10man_icc() : CreatureScript("npc_valkyr_herald_10man_icc") { }
+ 
+        struct npc_valkyr_herald_10man_iccAI : public ScriptedAI
+        {
+            npc_valkyr_herald_10man_iccAI(Creature* pCreature) : ScriptedAI(pCreature) {}
+
+            uint32 m_uiESSENCE_Timer;
+
+            void Reset()
+            {
+                m_uiESSENCE_Timer = 1000; //inicia rapidamente
+            }
+
+            void JustDied(Unit* killer)
+            {
+                DoCast(me,SPELL_SOUL_FEAST_ALL);
+            }
+
+            void UpdateAI(const uint32 uiDiff)
+            {
+                if (!UpdateVictim())
+                    return;
+
+                if (m_uiESSENCE_Timer <= uiDiff)
+                {
+                    DoCast(me, SPELL_SEVERED_ESSENCE_10M);
+                    //cada 2 a 8 segs
+                    m_uiESSENCE_Timer = urand(2000, 8000);
+                }
+                else
+                    m_uiESSENCE_Timer -= uiDiff;
+
+                DoMeleeAttackIfReady();   
+            }
+        };
+
+        CreatureAI *GetAI(Creature *creature) const
+        {
+            return new npc_valkyr_herald_10man_iccAI(creature);
+        }
+};
+
+//#########  Valkyr Herald 25 man ##############
+class npc_valkyr_herald_25man_icc : public CreatureScript
+{
+    public:
+        npc_valkyr_herald_25man_icc() : CreatureScript("npc_valkyr_herald_25man_icc") { }
+ 
+        struct npc_valkyr_herald_25man_iccAI : public ScriptedAI
+        {
+            npc_valkyr_herald_25man_iccAI(Creature* pCreature) : ScriptedAI(pCreature) {}
+
+            uint32 m_uiESSENCE_Timer;
+
+            void Reset()
+            {
+                m_uiESSENCE_Timer = 1000; //inicia rapidamente
+            }
+
+            void JustDied(Unit* killer)
+            {
+                DoCast(me,SPELL_SOUL_FEAST_ALL);
+            }
+
+            void UpdateAI(const uint32 uiDiff)
+            {
+                if (!UpdateVictim())
+                    return;
+
+                if (m_uiESSENCE_Timer <= uiDiff)
+                {
+                    DoCast(me, SPELL_SEVERED_ESSENCE_25M);
+                    //cada 2 a 8 segs
+                    m_uiESSENCE_Timer = urand(2000, 8000);
+                }
+                else
+                    m_uiESSENCE_Timer -= uiDiff;
+
+                DoMeleeAttackIfReady();   
+            }
+        };
+
+        CreatureAI *GetAI(Creature *creature) const
+        {
+            return new npc_valkyr_herald_25man_iccAI(creature);
+        }
+};
+
+//#########  Blighted Abomination ##############
+class npc_blighted_abomination_icc : public CreatureScript
+{
+    public:
+        npc_blighted_abomination_icc() : CreatureScript("npc_blighted_abomination_icc") { }
+
+        struct npc_blighted_abomination_iccAI : public ScriptedAI
+        {
+            npc_blighted_abomination_iccAI(Creature* pCreature) : ScriptedAI(pCreature) {}
+
+            uint32 m_uiCLOUD_Timer;
+            uint32 m_uiCLEAVE_Timer;
+            uint32 m_uiHOOK_Timer;
+
+            void JustDied(Unit* killer)
+            {
+                DoCast(me,SPELL_SOUL_FEAST_ALL);
+            }
+
+            void Reset()
+            {
+                m_uiCLOUD_Timer = 10000;
+                m_uiCLEAVE_Timer = 4000;
+                m_uiHOOK_Timer = 5000;
+            }
+
+            void UpdateAI(const uint32 uiDiff)
+            {
+                if (!UpdateVictim())
+                    return;
+
+                if (m_uiCLOUD_Timer <= uiDiff)
+                {
+                    DoCastAOE(SPELL_PLAGUE_CLOUD);
+                    //cada 20 segs
+                    m_uiCLOUD_Timer = 20000;
+                }
+                else
+                    m_uiCLOUD_Timer -= uiDiff;
+
+                if (m_uiHOOK_Timer <= uiDiff)
+                {
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
+                        DoCast(target, SPELL_SCOURGE_HOOK);
+                    //se repite cada 12 a 20 segs
+                    m_uiHOOK_Timer = urand(12000, 20000);
+                }
+                else
+                    m_uiHOOK_Timer -= uiDiff;
+ 
+                if (m_uiCLEAVE_Timer <= uiDiff)
+                {
+                    DoCast(me->getVictim(), SPELL_CLEAVE);
+                    //cada 6 segs
+                    m_uiCLEAVE_Timer = 6000;
+                }
+                else
+                    m_uiCLEAVE_Timer -= uiDiff;
+ 
+                DoMeleeAttackIfReady();   
+            }
+        };
+
+        CreatureAI *GetAI(Creature *creature) const
+        {
+            return new npc_blighted_abomination_iccAI(creature);
+        }
+};
+
+//#########  Vengeful Fleshreaper ##############
+class npc_vengeful_fleshreapert_icc : public CreatureScript
+{
+    public:
+        npc_vengeful_fleshreapert_icc() : CreatureScript("npc_vengeful_fleshreapert_icc") { }
+
+        struct npc_vengeful_fleshreapert_iccAI : public ScriptedAI
+        {
+            npc_vengeful_fleshreapert_iccAI(Creature* pCreature) : ScriptedAI(pCreature) {}
+
+            uint32 m_uiJUMP_Timer;
+            uint32 m_uiDEVOUR_Timer;
+
+            void Reset()
+            {
+                m_uiJUMP_Timer = urand(3000, 20000);
+                m_uiDEVOUR_Timer = urand(3000, 5000);
+            }
+
+            void JustDied(Unit* killer)
+            {
+                DoCast(me,SPELL_SOUL_FEAST_ALL);
+            }
+
+            void UpdateAI(const uint32 uiDiff)
+            {
+                if (!UpdateVictim())
+                    return;
+
+                if (m_uiJUMP_Timer <= uiDiff)
+                {
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
+                        DoCast(target, SPELL_LEAPING_FACE_MAUL);
+                    //entre 20 y 40 segs
+                    m_uiJUMP_Timer = urand(20000,40000);
+                }
+                else
+                    m_uiJUMP_Timer -= uiDiff;
+
+                if (m_uiDEVOUR_Timer <= uiDiff)
+                {
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
+                        DoCast(target, SPELL_DEVOUR_HUMANOID);
+                    //entre 5 y 8 segs
+                    m_uiDEVOUR_Timer = urand(5000,8000);
+                }
+                else
+                    m_uiDEVOUR_Timer -= uiDiff;
+
+                DoMeleeAttackIfReady();   
+            }
+        };
+
+        CreatureAI *GetAI(Creature *creature) const
+        {
+            return new npc_vengeful_fleshreapert_iccAI(creature);
+        }
+};
+
+//#########  Plague Scientist ##############
+class npc_plague_scientist_icc : public CreatureScript
+{
+    public:
+        npc_plague_scientist_icc() : CreatureScript("npc_plague_scientist_icc") { }
+ 
+        struct npc_plague_scientist_iccAI : public ScriptedAI
+        {
+            npc_plague_scientist_iccAI(Creature* pCreature) : ScriptedAI(pCreature) {}
+
+            uint32 m_uiBLAST_Timer;
+            uint32 m_uiSTREAM_Timer;
+            uint32 m_uiSTREAM_OUT_Timer;
+            uint32 m_uiSPRAY_Timer;    
+
+            void Reset()
+            {
+                m_uiBLAST_Timer = 2000;
+                m_uiSTREAM_Timer = urand(8000, 12000);
+                m_uiSTREAM_OUT_Timer = 24000;
+                m_uiSPRAY_Timer = urand(5000, 8000);
+            }
+
+            void JustDied(Unit* killer)
+            {
+                DoCast(me,SPELL_SOUL_FEAST_ALL);
+            }
+
+            void UpdateAI(const uint32 uiDiff)
+            {
+                if (!UpdateVictim())
+                    return;
+
+                if (m_uiSTREAM_Timer <= uiDiff)
+                {
+                    if (m_uiSTREAM_OUT_Timer > uiDiff)
                     {
+                        if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
+                            DoCast(target, SPELL_PLAGUE_STREAM);
+                        // maximo 24 segs para que deje de castear
+                        m_uiSTREAM_OUT_Timer -= uiDiff;
+                    }
+                    else
+                    {
+                        me->CastStop(SPELL_PLAGUE_STREAM);
+                        // se repite de entre 15 a 20 segs
+                        m_uiSTREAM_OUT_Timer = urand(15000, 20000);
+                    }
+                }
+                else
+                    m_uiSTREAM_Timer -= uiDiff;
+
+                if (m_uiSPRAY_Timer <= uiDiff)
+                {
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
+                        DoCast(target, SPELL_COMBOBULATING_SPRAY);
+                    // cada 8 a 12 segs se repite
+                    m_uiSPRAY_Timer = urand(8000, 12000);
+                }
+                else
+                    m_uiSPRAY_Timer -= uiDiff;
+ 
+                if (m_uiBLAST_Timer <= uiDiff)
+                {
+                    DoCast(me->getVictim(), SPELL_PLAGUE_BLAST);
+                    // cada 2 a 3 segs se repite
+                    m_uiBLAST_Timer = urand(2000, 3000);
+                }
+                else
+                    m_uiBLAST_Timer -= uiDiff;
+
+                DoMeleeAttackIfReady();   
+            }
+        };
+
+        CreatureAI *GetAI(Creature *creature) const
+        {
+            return new npc_plague_scientist_iccAI(creature);
+        }
+};
+
+//#########  Pustulating Horror 10 man ##############
+class npc_pustulating_horror_10man_icc : public CreatureScript
+{
+    public:
+        npc_pustulating_horror_10man_icc() : CreatureScript("npc_pustulating_horror_10man_icc") { }
+
+        struct npc_pustulating_horror_10man_iccAI : public ScriptedAI
+        {
+            npc_pustulating_horror_10man_iccAI(Creature* pCreature) : ScriptedAI(pCreature) {}
+
+            uint32 m_uiPUS_Timer;
+
+            void Reset()
+            {
+                m_uiPUS_Timer = 2000; //iniciando rapido
+            }
+
+            void JustDied(Unit* killer)
+            {
+                DoCast(me,SPELL_SOUL_FEAST_ALL);
+            }
+
+            void UpdateAI(const uint32 uiDiff)
+            {
+                if (!UpdateVictim())
+                    return;
+
+                if (HealthBelowPct(15)) // depende de la vida
+                {
+                    DoCastAOE(SPELL_BLIGHT_BOMB);
+                    // hacemos mas rapido el pus
+                    m_uiPUS_Timer = 5000;
+                }
+
+                if (m_uiPUS_Timer <= uiDiff)
+                {
+                    if (Unit* target = SelectTarget(SELECT_TARGET_NEAREST, 0))
+                        DoCast(target, SPELL_BUBBLING_PUS_10M);
+				    if (HealthAbovePct(15))
+                        // cada 15 a 25 segs se repite
+                        m_uiPUS_Timer = urand(15000, 25000);
+                }
+                else
+                    m_uiPUS_Timer -= uiDiff;
+
+                DoMeleeAttackIfReady();   
+            }
+        };
+ 
+        CreatureAI *GetAI(Creature *creature) const
+        {
+            return new npc_pustulating_horror_10man_iccAI(creature);
+        }
+};
+
+//#########  Pustulating Horror 25 man ##############
+class npc_pustulating_horror_25man_icc : public CreatureScript
+{
+    public:
+        npc_pustulating_horror_25man_icc() : CreatureScript("npc_pustulating_horror_25man_icc") { }
+
+        struct npc_pustulating_horror_25man_iccAI : public ScriptedAI
+        {
+            npc_pustulating_horror_25man_iccAI(Creature* pCreature) : ScriptedAI(pCreature) {}
+
+            uint32 m_uiPUS_Timer;
+
+            void Reset()
+            {
+                m_uiPUS_Timer = 2000; //iniciando rapido
+            }
+
+            void JustDied(Unit* killer)
+            {
+                DoCast(me,SPELL_SOUL_FEAST_ALL);
+            }
+
+            void UpdateAI(const uint32 uiDiff)
+            {
+                if (!UpdateVictim())
+                    return;
+
+                if (HealthBelowPct(15)) // depende de la vida
+                {
+                    DoCastAOE(SPELL_BLIGHT_BOMB);
+                    // hacemos mas rapido el pus
+                    m_uiPUS_Timer = 5000;
+                }
+
+                if (m_uiPUS_Timer <= uiDiff)
+                {
+                    if (Unit* target = SelectTarget(SELECT_TARGET_NEAREST, 0))
+                        DoCast(target, SPELL_BUBBLING_PUS_25M);
+				    if (HealthAbovePct(15))
+                        // cada 15 a 20 segs se repite
+                        m_uiPUS_Timer = urand(15000, 20000);
+                }
+                else
+                    m_uiPUS_Timer -= uiDiff;
+
+                DoMeleeAttackIfReady();   
+            }
+        };
+
+        CreatureAI *GetAI(Creature *creature) const
+        {
+            return new npc_pustulating_horror_25man_iccAI(creature);
+        }
+};
+
+//#########  Decaying Colossus 10 man ##############
+class npc_decaying_colossus_10man_icc : public CreatureScript
+{
+    public:
+        npc_decaying_colossus_10man_icc() : CreatureScript("npc_decaying_colossus_10man_icc") { }
+
+        struct npc_decaying_colossus_10man_iccAI : public ScriptedAI
+        {
+            npc_decaying_colossus_10man_iccAI(Creature* pCreature) : ScriptedAI(pCreature) {}
+
+            uint32 m_uiSTOMP_Timer;
+
+            void Reset()
+            {
+                m_uiSTOMP_Timer = 5000;
+            }
+
+            void JustDied(Unit* killer)
+            {
+                DoCast(me,SPELL_SOUL_FEAST_ALL);
+            }
+
+            void UpdateAI(const uint32 uiDiff)
+            {
+                if (!UpdateVictim())
+                    return;
+
+                if (m_uiSTOMP_Timer <= uiDiff)
+                {
+                    DoCast(me->getVictim(), SPELL_MASSIVE_STOMP_10M);
+                    // cada 15 a 25 segs se repite
+                    m_uiSTOMP_Timer = urand(15000, 25000);
+                }
+                else
+                    m_uiSTOMP_Timer -= uiDiff;
+
+                DoMeleeAttackIfReady();   
+            }
+        };
+ 
+        CreatureAI *GetAI(Creature *creature) const
+        {
+            return new npc_decaying_colossus_10man_iccAI(creature);
+        }
+};
+
+//#########  Decaying Colossus 25 man ##############
+class npc_decaying_colossus_25man_icc : public CreatureScript
+{
+    public:
+        npc_decaying_colossus_25man_icc() : CreatureScript("npc_decaying_colossus_25man_icc") { }
+
+        struct npc_decaying_colossus_25man_iccAI : public ScriptedAI
+        {
+            npc_decaying_colossus_25man_iccAI(Creature* pCreature) : ScriptedAI(pCreature) {}
+
+            uint32 m_uiSTOMP_Timer;
+
+            void Reset()
+            {
+                m_uiSTOMP_Timer = 5000;
+            }
+
+            void JustDied(Unit* killer)
+            {
+                DoCast(me,SPELL_SOUL_FEAST_ALL);
+            }
+
+            void UpdateAI(const uint32 uiDiff)
+            {
+                if (!UpdateVictim())
+                    return;
+
+                if (m_uiSTOMP_Timer <= uiDiff)
+                {
+                    DoCast(me->getVictim(), SPELL_MASSIVE_STOMP_25M);
+                    // cada 15 a 25 segs se repite
+                    m_uiSTOMP_Timer = urand(15000, 25000);
+                }
+                else
+                    m_uiSTOMP_Timer -= uiDiff;
+
+                DoMeleeAttackIfReady();   
+            }
+        };
+ 
+        CreatureAI *GetAI(Creature *creature) const
+        {
+            return new npc_decaying_colossus_25man_iccAI(creature);
+        }
+};
+
+//#########  Darkfallen Archmage 10 man ##############
+class npc_darkfallen_archmage_10man_icc : public CreatureScript
+{
+    public:
+        npc_darkfallen_archmage_10man_icc() : CreatureScript("npc_darkfallen_archmage_10man_icc") { }
+
+        struct npc_darkfallen_archmage_10man_iccAI : public ScriptedAI
+        {
+            npc_darkfallen_archmage_10man_iccAI(Creature* pCreature) : ScriptedAI(pCreature) {}
+
+            uint32 m_uiAMPLIFY_Timer;
+            uint32 m_uiBLAST_Timer;
+            uint32 m_uiFIREBALL_Timer;
+            uint32 m_uiPOLYMORPH_Timer;
+
+            void Reset()
+            {
+                m_uiAMPLIFY_Timer = urand(10000, 15000);
+                m_uiBLAST_Timer = urand(8000, 10000);
+                m_uiFIREBALL_Timer = 2000;
+                m_uiPOLYMORPH_Timer = urand(9000, 12000);
+            }
+
+            void JustDied(Unit* killer)
+            {
+                DoCast(me,SPELL_SOUL_FEAST_ALL);
+            }
+
+            void UpdateAI(const uint32 uiDiff)
+            {
+                if (!UpdateVictim())
+                    return;
+
+                if (m_uiAMPLIFY_Timer <= uiDiff)
+                {
+                    DoCast(me->getVictim(), SPELL_AMPLIFY_MAGIC_10M);
+                    // amplificar cada 15 a 20 segs
+                    m_uiAMPLIFY_Timer = urand(15000, 20000);
+                }
+                else
+                    m_uiAMPLIFY_Timer -= uiDiff;
+
+                if (m_uiPOLYMORPH_Timer <= uiDiff)
+                {
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
+                        DoCast(target, SPELL_POLYMORPH_SPIDER);
+                    // se repite cada 15 a 18 segs
+                    m_uiPOLYMORPH_Timer = urand(15000, 18000);
+                }
+                else
+                    m_uiPOLYMORPH_Timer -= uiDiff;
+
+                if (m_uiFIREBALL_Timer <= uiDiff)
+                {
+                    DoCast(me->getVictim(), SPELL_FIREBALL_10M);
+                    // repite cada 3 a 4 segs
+                    m_uiFIREBALL_Timer = urand(3000, 4000);
+                }
+                else
+                    m_uiFIREBALL_Timer -= uiDiff;
+ 
+                if (m_uiBLAST_Timer <= uiDiff)
+                {
+                    DoCastAOE(SPELL_BLAST_WAVE_10M);
+                    // repite el blast de 10 a 20 segs
+                    m_uiBLAST_Timer = urand(10000, 20000);
+                }
+                else
+                    m_uiBLAST_Timer -= uiDiff;
+
+                DoMeleeAttackIfReady();   
+            }
+        };
+
+        CreatureAI *GetAI(Creature *creature) const
+        {
+            return new npc_darkfallen_archmage_10man_iccAI(creature);
+        }
+};
+
+//#########  Darkfallen Archmage 25 man ##############
+class npc_darkfallen_archmage_25man_icc : public CreatureScript
+{
+    public:
+        npc_darkfallen_archmage_25man_icc() : CreatureScript("npc_darkfallen_archmage_25man_icc") { }
+
+        struct npc_darkfallen_archmage_25man_iccAI : public ScriptedAI
+        {
+            npc_darkfallen_archmage_25man_iccAI(Creature* pCreature) : ScriptedAI(pCreature) {}
+
+            uint32 m_uiAMPLIFY_Timer;
+            uint32 m_uiBLAST_Timer;
+            uint32 m_uiFIREBALL_Timer;
+            uint32 m_uiPOLYMORPH_Timer;
+
+            void Reset()
+            {
+                m_uiAMPLIFY_Timer = urand(10000, 15000);
+                m_uiBLAST_Timer = urand(8000, 10000);
+                m_uiFIREBALL_Timer = 2000;
+                m_uiPOLYMORPH_Timer = urand(9000, 12000);
+            }
+
+            void JustDied(Unit* killer)
+            {
+                DoCast(me,SPELL_SOUL_FEAST_ALL);
+            }
+
+            void UpdateAI(const uint32 uiDiff)
+            {
+                if (!UpdateVictim())
+                    return;
+
+                if (m_uiAMPLIFY_Timer <= uiDiff)
+                {
+                    DoCast(me->getVictim(), SPELL_AMPLIFY_MAGIC_25M);
+                    // amplificar de 10 a 15 segs
+                    m_uiAMPLIFY_Timer = urand(10000, 15000);
+                }
+                else
+                    m_uiAMPLIFY_Timer -= uiDiff;
+
+                if (m_uiPOLYMORPH_Timer <= uiDiff)
+                {
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
+                        DoCast(target, SPELL_POLYMORPH_SPIDER);
+                    // se repite cada 12 a 15 segs
+                    m_uiPOLYMORPH_Timer = urand(12000, 15000);
+                }
+                else
+                    m_uiPOLYMORPH_Timer -= uiDiff;
+
+                if (m_uiFIREBALL_Timer <= uiDiff)
+                {
+                    DoCast(me->getVictim(), SPELL_FIREBALL_25M);
+                    // repite cada 2 a 3 segs
+                    m_uiFIREBALL_Timer = urand(2000, 3000);
+                }
+                else
+                    m_uiFIREBALL_Timer -= uiDiff;
+ 
+                if (m_uiBLAST_Timer <= uiDiff)
+                {
+                    DoCastAOE(SPELL_BLAST_WAVE_25M);
+                    // repite el blast de 10 a 20 segs
+                    m_uiBLAST_Timer = urand(10000, 20000);
+                }
+                else
+                    m_uiBLAST_Timer -= uiDiff;
+
+                DoMeleeAttackIfReady();   
+            }
+        };
+
+        CreatureAI *GetAI(Creature *creature) const
+        {
+            return new npc_darkfallen_archmage_25man_iccAI(creature);
+        }
+};
+
+//#########  Darkfallen Blood Knight ##############
+class npc_darkfallen_blood_knight_icc : public CreatureScript
+{
+    public:
+        npc_darkfallen_blood_knight_icc() : CreatureScript("npc_darkfallen_blood_knight_icc") { }
+
+        struct npc_darkfallen_blood_knight_iccAI : public ScriptedAI
+        {
+            npc_darkfallen_blood_knight_iccAI(Creature* pCreature) : ScriptedAI(pCreature) {}
+
+            uint32 m_uiAURA_Timer;
+            uint32 m_uiSTRIKE_Timer;
+            uint32 m_uiMIRROR_Timer;
+
+            void Reset()
+            {
+                m_uiAURA_Timer = urand(12000, 15000);
+                m_uiSTRIKE_Timer = urand(2000, 3000); //iniciando rapido
+                m_uiMIRROR_Timer = urand(4000, 5000); //iniciando rapido
+            }
+
+            void JustDied(Unit* killer)
+            {
+                DoCast(me,SPELL_SOUL_FEAST_ALL);
+            }
+
+            void UpdateAI(const uint32 uiDiff)
+            {
+                if (!UpdateVictim())
+                    return;
+
+                if (m_uiSTRIKE_Timer <= uiDiff)
+                {
+                    DoCast(me->getVictim(), SPELL_UNHOLY_STRIKE);
+                    // castea cada 3 a 4 segs
+                    m_uiSTRIKE_Timer = urand(3000, 4000);
+                }
+                else
+                    m_uiSTRIKE_Timer -= uiDiff;
+
+                if (m_uiAURA_Timer <= uiDiff)
+                {
+                    DoCast(me, SPELL_VAMPIRIC_AURA);
+                    // casteando cada 12 a 15 segs
+                    m_uiAURA_Timer = urand(12000, 15000);
+                }
+                else
+                    m_uiAURA_Timer -= uiDiff;
+
+                if (m_uiMIRROR_Timer <= uiDiff)
+                {
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
+                    {
+                        DoCast(me->getVictim(),SPELL_BLOOD_MIRROR_DUMMY);
                         me->getVictim()->CastSpell(target,SPELL_BLOOD_MIRROR_DAMAGE,true);
                         me->CastSpell(me->getVictim(),SPELL_BLOOD_MIRROR_BUFF,true);
-                        BLOOD_MIRROR = urand(32*IN_MILLISECONDS, 37*IN_MILLISECONDS);
+                        // castea el mirror entre 32 a 37 segs para ayudar un poco
+                        m_uiMIRROR_Timer = urand(32000, 37000);
                     }
-
-            }else BLOOD_MIRROR -= diff;
-
-            if (UNHOLY_STRIKE <= diff)
-            {
-                if (DoCastTry(me->getVictim(),SPELL_UNHOLY_STRIKE))
-                    UNHOLY_STRIKE = urand(3*IN_MILLISECONDS, 4*IN_MILLISECONDS);
-
-            }else UNHOLY_STRIKE -= diff;
-
-            DoMeleeAttackIfReady();
-
-            mobs_icecrown_citadelAI::UpdateAI(diff);
-        }
-    };
-
-    struct mob_icecrown_citadel_Darkfallen_NobleAI: public mobs_icecrown_citadelAI
-    {
-        mob_icecrown_citadel_Darkfallen_NobleAI(Creature *c) : mobs_icecrown_citadelAI(c) 
-        { }
-
-        uint32 SHADOW_BOLT_1;
-        uint32 CHAINS_OF_SHADOW;
-        uint32 VAMPIRIC_FIEND;
-        
-        void Reset()
-        {
-            SHADOW_BOLT_1    = urand(2*IN_MILLISECONDS, 3*IN_MILLISECONDS);
-            CHAINS_OF_SHADOW = urand(4*IN_MILLISECONDS, 5*IN_MILLISECONDS);
-            VAMPIRIC_FIEND   = 15*IN_MILLISECONDS;
-        }
-
-        void JustDied(Unit* killer)
-        {
-            if (PlayersCountRange(500.0f))// 500 yardas
-                return;
-
-            DoCast(me,SPELL_SOUL_FEAST_ALL);
-        }
-
-        void UpdateAI(const uint32 diff)
-        {
-            if (!UpdateVictim())
-                return;
-
-            if (CHAINS_OF_SHADOW <= diff)
-            {
-                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
-                    if (DoCastTry(target,SPELL_CHAINS_OF_SHADOW))
-                        CHAINS_OF_SHADOW = urand(15*IN_MILLISECONDS, 25*IN_MILLISECONDS);
-
-            }else CHAINS_OF_SHADOW -= diff;
-
-            if (VAMPIRIC_FIEND <= diff)
-            {
-                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
-                    if (me->SummonCreature(NPC_VAMPIRIC_FIEND,target->GetPositionX(),target->GetPositionY(),target->GetPositionZ()))
-                        VAMPIRIC_FIEND = 60*IN_MILLISECONDS;
-
-            }else VAMPIRIC_FIEND -= diff;
-
-            if (SHADOW_BOLT_1 <= diff)
-            {
-                if (DoCastTry(me->getVictim(),SPELL_SHADOW_BOLT_1))
-                    SHADOW_BOLT_1 = 3*IN_MILLISECONDS;
-
-            }else SHADOW_BOLT_1 -= diff;
-
-            mobs_icecrown_citadelAI::UpdateAI(diff);
-        }
-    };
-
-    struct mob_icecrown_citadel_Vampiric_FiendAI: public mobs_icecrown_citadelAI
-    {
-        mob_icecrown_citadel_Vampiric_FiendAI(Creature *c) : mobs_icecrown_citadelAI(c) 
-        { }
-
-        uint32 LEECHING_ROT;
-        
-        void Reset()
-        {
-            LEECHING_ROT = 10*IN_MILLISECONDS;
-        }
-
-        void JustDied(Unit* killer)
-        {
-            if (PlayersCountRange(500.0f))// 500 yardas
-                return;
-
-            DoCast(me,SPELL_SOUL_FEAST_ALL);
-        }
-
-        void EnterCombat(Unit* /*target*/)
-        {
-            DoCast(me, SPELL_DISEASE_CLOUD);
-        }
-
-        void UpdateAI(const uint32 diff)
-        {
-            if (!UpdateVictim())
-                return;
-
-            if (LEECHING_ROT <= diff)
-            {
-                if (DoCastTryAOE(SPELL_LEECHING_ROT))
-                {
-                    me->ForcedDespawn(3*IN_MILLISECONDS);
-                    LEECHING_ROT = 10*IN_MILLISECONDS;
                 }
+                else
+                    m_uiMIRROR_Timer -= uiDiff;
 
-            }else LEECHING_ROT -= diff;
+                DoMeleeAttackIfReady();   
+            }
+        };
 
-            mobs_icecrown_citadelAI::UpdateAI(diff);
-        }
-    };
-
-    struct mob_icecrown_citadel_Darkfallen_AdvisorAI: public mobs_icecrown_citadelAI
-    {
-        mob_icecrown_citadel_Darkfallen_AdvisorAI(Creature *c) : mobs_icecrown_citadelAI(c) 
-        { }
-
-        uint32 SHROUD_OF_PROTECTION;
-        uint32 SHROUD_OF_SPELL_WARDING;
-        uint32 LICH_SLAP;
-        
-        void Reset()
+        CreatureAI *GetAI(Creature *creature) const
         {
-            SHROUD_OF_PROTECTION    = urand(10*IN_MILLISECONDS, 15*IN_MILLISECONDS);
-            LICH_SLAP               = urand(5*IN_MILLISECONDS, 10*IN_MILLISECONDS);
+            return new npc_darkfallen_blood_knight_iccAI(creature);
         }
+};
 
-        void JustDied(Unit* killer)
+//#########  Darkfallen Noble 10 man ##############
+class npc_darkfallen_noble_10man_icc : public CreatureScript
+{
+    public:
+        npc_darkfallen_noble_10man_icc() : CreatureScript("npc_darkfallen_noble_10man_icc") { }
+ 
+        struct npc_darkfallen_noble_10man_iccAI : public ScriptedAI
         {
-            if (PlayersCountRange(500.0f))// 500 yardas
-                return;
+            npc_darkfallen_noble_10man_iccAI(Creature* pCreature) : ScriptedAI(pCreature) {}
 
-            DoCast(me,SPELL_SOUL_FEAST_ALL);
-        }
+            uint32 m_uiCHAINS_Timer;
+            uint32 m_uiBOLT_Timer;
+            uint32 m_uiFIEND_Timer;
 
-        void UpdateAI(const uint32 diff)
-        {
-            if (!UpdateVictim())
-                return;
-
-            if (SHROUD_OF_PROTECTION <= diff)
+            void Reset()
             {
-                if (Unit* target = urand(0, 1) ? SelectTarget(SELECT_TARGET_RANDOM, 0) : DoSelectLowestHpFriendly(40.0f))
-                    if (DoCastTry(target,SPELL_SHROUD_OF_PROTECTION))
-                        if (DoCastTry(target,SPELL_SHROUD_OF_SPELL_WARDING))
-                            SHROUD_OF_PROTECTION = urand(15*IN_MILLISECONDS, 20*IN_MILLISECONDS);
-
-            }else SHROUD_OF_PROTECTION -= diff;
-
-            if (LICH_SLAP <= diff)
-            {
-                if (DoCastTry(me->getVictim(),SPELL_LICH_SLAP))
-                    LICH_SLAP = 10*IN_MILLISECONDS;
-
-            }else LICH_SLAP -= diff;
-
-            DoMeleeAttackIfReady();
-
-            mobs_icecrown_citadelAI::UpdateAI(diff);
-        }
-    };
-
-    struct mob_icecrown_citadel_Darkfallen_CommanderAI: public mobs_icecrown_citadelAI
-    {
-        mob_icecrown_citadel_Darkfallen_CommanderAI(Creature *c) : mobs_icecrown_citadelAI(c) 
-        { }
-
-        uint32 BATTLE_SHOUT;
-        uint32 VAMPIRE_RUSH;
-        
-        void Reset()
-        {
-            BATTLE_SHOUT  = urand(10*IN_MILLISECONDS, 15*IN_MILLISECONDS);
-            VAMPIRE_RUSH  = urand(10*IN_MILLISECONDS, 15*IN_MILLISECONDS);
-        }
-
-        void JustDied(Unit* killer)
-        {
-            if (PlayersCountRange(500.0f))// 500 yardas
-                return;
-
-            DoCast(me,SPELL_SOUL_FEAST_ALL);
-        }
-
-        void UpdateAI(const uint32 diff)
-        {
-            if (!UpdateVictim())
-                return;
-
-            if (BATTLE_SHOUT <= diff)
-            {
-                if (DoCastTryAOE(SPELL_BATTLE_SHOUT))
-                        BATTLE_SHOUT = urand(15*IN_MILLISECONDS, 20*IN_MILLISECONDS);
-
-            }else BATTLE_SHOUT -= diff;
-
-            if (VAMPIRE_RUSH <= diff)
-            {
-                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
-                    if (DoCastTry(target,SPELL_VAMPIRE_RUSH))
-                        VAMPIRE_RUSH = urand(10*IN_MILLISECONDS, 15*IN_MILLISECONDS);
-
-            }else VAMPIRE_RUSH -= diff;
-
-            DoMeleeAttackIfReady();
-
-            mobs_icecrown_citadelAI::UpdateAI(diff);
-        }
-    };
-
-    struct mob_icecrown_citadel_Darkfallen_TacticianAI: public mobs_icecrown_citadelAI
-    {
-        mob_icecrown_citadel_Darkfallen_TacticianAI(Creature *c) : mobs_icecrown_citadelAI(c) 
-        { }
-
-        uint32 SHADOWSTEP;
-        uint32 BLOOD_SAP;
-        uint32 UNHOLY_STRIKE;
-        
-        void Reset()
-        {
-            SHADOWSTEP    = urand(1*IN_MILLISECONDS, 2*IN_MILLISECONDS);
-            BLOOD_SAP     = urand(5*IN_MILLISECONDS, 15*IN_MILLISECONDS);
-            UNHOLY_STRIKE = urand(2*IN_MILLISECONDS, 3*IN_MILLISECONDS);
-        }
-
-        void JustDied(Unit* killer)
-        {
-            if (PlayersCountRange(500.0f))// 500 yardas
-                return;
-
-            DoCast(me,SPELL_SOUL_FEAST_ALL);
-        }
-
-        void UpdateAI(const uint32 diff)
-        {
-            if (!UpdateVictim())
-                return;
-
-            if (SHADOWSTEP <= diff)
-            {
-                if (DoCastTry(me->getVictim(),SPELL_SHADOWSTEP))
-                        SHADOWSTEP = urand(15*IN_MILLISECONDS, 20*IN_MILLISECONDS);
-
-            }else SHADOWSTEP -= diff;
-
-            if (BLOOD_SAP <= diff)
-            {
-                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
-                    if (DoCastTry(target,SPELL_BLOOD_SAP))
-                        BLOOD_SAP = urand(15*IN_MILLISECONDS, 25*IN_MILLISECONDS);
-
-            }else BLOOD_SAP -= diff;
-
-            if (UNHOLY_STRIKE <= diff)
-            {
-                if (DoCastTry(me->getVictim(),SPELL_UNHOLY_STRIKE))
-                    UNHOLY_STRIKE = 5*IN_MILLISECONDS;
-
-            }else UNHOLY_STRIKE -= diff;
-
-            DoMeleeAttackIfReady();
-
-            mobs_icecrown_citadelAI::UpdateAI(diff);
-        }
-    };
-
-    struct mob_icecrown_citadel_Darkfallen_LieutenantAI: public mobs_icecrown_citadelAI
-    {
-        mob_icecrown_citadel_Darkfallen_LieutenantAI(Creature *c) : mobs_icecrown_citadelAI(c) 
-        { }
-
-        uint32 REND_FLESH;
-        uint32 VAMPIRIC_CURSE;
-        
-        void Reset()
-        {
-            REND_FLESH     = urand(1*IN_MILLISECONDS, 2*IN_MILLISECONDS);
-            VAMPIRIC_CURSE = urand(5*IN_MILLISECONDS, 15*IN_MILLISECONDS);
-        }
-
-        void JustDied(Unit* killer)
-        {
-            if (PlayersCountRange(500.0f))// 500 yardas
-                return;
-
-            DoCast(me,SPELL_SOUL_FEAST_ALL);
-        }
-
-        void UpdateAI(const uint32 diff)
-        {
-            if (!UpdateVictim())
-                return;
-
-            if (VAMPIRIC_CURSE <= diff)
-            {
-                if (DoCastTry(me->getVictim(),SPELL_VAMPIRIC_CURSE))
-                    VAMPIRIC_CURSE = urand(10*IN_MILLISECONDS, 20*IN_MILLISECONDS);
-
-            }else REND_FLESH -= diff;
-
-            if (REND_FLESH <= diff)
-            {
-                if (DoCastTry(me->getVictim(),SPELL_REND_FLESH))
-                    REND_FLESH = 25*IN_MILLISECONDS;
-
-            }else REND_FLESH -= diff;
-
-            DoMeleeAttackIfReady();
-
-            mobs_icecrown_citadelAI::UpdateAI(diff);
-        }
-    };
-
-    struct mob_icecrown_citadel_Ymirjar_FrostbinderAI: public mobs_icecrown_citadelAI
-    {
-        mob_icecrown_citadel_Ymirjar_FrostbinderAI(Creature *c) : mobs_icecrown_citadelAI(c) 
-        { }
-
-        uint32 FROZEN_ORB;
-        
-        void Reset()
-        {
-            FROZEN_ORB     = 1*IN_MILLISECONDS;
-        }
-
-        void JustDied(Unit* killer)
-        {
-            if (PlayersCountRange(500.0f))// 500 yardas
-                return;
-
-            DoCast(me,SPELL_SOUL_FEAST_ALL);
-        }
-
-        void EnterCombat(Unit* /*target*/)
-        {
-            DoCast(me, SPELL_ARCTIC_CHILL);
-        }
-        
-        void UpdateAI(const uint32 diff)
-        {
-            if (!UpdateVictim())
-                return;
-
-            if (FROZEN_ORB <= diff)
-            {
-                if (DoCastTryAOE(SPELL_FROZEN_ORB))
-                    FROZEN_ORB = urand(3*IN_MILLISECONDS, 5*IN_MILLISECONDS);
-
-            }else FROZEN_ORB -= diff;
-
-            mobs_icecrown_citadelAI::UpdateAI(diff);
-        }
-    };
-
-    struct mob_icecrown_citadel_Ymirjar_DeathbringerAI: public mobs_icecrown_citadelAI
-    {
-        mob_icecrown_citadel_Ymirjar_DeathbringerAI(Creature *c) : mobs_icecrown_citadelAI(c) 
-        { }
-
-        uint32 BANISH;
-        uint32 DEATHS_EMBRACE;
-        uint32 SHADOW_BOLT_2;
-        
-        void Reset()
-        {
-            BANISH         = urand(5*IN_MILLISECONDS, 10*IN_MILLISECONDS);
-            DEATHS_EMBRACE = urand(10*IN_MILLISECONDS, 15*IN_MILLISECONDS);
-            SHADOW_BOLT_2  = urand(1*IN_MILLISECONDS, 2*IN_MILLISECONDS);
-        }
-
-        void JustDied(Unit* killer)
-        {
-            if (PlayersCountRange(500.0f))// 500 yardas
-                return;
-
-            DoCast(me,SPELL_SOUL_FEAST_ALL);
-        }
-
-        void UpdateAI(const uint32 diff)
-        {
-            if (!UpdateVictim())
-                return;
-
-            if (DEATHS_EMBRACE <= diff)
-            {
-                if (DoCastTry(me,SPELL_DEATHS_EMBRACE))
-                    DEATHS_EMBRACE = urand(15*IN_MILLISECONDS, 25*IN_MILLISECONDS);
-
-            }else DEATHS_EMBRACE -= diff;
-
-            if (BANISH <= diff)
-            {
-                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
-                    if (DoCastTry(target,SPELL_BANISH))
-                        BANISH = urand(15*IN_MILLISECONDS, 25*IN_MILLISECONDS);
-
-            }else BANISH -= diff;
-
-            if (SHADOW_BOLT_2 <= diff)
-            {
-                if (DoCastTry(me->getVictim(),SPELL_SHADOW_BOLT_2))
-                    SHADOW_BOLT_2 = 2*IN_MILLISECONDS;
-
-            }else SHADOW_BOLT_2 -= diff;
-
-            mobs_icecrown_citadelAI::UpdateAI(diff);
-        }
-    };
-
-    struct mob_icecrown_citadel_Ymirjar_Battle_MaidenAI: public mobs_icecrown_citadelAI
-    {
-        mob_icecrown_citadel_Ymirjar_Battle_MaidenAI(Creature *c) : mobs_icecrown_citadelAI(c) 
-        { }
-
-        uint32 ADRENALINE_RUSH;
-        uint32 BARBARIC_STRIKE;
-        
-        void Reset()
-        {
-            ADRENALINE_RUSH = urand(10*IN_MILLISECONDS, 15*IN_MILLISECONDS);
-            BARBARIC_STRIKE = urand(1*IN_MILLISECONDS, 5*IN_MILLISECONDS);
-        }
-
-        void JustDied(Unit* killer)
-        {
-            if (PlayersCountRange(500.0f))// 500 yardas
-                return;
-
-            DoCast(me,SPELL_SOUL_FEAST_ALL);
-        }
-
-        void UpdateAI(const uint32 diff)
-        {
-            if (!UpdateVictim())
-                return;
-
-            if (ADRENALINE_RUSH <= diff)
-            {
-                if (DoCastTry(me,SPELL_ADRENALINE_RUSH))
-                    ADRENALINE_RUSH = urand(15*IN_MILLISECONDS, 25*IN_MILLISECONDS);
-
-            }else ADRENALINE_RUSH -= diff;
-
-            if (BARBARIC_STRIKE <= diff)
-            {
-                if (DoCastTry(me->getVictim(),SPELL_BARBARIC_STRIKE))
-                    BARBARIC_STRIKE = urand(2*IN_MILLISECONDS, 3*IN_MILLISECONDS);
-
-            }else BARBARIC_STRIKE -= diff;
-
-            DoMeleeAttackIfReady();
-
-            mobs_icecrown_citadelAI::UpdateAI(diff);
-        }
-    };
-
-    struct mob_icecrown_citadel_Ymirjar_HuntressAI: public mobs_icecrown_citadelAI
-    {
-        mob_icecrown_citadel_Ymirjar_HuntressAI(Creature *c) : mobs_icecrown_citadelAI(c) 
-        { }
-
-        uint32 ICE_TRAP;
-        uint32 RAPID_SHOT;
-        uint32 SHOOT;
-        uint32 VOLLEY;
-        
-        void Reset()
-        {
-            ICE_TRAP   = urand(5*IN_MILLISECONDS, 15*IN_MILLISECONDS);
-            RAPID_SHOT = urand(10*IN_MILLISECONDS, 15*IN_MILLISECONDS);
-            SHOOT      = urand(1*IN_MILLISECONDS, 2*IN_MILLISECONDS);
-            VOLLEY     = urand(5*IN_MILLISECONDS, 15*IN_MILLISECONDS);
-        }
-
-        void JustDied(Unit* killer)
-        {
-            if (PlayersCountRange(500.0f))// 500 yardas
-                return;
-
-            DoCast(me,SPELL_SOUL_FEAST_ALL);
-        }
-
-        void EnterCombat(Unit* /*target*/)
-        {
-            if (Is25ManRaid())
-                DoCast(SPELL_SUMMON_WARHAWK);
-        }
-
-        void UpdateAI(const uint32 diff)
-        {
-            if (!UpdateVictim())
-                return;
-
-            if (RAPID_SHOT <= diff)
-            {
-                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
-                    if (DoCastTry(target,SPELL_RAPID_SHOT))
-                        RAPID_SHOT = urand(15*IN_MILLISECONDS, 25*IN_MILLISECONDS);
-
-            }else RAPID_SHOT -= diff;
-
-            if (VOLLEY <= diff)
-            {
-                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
-                    if (DoCastTry(target,SPELL_VOLLEY))
-                        VOLLEY = urand(10*IN_MILLISECONDS, 15*IN_MILLISECONDS);
-
-            }else VOLLEY -= diff;
-
-            if (ICE_TRAP <= diff)
-            {
-                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
-                    if (DoCastTry(target,SPELL_ICE_TRAP))
-                        ICE_TRAP = urand(30*IN_MILLISECONDS, 35*IN_MILLISECONDS);
-
-            }else ICE_TRAP -= diff;
-
-            if (me->isAttackReady())
-            {
-                if (me->IsWithinMeleeRange(me->getVictim()))
-                    DoMeleeAttackIfReady();
-                else if (SHOOT <= diff)
-                {
-                    if (DoCastTry(me->getVictim(),SPELL_SHOOT))
-                        SHOOT = 1*IN_MILLISECONDS;
-                }
-                else SHOOT -= diff;
+                m_uiCHAINS_Timer = urand(2000, 4000); //inicia rapido
+                m_uiBOLT_Timer = urand(3000, 5000);
+                m_uiFIEND_Timer = 15000;
             }
 
-            mobs_icecrown_citadelAI::UpdateAI(diff);
-        }
-    };
-
-    struct mob_icecrown_citadel_Ymirjar_WarlordAI: public mobs_icecrown_citadelAI
-    {
-        mob_icecrown_citadel_Ymirjar_WarlordAI(Creature *c) : mobs_icecrown_citadelAI(c) 
-        { }
-
-        uint32 WHIRLWIND;
-        
-        void Reset()
-        {
-            WHIRLWIND = urand(5*IN_MILLISECONDS, 15*IN_MILLISECONDS);
-        }
-
-        void JustDied(Unit* killer)
-        {
-            if (PlayersCountRange(500.0f))// 500 yardas
-                return;
-
-            DoCast(me,SPELL_SOUL_FEAST_ALL);
-        }
-
-        void UpdateAI(const uint32 diff)
-        {
-            if (!UpdateVictim())
-                return;
-
-            if (WHIRLWIND <= diff)
+            void JustDied(Unit* killer)
             {
-                if (DoCastTryAOE(SPELL_WHIRLWIND))
-                    WHIRLWIND= urand(12*IN_MILLISECONDS, 20*IN_MILLISECONDS);
+                DoCast(me,SPELL_SOUL_FEAST_ALL);
+            }
 
-            }else WHIRLWIND -= diff;
+            void UpdateAI(const uint32 uiDiff)
+            {
+                if (!UpdateVictim())
+                    return;
 
-            DoMeleeAttackIfReady();
+                if (m_uiBOLT_Timer <= uiDiff)
+                {
+                    DoCast(me->getVictim(), SPELL_SHADOW_BOLT_10M);
+                    // castea cada 4 a 5 segs
+                    m_uiBOLT_Timer = urand(4000, 5000);
+                }
+                else
+                    m_uiBOLT_Timer -= uiDiff;
 
-            mobs_icecrown_citadelAI::UpdateAI(diff);
+                if (m_uiCHAINS_Timer <= uiDiff)
+                {
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
+                        DoCast(target, SPELL_CHAINS_OF_SHADOW);
+                    // las cadenas si cada 20 a 25 segs
+                    m_uiCHAINS_Timer = urand(20000, 25000);
+                }
+                else
+                    m_uiCHAINS_Timer -= uiDiff;
+
+                if (m_uiFIEND_Timer <= uiDiff)
+                {
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
+                        if (me->SummonCreature(NPC_VAMPIRIC_FIEND,target->GetPositionX(),target->GetPositionY(),target->GetPositionZ()))
+                            // lo summonea cada minuto al esbirro
+                            m_uiFIEND_Timer = 60000;
+                }
+                else
+                    m_uiFIEND_Timer -= uiDiff;
+
+                DoMeleeAttackIfReady();   
+            }
+        };
+
+        CreatureAI *GetAI(Creature *creature) const
+        {
+            return new npc_darkfallen_noble_10man_iccAI(creature);
         }
-    };
+};
 
+//#########  Darkfallen Noble 25 man ##############
+class npc_darkfallen_noble_25man_icc : public CreatureScript
+{
+    public:
+        npc_darkfallen_noble_25man_icc() : CreatureScript("npc_darkfallen_noble_25man_icc") { }
+
+        struct npc_darkfallen_noble_25man_iccAI : public ScriptedAI
+        {
+            npc_darkfallen_noble_25man_iccAI(Creature* pCreature) : ScriptedAI(pCreature) {}
+
+            uint32 m_uiCHAINS_Timer;
+            uint32 m_uiBOLT_Timer;
+            uint32 m_uiFIEND_Timer;
+
+            void Reset()
+            {
+                m_uiCHAINS_Timer = urand(2000, 4000); //inicia rapido
+                m_uiBOLT_Timer = urand(3000, 5000);
+                m_uiFIEND_Timer = 15000;
+            }
+
+            void JustDied(Unit* killer)
+            {
+                DoCast(me,SPELL_SOUL_FEAST_ALL);
+            }
+
+            void UpdateAI(const uint32 uiDiff)
+            {
+                if (!UpdateVictim())
+                    return;
+
+                if (m_uiBOLT_Timer <= uiDiff)
+                {
+                    DoCast(me->getVictim(), SPELL_SHADOW_BOLT_25M);
+                    // castea cada 3 a 4 segs
+                    m_uiBOLT_Timer = urand(3000, 4000);
+                }
+                else
+                    m_uiBOLT_Timer -= uiDiff;
+
+                if (m_uiCHAINS_Timer <= uiDiff)
+                {
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
+                        DoCast(target, SPELL_CHAINS_OF_SHADOW);
+                    // las cadenas cada 15 a 20 segs
+                    m_uiCHAINS_Timer = urand(15000, 20000);
+                }
+                else
+                    m_uiCHAINS_Timer -= uiDiff;
+
+                if (m_uiFIEND_Timer <= uiDiff)
+                {
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
+                        if (me->SummonCreature(NPC_VAMPIRIC_FIEND,target->GetPositionX(),target->GetPositionY(),target->GetPositionZ()))
+                            // lo summonea cada minuto al esbirro
+                            m_uiFIEND_Timer = 60000;
+                }
+                else
+                    m_uiFIEND_Timer -= uiDiff;
+
+                DoMeleeAttackIfReady();   
+            }
+        };
+
+        CreatureAI *GetAI(Creature *creature) const
+        {
+            return new npc_darkfallen_noble_25man_iccAI(creature);
+        }
+};
+ 
+ //#########  Npc Vampiric Fiend ##############
+class npc_vampiric_fiend_icc : public CreatureScript
+{
+    public:
+        npc_vampiric_fiend_icc() : CreatureScript("npc_vampiric_fiend_icc") { }
+
+        struct npc_vampiric_fiend_iccAI : public ScriptedAI
+        {
+            npc_vampiric_fiend_iccAI(Creature* pCreature) : ScriptedAI(pCreature) {}
+
+            uint32 m_uiLEECHING_Timer;
+
+            void Reset()
+            {
+                m_uiLEECHING_Timer = 10000;
+            }
+
+            void JustDied(Unit* killer)
+            {
+                DoCast(me,SPELL_SOUL_FEAST_ALL);
+            }
+
+            void EnterCombat(Unit* /*target*/)
+            {
+                DoCast(me, SPELL_DISEASE_CLOUD);
+            }
+
+            void UpdateAI(const uint32 uiDiff)
+            {
+                if (!UpdateVictim())
+                    return;
+
+                if (m_uiLEECHING_Timer <= uiDiff)
+                {
+                    DoCastAOE(SPELL_LEECHING_ROT);
+                    // despawn en 3 segs despues de chupar
+                    me->ForcedDespawn(3000); 
+                    // castea cada 10 segs
+                    m_uiLEECHING_Timer = 10000;
+                }
+                else
+                    m_uiLEECHING_Timer -= uiDiff;
+
+                DoMeleeAttackIfReady();   
+            }
+        };
+
+        CreatureAI *GetAI(Creature *creature) const
+        {
+            return new npc_vampiric_fiend_iccAI(creature);
+        }
+};
+
+//#########  Darkfallen Advisor 10 man ##############
+class npc_darkfallen_advisor_10man_icc : public CreatureScript
+{
+    public:
+        npc_darkfallen_advisor_10man_icc() : CreatureScript("npc_darkfallen_advisor_10man_icc") { }
+ 
+        struct npc_darkfallen_advisor_10man_iccAI : public ScriptedAI
+        {
+            npc_darkfallen_advisor_10man_iccAI(Creature* pCreature) : ScriptedAI(pCreature) {}
+
+            uint32 m_uiLICH_Timer;
+            uint32 m_uiPROTECTION_Timer;
+
+            void Reset()
+            {
+                m_uiLICH_Timer = urand(2000, 5000); //inicia rapido
+                m_uiPROTECTION_Timer = urand(10000, 15000);
+            }
+
+            void JustDied(Unit* killer)
+            {
+                DoCast(me,SPELL_SOUL_FEAST_ALL);
+            }
+
+            void UpdateAI(const uint32 uiDiff)
+            {
+                if (!UpdateVictim())
+                    return;
+
+                if (m_uiLICH_Timer <= uiDiff)
+                {
+                    DoCast(me->getVictim(), SPELL_LICH_SLAP_10M);
+                    // castea cada 10 segs
+                    m_uiLICH_Timer = 10000;
+                }
+                else
+                    m_uiLICH_Timer -= uiDiff;
+
+                if (m_uiPROTECTION_Timer <= uiDiff)
+                {
+                    if (Unit* target = urand(0, 1) ? SelectTarget(SELECT_TARGET_RANDOM, 0) : DoSelectLowestHpFriendly(40.0f))
+                    {
+                        DoCast(target,SPELL_SHROUD_OF_PROTECTION);
+                        DoCast(target,SPELL_SHROUD_OF_SPELL_WARDING);
+                        //casteando proteccion entr 15 a 20 segs
+                        m_uiPROTECTION_Timer = urand(15000, 20000);
+                    }
+                }
+                else
+                    m_uiPROTECTION_Timer -= uiDiff;
+
+                DoMeleeAttackIfReady();   
+            }
+        };
+
+        CreatureAI *GetAI(Creature *creature) const
+        {
+            return new npc_darkfallen_advisor_10man_iccAI(creature);
+        }
+};
+
+//#########  Darkfallen Advisor 25 man ##############
+class npc_darkfallen_advisor_25man_icc : public CreatureScript
+{
+    public:
+        npc_darkfallen_advisor_25man_icc() : CreatureScript("npc_darkfallen_advisor_25man_icc") { }
+ 
+        struct npc_darkfallen_advisor_25man_iccAI : public ScriptedAI
+        {
+            npc_darkfallen_advisor_25man_iccAI(Creature* pCreature) : ScriptedAI(pCreature) {}
+
+            uint32 m_uiLICH_Timer;
+            uint32 m_uiPROTECTION_Timer;
+
+            void Reset()
+            {
+                m_uiLICH_Timer = urand(2000, 5000); //inicia rapido
+                m_uiPROTECTION_Timer = urand(10000, 15000);
+            }
+
+            void JustDied(Unit* killer)
+            {
+                DoCast(me,SPELL_SOUL_FEAST_ALL);
+            }
+
+            void UpdateAI(const uint32 uiDiff)
+            {
+                if (!UpdateVictim())
+                    return;
+
+                if (m_uiLICH_Timer <= uiDiff)
+                {
+                    DoCast(me->getVictim(), SPELL_LICH_SLAP_25M);
+                    // castea entre 5 y 8 segs
+                    m_uiLICH_Timer = urand(5000, 8000);
+                }
+                else
+                    m_uiLICH_Timer -= uiDiff;
+
+                if (m_uiPROTECTION_Timer <= uiDiff)
+                {
+                    if (Unit* target = urand(0, 1) ? SelectTarget(SELECT_TARGET_RANDOM, 0) : DoSelectLowestHpFriendly(40.0f))
+                    {
+                        DoCast(target,SPELL_SHROUD_OF_PROTECTION);
+                        DoCast(target,SPELL_SHROUD_OF_SPELL_WARDING);
+                        //casteando proteccion entr 12 a 15 segs
+                        m_uiPROTECTION_Timer = urand(12000, 15000);
+                    }
+                }
+                else
+                    m_uiPROTECTION_Timer -= uiDiff;
+
+                DoMeleeAttackIfReady();   
+            }
+        };
+
+        CreatureAI *GetAI(Creature *creature) const
+        {
+            return new npc_darkfallen_advisor_25man_iccAI(creature);
+        }
+};
+
+//#########  Darkfallen Commander 10 man ##############
+class npc_darkfallen_commander_10man_icc : public CreatureScript
+{
+    public:
+        npc_darkfallen_commander_10man_icc() : CreatureScript("npc_darkfallen_commander_10man_icc") { }
+ 
+        struct npc_darkfallen_commander_10man_iccAI : public ScriptedAI
+        {
+            npc_darkfallen_commander_10man_iccAI(Creature* pCreature) : ScriptedAI(pCreature) {}
+
+            uint32 m_uiRUSH_Timer;
+            uint32 m_uiSHOUT_Timer;
+
+            void Reset()
+            {
+                m_uiRUSH_Timer = urand(4000, 8000); //inicia rapido
+                m_uiSHOUT_Timer = urand(8000, 10000); //incia rapido
+            }
+
+            void JustDied(Unit* killer)
+            {
+                DoCast(me,SPELL_SOUL_FEAST_ALL);
+            }
+
+            void UpdateAI(const uint32 uiDiff)
+            {
+                if (!UpdateVictim())
+                    return;
+
+                if (m_uiSHOUT_Timer <= uiDiff)
+                {
+                    DoCast(me, SPELL_BATTLE_SHOUT);
+                    // cada 15 a 20 segs
+                    m_uiSHOUT_Timer = urand(15000, 20000);
+                }
+                else
+                    m_uiSHOUT_Timer -= uiDiff;
+
+                if (m_uiRUSH_Timer <= uiDiff)
+                {
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
+                        DoCast(target, SPELL_VAMPIRE_RUSH_10M);
+                    // castea cada 10 a 15 segs
+                    m_uiRUSH_Timer = urand(10000, 15000);
+                }
+                else
+                    m_uiRUSH_Timer -= uiDiff;
+
+                DoMeleeAttackIfReady();   
+            }
+        };
+
+        CreatureAI *GetAI(Creature *creature) const
+        {
+            return new npc_darkfallen_commander_10man_iccAI(creature);
+        }
+};
+
+//#########  Darkfallen Commander 25 man ##############
+class npc_darkfallen_commander_25man_icc : public CreatureScript
+{
+    public:
+        npc_darkfallen_commander_25man_icc() : CreatureScript("npc_darkfallen_commander_25man_icc") { }
+
+        struct npc_darkfallen_commander_25man_iccAI : public ScriptedAI
+        {
+            npc_darkfallen_commander_25man_iccAI(Creature* pCreature) : ScriptedAI(pCreature) {}
+
+            uint32 m_uiRUSH_Timer;
+            uint32 m_uiSHOUT_Timer;
+
+            void Reset()
+            {
+                m_uiRUSH_Timer = urand(4000, 8000); //inicia rapido
+                m_uiSHOUT_Timer = urand(8000, 10000); //incia rapido
+            }
+
+            void JustDied(Unit* killer)
+            {
+                DoCast(me,SPELL_SOUL_FEAST_ALL);
+            }
+
+            void UpdateAI(const uint32 uiDiff)
+            {
+                if (!UpdateVictim())
+                    return;
+
+                if (m_uiSHOUT_Timer <= uiDiff)
+                {
+                    DoCast(me, SPELL_BATTLE_SHOUT);
+                    // cada 15 a 20 segs
+                    m_uiSHOUT_Timer = urand(15000, 20000);
+                }
+                else
+                    m_uiSHOUT_Timer -= uiDiff;
+
+                if (m_uiRUSH_Timer <= uiDiff)
+                {
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
+                        DoCast(target, SPELL_VAMPIRE_RUSH_25M);
+                    // castea cada 10 a 15 segs
+                    m_uiRUSH_Timer = urand(10000, 15000);
+                }
+                else
+                    m_uiRUSH_Timer -= uiDiff;
+
+                DoMeleeAttackIfReady();   
+            }
+        };
+
+        CreatureAI *GetAI(Creature *creature) const
+        {
+            return new npc_darkfallen_commander_25man_iccAI(creature);
+        }
+};
+
+//#########  Darkfallen Lieutenant 10M ##############
+class npc_darkfallen_lieutenant_10man_icc : public CreatureScript
+{
+    public:
+        npc_darkfallen_lieutenant_10man_icc() : CreatureScript("npc_darkfallen_lieutenant_10man_icc") { }
+
+        struct npc_darkfallen_lieutenant_10man_iccAI : public ScriptedAI
+        {
+            npc_darkfallen_lieutenant_10man_iccAI(Creature* pCreature) : ScriptedAI(pCreature) {}
+
+            uint32 m_uiREND_Timer;
+            uint32 m_uiCURSE_Timer;
+
+            void Reset()
+            {
+                m_uiREND_Timer = urand(1000, 2000); //inicia rapido
+                m_uiCURSE_Timer = urand(8000, 15000);
+            }
+
+            void JustDied(Unit* killer)
+            {
+                DoCast(me,SPELL_SOUL_FEAST_ALL);
+            }
+
+            void UpdateAI(const uint32 uiDiff)
+            {
+                if (!UpdateVictim())
+                    return;
+
+                if (m_uiREND_Timer <= uiDiff)
+                {
+                    DoCast(me->getVictim(), SPELL_REND_FLESH_10M);
+                    // cada 25 segs
+                    m_uiREND_Timer = 25000;
+                }
+                else
+                    m_uiREND_Timer -= uiDiff;
+
+                if (m_uiCURSE_Timer <= uiDiff)
+                {
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
+                        DoCast(target, SPELL_VAMPIRIC_CURSE);
+                    // entre 10 a 20 segs
+                    m_uiCURSE_Timer = urand(10000, 20000);
+                }
+                else
+                    m_uiCURSE_Timer -= uiDiff;
+
+                DoMeleeAttackIfReady();   
+            }
+        };
+
+        CreatureAI *GetAI(Creature *creature) const
+        {
+            return new npc_darkfallen_lieutenant_10man_iccAI(creature);
+        }
+};
+
+//#########  Darkfallen Lieutenant 25M ##############
+class npc_darkfallen_lieutenant_25man_icc : public CreatureScript
+{
+    public:
+        npc_darkfallen_lieutenant_25man_icc() : CreatureScript("npc_darkfallen_lieutenant_25man_icc") { }
+
+        struct npc_darkfallen_lieutenant_25man_iccAI : public ScriptedAI
+        {
+            npc_darkfallen_lieutenant_25man_iccAI(Creature* pCreature) : ScriptedAI(pCreature) {}
+
+            uint32 m_uiREND_Timer;
+            uint32 m_uiCURSE_Timer;
+
+            void Reset()
+            {
+                m_uiREND_Timer = urand(1000, 2000); //inicia rapido
+                m_uiCURSE_Timer = urand(8000, 15000);
+            }
+
+            void JustDied(Unit* killer)
+            {
+                DoCast(me,SPELL_SOUL_FEAST_ALL);
+            }
+
+            void UpdateAI(const uint32 uiDiff)
+            {
+                if (!UpdateVictim())
+                    return;
+
+                if (m_uiREND_Timer <= uiDiff)
+                {
+                    DoCast(me->getVictim(), SPELL_REND_FLESH_25M);
+                    // igual cada 25 segs
+                    m_uiREND_Timer = 25000;
+                }
+                else
+                    m_uiREND_Timer -= uiDiff;
+
+                if (m_uiCURSE_Timer <= uiDiff)
+                {
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
+                        DoCast(target, SPELL_VAMPIRIC_CURSE);
+                    // entre 10 y 20 segs
+                    m_uiCURSE_Timer = urand(10000, 20000);
+                }
+                else
+                    m_uiCURSE_Timer -= uiDiff;
+
+                DoMeleeAttackIfReady();   
+            }
+        };
+
+        CreatureAI *GetAI(Creature *creature) const
+        {
+            return new npc_darkfallen_lieutenant_25man_iccAI(creature);
+        }
+};
+
+//#########  Darkfallen Tactician ##############
+class npc_darkfallen_tactician_icc : public CreatureScript
+{
+    public:
+        npc_darkfallen_tactician_icc() : CreatureScript("npc_darkfallen_tactician_icc") { }
+
+        struct npc_darkfallen_tactician_iccAI : public ScriptedAI
+        {
+            npc_darkfallen_tactician_iccAI(Creature* pCreature) : ScriptedAI(pCreature) {}
+
+            uint32 m_uiSHADOWSTEP_Timer;
+            uint32 m_uiSAP_Timer;
+            uint32 m_uiSTRIKE_Timer;
+
+            void Reset()
+            {
+                m_uiSHADOWSTEP_Timer = urand(1000, 2000); //inicia rapido
+                m_uiSAP_Timer = urand(5000, 15000);
+                m_uiSTRIKE_Timer = urand(2000, 3000); //inicia rapido
+            }
+
+            void JustDied(Unit* killer)
+            {
+                DoCast(me,SPELL_SOUL_FEAST_ALL);
+            }
+
+            void UpdateAI(const uint32 uiDiff)
+            {
+                if (!UpdateVictim())
+                    return;
+
+                if (m_uiSTRIKE_Timer <= uiDiff)
+                {
+                    DoCast(me->getVictim(), SPELL_UNHOLY_STRIKE);
+                    // cada 6 segs
+                    m_uiSTRIKE_Timer = 6000;
+                }
+                else
+                    m_uiSTRIKE_Timer -= uiDiff;
+
+                if (m_uiSAP_Timer <= uiDiff)
+                {
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
+                        DoCast(target, SPELL_BLOOD_SAP);
+                    // entre 15 y 25 segs
+                    m_uiSAP_Timer = urand(15000, 25000);
+                }
+                else
+                    m_uiSAP_Timer -= uiDiff;
+
+                if (m_uiSHADOWSTEP_Timer <= uiDiff)
+                {
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
+                        DoCast(target, SPELL_SHADOWSTEP);
+                    // entre 15 y 20 segs
+                    m_uiSHADOWSTEP_Timer = urand(15000, 20000);
+                }
+                else
+                    m_uiSHADOWSTEP_Timer -= uiDiff;
+
+                DoMeleeAttackIfReady();   
+            }
+        };
+
+        CreatureAI *GetAI(Creature *creature) const
+        {
+            return new npc_darkfallen_tactician_iccAI(creature);
+        }
+};
+
+//#########  Ymirjar Deathbringer 10 man ##############
+class npc_ymirjar_deathbringer_10man_icc : public CreatureScript
+{
+    public:
+        npc_ymirjar_deathbringer_10man_icc() : CreatureScript("npc_ymirjar_deathbringer_10man_icc") { }
+
+        struct npc_ymirjar_deathbringer_10man_iccAI : public ScriptedAI
+        {
+            npc_ymirjar_deathbringer_10man_iccAI(Creature* pCreature) : ScriptedAI(pCreature) {}
+
+            uint32 m_uiBANISH_Timer;
+            uint32 m_uiEMBRACE_Timer;
+            uint32 m_uiBOLT_Timer;
+
+            void Reset()
+            {
+                m_uiBANISH_Timer = urand(5000, 10000);
+                m_uiEMBRACE_Timer = urand(10000, 15000);
+                m_uiBOLT_Timer = urand(1000, 2000);
+            }
+
+            void JustDied(Unit* killer)
+            {
+                DoCast(me,SPELL_SOUL_FEAST_ALL);
+            }
+
+            void UpdateAI(const uint32 uiDiff)
+            {
+                if (!UpdateVictim())
+                    return;
+
+                if (m_uiEMBRACE_Timer <= uiDiff)
+                {
+                    DoCast(me, SPELL_DEATHS_EMBRACE_10M);
+                    // cada 15 a 25 segs
+                    m_uiEMBRACE_Timer = urand(15000, 25000);
+                }
+                else
+                    m_uiEMBRACE_Timer -= uiDiff;
+
+                if (m_uiBANISH_Timer <= uiDiff)
+                {
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
+                        DoCast(target, SPELL_BANISH);
+                    //repite cada 15 a 25 segs
+                    m_uiBANISH_Timer = urand(15000, 25000);
+                }
+                else
+                    m_uiBANISH_Timer -= uiDiff;
+
+                if (m_uiBOLT_Timer <= uiDiff)
+                {
+                    DoCast(me->getVictim(),SPELL_SHADOW_BOLT_YMIRJAR_10M);
+                    //repite cada 2 segs
+                    m_uiBOLT_Timer = 2000;
+                }
+                else
+                    m_uiBOLT_Timer -= uiDiff;
+ 
+                DoMeleeAttackIfReady();   
+            }
+        };
+
+        CreatureAI *GetAI(Creature *creature) const
+        {
+            return new npc_ymirjar_deathbringer_10man_iccAI(creature);
+        }
+};
+
+//#########  Ymirjar Deathbringer 25 man ##############
+class npc_ymirjar_deathbringer_25man_icc : public CreatureScript
+{
+    public:
+        npc_ymirjar_deathbringer_25man_icc() : CreatureScript("npc_ymirjar_deathbringer_25man_icc") { }
+
+        struct npc_ymirjar_deathbringer_25man_iccAI : public ScriptedAI
+        {
+            npc_ymirjar_deathbringer_25man_iccAI(Creature* pCreature) : ScriptedAI(pCreature) {}
+
+            uint32 m_uiBANISH_Timer;
+            uint32 m_uiEMBRACE_Timer;
+            uint32 m_uiBOLT_Timer;
+
+            void Reset()
+            {
+                m_uiBANISH_Timer = urand(5000, 10000);
+                m_uiEMBRACE_Timer = urand(5000, 10000); //inicia rapido
+                m_uiBOLT_Timer = urand(1000, 2000);
+            }
+
+            void JustDied(Unit* killer)
+            {
+                DoCast(me,SPELL_SOUL_FEAST_ALL);
+            }
+
+            void UpdateAI(const uint32 uiDiff)
+            {
+                if (!UpdateVictim())
+                    return;
+
+                if (m_uiEMBRACE_Timer <= uiDiff)
+                {
+                    DoCast(me, SPELL_DEATHS_EMBRACE_25M);
+                    // cada 15 a 20 segs
+                    m_uiEMBRACE_Timer = urand(15000, 20000);
+                }
+                else
+                    m_uiEMBRACE_Timer -= uiDiff;
+
+                if (m_uiBANISH_Timer <= uiDiff)
+                {
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
+                        DoCast(target, SPELL_BANISH);
+                    //repite cada 15 a 20 segs
+                    m_uiBANISH_Timer = urand(15000, 20000);
+                }
+                else
+                    m_uiBANISH_Timer -= uiDiff;
+
+                if (m_uiBOLT_Timer <= uiDiff)
+                {
+                    DoCast(me->getVictim(),SPELL_SHADOW_BOLT_YMIRJAR_25M);
+                    //repite cada 2 segs
+                    m_uiBOLT_Timer = 2000;
+                }
+                else
+                    m_uiBOLT_Timer -= uiDiff;
+ 
+                DoMeleeAttackIfReady();   
+            }
+        };
+
+        CreatureAI *GetAI(Creature *creature) const
+        {
+            return new npc_ymirjar_deathbringer_25man_iccAI(creature);
+        }
+};
+
+//#########  Ymirjar Frostbinder ##############
+class npc_ymirjar_frostbinder_icc : public CreatureScript
+{
+    public:
+        npc_ymirjar_frostbinder_icc() : CreatureScript("npc_ymirjar_frostbinder_icc") { }
+
+        struct npc_ymirjar_frostbinder_iccAI : public ScriptedAI
+        {
+            npc_ymirjar_frostbinder_iccAI(Creature* pCreature) : ScriptedAI(pCreature) {}
+
+            uint32 m_uiORB_Timer;
+
+            void Reset()
+            {
+                m_uiORB_Timer = 1000;
+            }
+
+            void JustDied(Unit* killer)
+            {
+                DoCast(me,SPELL_SOUL_FEAST_ALL);
+            }
+
+            void UpdateAI(const uint32 uiDiff)
+            {
+                if (!UpdateVictim())
+                    return;
+
+                if (m_uiORB_Timer <= uiDiff)
+                {
+                    DoCastAOE(SPELL_FROZEN_ORB);
+                    //repite cada 3 a 5 segs
+                    m_uiORB_Timer = urand(3000, 5000);
+                }
+                else
+                    m_uiORB_Timer -= uiDiff;
+
+                DoMeleeAttackIfReady();   
+            }
+        };
+
+        CreatureAI *GetAI(Creature *creature) const
+        {
+            return new npc_ymirjar_frostbinder_iccAI(creature);
+        }
+};
+
+//#########  Ymirjar Battle-Maiden ##############
+class npc_ymirjar_battlemaiden_icc : public CreatureScript
+{
+    public:
+        npc_ymirjar_battlemaiden_icc() : CreatureScript("npc_ymirjar_battlemaiden_icc") { }
+
+        struct npc_ymirjar_battlemaiden_iccAI : public ScriptedAI
+        {
+            npc_ymirjar_battlemaiden_iccAI(Creature* pCreature) : ScriptedAI(pCreature) {}
+
+            uint32 m_uiRUSH_Timer;
+            uint32 m_uiSTRIKE_Timer;
+
+            void Reset()
+            {
+                m_uiRUSH_Timer = urand(10000, 15000);
+                m_uiSTRIKE_Timer = urand(1000, 5000);
+            }
+
+            void JustDied(Unit* killer)
+            {
+                DoCast(me,SPELL_SOUL_FEAST_ALL);
+            }
+
+            void UpdateAI(const uint32 uiDiff)
+            {
+                if (!UpdateVictim())
+                    return;
+
+                if (m_uiSTRIKE_Timer <= uiDiff)
+                {
+                    DoCast(me->getVictim(), SPELL_BARBARIC_STRIKE);
+                    // cada 2 a 3 segs
+                    m_uiSTRIKE_Timer = urand(2000, 3000);
+                }
+                else
+                    m_uiSTRIKE_Timer -= uiDiff;
+
+                if (m_uiRUSH_Timer <= uiDiff)
+                {
+                    DoCast(me, SPELL_ADRENALINE_RUSH);
+                    //repite cada 15 a 25 segs
+                    m_uiRUSH_Timer = urand(15000, 25000);
+                }
+                else
+                    m_uiRUSH_Timer -= uiDiff;
+
+                DoMeleeAttackIfReady();   
+            }
+        };
+
+        CreatureAI *GetAI(Creature *creature) const
+        {
+            return new npc_ymirjar_battlemaiden_iccAI(creature);
+        }
+};
+
+//#########  Ymirjar Huntress ##############
+class npc_ymirjar_huntress_icc : public CreatureScript
+{
+    public:
+        npc_ymirjar_huntress_icc() : CreatureScript("npc_ymirjar_huntress_icc") { }
+
+        struct npc_ymirjar_huntress_iccAI : public ScriptedAI
+        {
+            npc_ymirjar_huntress_iccAI(Creature* pCreature) : ScriptedAI(pCreature) {}
+
+            uint32 m_uiTRAP_Timer;
+            uint32 m_uiRSHOT_Timer;
+            uint32 m_uiSHOT_Timer;
+            uint32 m_uiVOLLEY_Timer;
+
+            void Reset()
+            {
+                m_uiTRAP_Timer = urand(5000, 15000);
+                m_uiRSHOT_Timer = urand(10000, 15000);
+                m_uiSHOT_Timer = urand(1000, 2000);
+                m_uiVOLLEY_Timer = urand(5000, 15000);
+            }
+
+            void JustDied(Unit* killer)
+            {
+                DoCast(me,SPELL_SOUL_FEAST_ALL);
+            }
+
+            void EnterCombat(Unit* /*target*/)
+            {
+                if (Is25ManRaid())
+                    DoCast(SPELL_SUMMON_WARHAWK);
+            }
+
+            void UpdateAI(const uint32 uiDiff)
+            {
+                if (!UpdateVictim())
+                    return;
+
+                if (m_uiRSHOT_Timer <= uiDiff)
+                {
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
+                        DoCast(target, SPELL_RAPID_SHOT);
+                    // cada 15 a 25 segs
+                    m_uiRSHOT_Timer = urand(15000, 25000);
+                }
+                else
+                    m_uiRSHOT_Timer -= uiDiff;
+
+                if (m_uiVOLLEY_Timer <= uiDiff)
+                {
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
+                        DoCast(target,SPELL_VOLLEY);
+                    //repite cada 10 a 15 segs
+                    m_uiVOLLEY_Timer = urand(10000, 15000);
+                }
+                else
+                    m_uiVOLLEY_Timer -= uiDiff;
+ 
+                if (m_uiTRAP_Timer <= uiDiff)
+                {
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
+                        DoCast(target, SPELL_ICE_TRAP);
+                    //repite cada 30 a 35 segs
+                    m_uiTRAP_Timer = urand(30000, 35000);
+                }
+                else
+                    m_uiTRAP_Timer -= uiDiff;
+
+                if (me->isAttackReady())
+                {
+                    if (me->IsWithinMeleeRange(me->getVictim()))
+                        DoMeleeAttackIfReady();
+                    else if (m_uiSHOT_Timer <= uiDiff)
+                    {
+                        DoCast(me->getVictim(),SPELL_SHOOT);
+                        m_uiSHOT_Timer = 1000;
+                    }
+                    else
+					    m_uiSHOT_Timer -= uiDiff;
+                }
+            }
+        };
+
+        CreatureAI *GetAI(Creature *creature) const
+        {
+            return new npc_ymirjar_huntress_iccAI(creature);
+        }
+};
+
+//#########  Ymirjar Warlord ##############
+class npc_ymirjar_warlord_icc : public CreatureScript
+{
+    public:
+        npc_ymirjar_warlord_icc() : CreatureScript("npc_ymirjar_warlord_icc") { }
+
+        struct npc_ymirjar_warlord_iccAI : public ScriptedAI
+        {
+            npc_ymirjar_warlord_iccAI(Creature* pCreature) : ScriptedAI(pCreature) {}
+
+            uint32 m_uiWHIRLWIND_Timer;
+
+            void Reset()
+            {
+                m_uiWHIRLWIND_Timer = urand(5000, 15000);
+            }
+
+            void JustDied(Unit* killer)
+            {
+                DoCast(me,SPELL_SOUL_FEAST_ALL);
+            }
+
+            void UpdateAI(const uint32 uiDiff)
+            {
+                if (!UpdateVictim())
+                    return;
+
+                if (m_uiWHIRLWIND_Timer <= uiDiff)
+                {
+                    DoCastAOE(SPELL_WHIRLWIND);
+                    //repite cada 12 a 20 segs
+                    m_uiWHIRLWIND_Timer = urand(12000, 20000);
+                }
+                else
+                    m_uiWHIRLWIND_Timer -= uiDiff;
+
+                DoMeleeAttackIfReady();   
+            }
+        };
+
+        CreatureAI *GetAI(Creature *creature) const
+        {
+            return new npc_ymirjar_warlord_iccAI(creature);
+        }
 };
 
 void AddSC_mobs_icecrown_citadel()
 {
-    new mobs_icecrown_citadel();
+    new npc_ancient_skeletal_soldier_icc();
+    new npc_deathbound_ward_icc();
+    new npc_servant_of_the_throne_icc();
+    // new npc_the_damned_icc();
+    new npc_deathspeaker_servant_10man_icc();
+    new npc_deathspeaker_servant_25man_icc();
+    new npc_deathspeaker_disciple_10man_icc();
+    new npc_deathspeaker_disciple_25man_icc();
+    new npc_deathspeaker_attendant_10man_icc();
+    new npc_deathspeaker_attendant_25man_icc();
+    new npc_deathspeaker_zealot_icc();
+    new npc_deathspeaker_high_priest_icc();
+    new npc_valkyr_herald_10man_icc();
+    new npc_valkyr_herald_25man_icc();
+    new npc_blighted_abomination_icc();
+    new npc_vengeful_fleshreapert_icc();
+    new npc_plague_scientist_icc();
+    new npc_pustulating_horror_10man_icc();
+    new npc_pustulating_horror_25man_icc();
+    new npc_decaying_colossus_10man_icc();
+    new npc_decaying_colossus_25man_icc();
+    new npc_darkfallen_archmage_10man_icc();
+    new npc_darkfallen_archmage_25man_icc();
+    new npc_darkfallen_blood_knight_icc();
+    new npc_darkfallen_noble_10man_icc();
+    new npc_darkfallen_noble_25man_icc();
+    new npc_vampiric_fiend_icc();
+    new npc_darkfallen_advisor_10man_icc();
+    new npc_darkfallen_advisor_25man_icc();
+    new npc_darkfallen_commander_10man_icc();
+    new npc_darkfallen_commander_25man_icc();
+    new npc_darkfallen_lieutenant_10man_icc();
+    new npc_darkfallen_lieutenant_25man_icc();
+    new npc_darkfallen_tactician_icc();
+    new npc_ymirjar_deathbringer_10man_icc();
+    new npc_ymirjar_deathbringer_25man_icc();
+    new npc_ymirjar_frostbinder_icc();
+    new npc_ymirjar_battlemaiden_icc();
+    new npc_ymirjar_huntress_icc();
+    new npc_ymirjar_warlord_icc();
 }
