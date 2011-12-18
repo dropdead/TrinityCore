@@ -2316,6 +2316,10 @@ bool Player::TeleportToBGEntryPoint()
     if (m_bgData.joinPos.m_mapId == MAPID_INVALID)
         return false;
 
+    Group* grp = this->GetGroup();
+    if (grp && grp->isLFGGroup() && grp->GetMembersCount() == 1)
+        grp->Disband();
+
     ScheduleDelayedOperation(DELAYED_BG_MOUNT_RESTORE);
     ScheduleDelayedOperation(DELAYED_BG_TAXI_RESTORE);
     ScheduleDelayedOperation(DELAYED_BG_GROUP_RESTORE);
@@ -4909,6 +4913,10 @@ void Player::DeleteFromDB(uint64 playerguid, uint32 accountId, bool updateRealmC
             stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_PLAYER_GM_TICKETS);
             stmt->setUInt32(0, guid);
             trans->Append(stmt);
+            stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_LFG_DATA);
+            stmt->setUInt64(0, guid);
+            stmt->setUInt8(1, 0);
+            trans->Append(stmt);
             trans->PAppend("DELETE FROM item_instance WHERE owner_guid = '%u'", guid);
             trans->PAppend("DELETE FROM character_social WHERE guid = '%u' OR friend='%u'", guid, guid);
             trans->PAppend("DELETE FROM mail WHERE receiver = '%u'", guid);
@@ -7383,6 +7391,22 @@ void Player::UpdateZone(uint32 newZone, uint32 newArea)
         SendInitWorldStates(newZone, newArea);              // only if really enters to new zone, not just area change, works strange...
     }
 
+    // group update
+    if (GetGroup())
+    {
+        SetGroupUpdateFlag(GROUP_UPDATE_FULL);
+        Group* grp = GetGroup();
+        if (GetSession() && grp->isLFGGroup() && sLFGMgr->GetIsTeleported(GetGUID()))
+        {
+            for (GroupReference* itr = grp->GetFirstMember(); itr != NULL; itr = itr->next())
+            {
+                Player* tempplr = itr->getSource();
+                if (tempplr)
+                    GetSession()->SendNameQueryOpcode(tempplr->GetGUID());
+            }
+        }
+    }
+
     m_zoneUpdateId    = newZone;
     m_zoneUpdateTimer = ZONE_UPDATE_INTERVAL;
 
@@ -7469,10 +7493,6 @@ void Player::UpdateZone(uint32 newZone, uint32 newArea)
 
     // recent client version not send leave/join channel packets for built-in local channels
     UpdateLocalChannels(newZone);
-
-    // group update
-    if (GetGroup())
-        SetGroupUpdateFlag(GROUP_UPDATE_FULL);
 
     UpdateZoneDependentAuras(newZone);
 }
@@ -11811,6 +11831,105 @@ InventoryResult Player::CanUseItem(ItemTemplate const* proto) const
     }
 
     return EQUIP_ERR_ITEM_NOT_FOUND;
+}
+
+InventoryResult Player::CanRollForItem(ItemTemplate const* proto) const
+{
+   // Used by group, function NeedBeforeGreed, to know if a prototype can be used by a player
+   
+   const static uint32 item_weapon_skills[MAX_ITEM_SUBCLASS_WEAPON] =
+   {
+       SKILL_AXES,     SKILL_2H_AXES,  SKILL_BOWS,          SKILL_GUNS,      SKILL_MACES,
+       SKILL_2H_MACES, SKILL_POLEARMS, SKILL_SWORDS,        SKILL_2H_SWORDS, 0,
+       SKILL_STAVES,   0,              0,                   SKILL_FIST_WEAPONS,   0,
+       SKILL_DAGGERS,  SKILL_THROWN,   SKILL_ASSASSINATION, SKILL_CROSSBOWS, SKILL_WANDS,
+       SKILL_FISHING
+   }; //Copy from function Item::GetSkill()
+
+   if (proto)
+   {
+       if ((proto->AllowableClass & getClassMask()) == 0 || (proto->AllowableRace & getRaceMask()) == 0)
+           return EQUIP_ERR_YOU_CAN_NEVER_USE_THAT_ITEM;
+
+       if (proto->RequiredSpell != 0 && !HasSpell(proto->RequiredSpell))
+           return EQUIP_ERR_NO_REQUIRED_PROFICIENCY;
+
+       if (proto->RequiredSkill != 0)
+       {
+           if (GetSkillValue(proto->RequiredSkill) == 0)
+               return EQUIP_ERR_NO_REQUIRED_PROFICIENCY;
+           else if (GetSkillValue(proto->RequiredSkill) < proto->RequiredSkillRank)
+               return EQUIP_ERR_CANT_EQUIP_SKILL;
+       }
+
+       uint8 pClass = getClass();
+
+       //Melee-Only Classes can't roll "need" on Items with Spell Power or Mana 
+       //or more Int/Spirit than Agi/Strengh 
+       if (pClass == 6 || pClass == 4 || pClass == 1) 
+       {
+           uint8 MeleeStats = 0;
+           uint8 CastStats = 0;
+           for (uint8 i = 0; i < proto->StatsCount; i++)
+           {
+               switch (proto->ItemStat[i].ItemStatType)
+               {
+                   case ITEM_MOD_MANA:
+                       return EQUIP_ERR_CANT_DO_RIGHT_NOW;
+                   case ITEM_MOD_SPELL_POWER:
+                       return EQUIP_ERR_CANT_DO_RIGHT_NOW;
+                   case ITEM_MOD_AGILITY:
+                       MeleeStats += proto->ItemStat[i].ItemStatValue;  
+                   case ITEM_MOD_STRENGTH:
+                       MeleeStats += proto->ItemStat[i].ItemStatValue;  
+                   case ITEM_MOD_INTELLECT:
+                       CastStats += proto->ItemStat[i].ItemStatValue; 
+                   case ITEM_MOD_SPIRIT:
+                       CastStats += proto->ItemStat[i].ItemStatValue; 
+               }
+           }
+
+           if (CastStats>MeleeStats)
+               return EQUIP_ERR_CANT_DO_RIGHT_NOW;
+
+       }
+       
+       if ((proto->Class == ITEM_CLASS_WEAPON) && (GetSkillValue(item_weapon_skills[proto->SubClass]) == 0))
+           return EQUIP_ERR_NO_REQUIRED_PROFICIENCY;
+
+       if (proto->Class == ITEM_CLASS_ARMOR && proto->SubClass > 0 && proto->SubClass < 5 && proto->InventoryType != 16)
+       {
+           if (pClass == 1 || pClass == 2 || pClass == 6)
+           {
+               if (getLevel() < 40)
+               {
+                   if (proto->SubClass != 3)
+                       return EQUIP_ERR_CANT_DO_RIGHT_NOW;  
+               }else
+                   if (proto->SubClass != 4)
+                       return EQUIP_ERR_CANT_DO_RIGHT_NOW;  
+           }else if (pClass == 3 || pClass == 7)
+           {
+               if (getLevel() < 40)
+               {
+                   if (proto->SubClass != 2)
+                       return EQUIP_ERR_CANT_DO_RIGHT_NOW;  
+               }else
+                   if (proto->SubClass != 3)
+                       return EQUIP_ERR_CANT_DO_RIGHT_NOW;  
+           }
+           if (pClass == 4 || pClass == 11)
+               if (proto->SubClass != 2)
+                       return EQUIP_ERR_CANT_DO_RIGHT_NOW;  
+           if (pClass == 8 || pClass == 5 || pClass == 9)
+               if (proto->SubClass != 1)
+                       return EQUIP_ERR_CANT_DO_RIGHT_NOW;  
+       }
+
+       return EQUIP_ERR_OK;
+   }
+
+   return EQUIP_ERR_ITEM_NOT_FOUND;
 }
 
 InventoryResult Player::CanUseAmmo(uint32 item) const
@@ -17083,6 +17202,10 @@ bool Player::LoadFromDB(uint32 guid, SQLQueryHolder *holder)
 
     _LoadEquipmentSets(holder->GetPreparedResult(PLAYER_LOGIN_QUERY_LOADEQUIPMENTSETS));
 
+    if (GetGroup())
+        sLFGMgr->_LoadFromDB(GetGUID(), 0);
+
+
     return true;
 }
 
@@ -18533,6 +18656,9 @@ void Player::SaveToDB(bool create /*=false*/)
     // save pet (hunter pet level and experience and all type pets health/mana).
     if (Pet* pet = GetPet())
         pet->SavePetToDB(PET_SAVE_AS_CURRENT);
+
+    if (isUsingLfg())
+       sLFGMgr->_SaveToDB(GetGUID());
 }
 
 // fast save function for item/money cheating preventing - save only inventory and money state

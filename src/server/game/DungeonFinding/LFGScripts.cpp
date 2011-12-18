@@ -87,9 +87,9 @@ void LFGScripts::OnRemoveMember(Group* group, uint64 guid, RemoveMethod method, 
     if (Player* player = ObjectAccessor::FindPlayer(guid))
     {
         // Añadido deserter flag para dungeon finder.
-        if (method == GROUP_REMOVEMETHOD_LEAVE && sLFGMgr->GetState(gguid) != LFG_STATE_FINISHED_DUNGEON)
+        if (method == GROUP_REMOVEMETHOD_LEAVE && sLFGMgr->GetState(gguid) != LFG_STATE_FINISHED_DUNGEON && sLFGMgr->GetDungeon(gguid,false))
             if (sWorld->getBoolConfig(CONFIG_DUNGEON_FINDER_DESERTER))
-                player->CastSpell(player, LFG_SPELL_DUNGEON_DESERTER, true);        
+                player->CastSpell(player,LFG_SPELL_DUNGEON_DESERTER,true);// Add deserter flag if there is a valid Dungeon
         /*        
         else if (group->isLfgKickActive())
             // Update internal kick cooldown of kicked
