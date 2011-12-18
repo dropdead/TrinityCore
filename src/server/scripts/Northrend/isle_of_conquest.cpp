@@ -77,6 +77,7 @@ enum SpellsBosses
   SPELL_DAGGER_THROW_2    = 67881,
   SPELL_CRUSHING_LEAP     = 60895,
   SPELL_MORTAL_STRIKE     = 39171,
+  SPELL_RAGE              = 66776 // Usada solo cuando el boss esta fuera del cuarto
 };
 
 class bosses_isle_of_conquest : public CreatureScript
@@ -91,12 +92,21 @@ public:
 
   struct bosses_isle_of_conquestAI : public ScriptedAI
   {
-      bosses_isle_of_conquestAI(Creature *c) : ScriptedAI(c) { }
+      bosses_isle_of_conquestAI(Creature *c) : ScriptedAI(c) 
+      { 
+          // Seteamos el nivel correspondiente al boss
+          if (level != 0)
+              level += m_MaxLevel - 60;
+          c->SetLevel(level);      
+      }
 
+      uint8 m_MaxLevel;
+      uint8 level;
       uint32 uiMortalStrikeTimer;
       uint32 uiDaggerThrowTimer;
       uint32 uiCrushingLeapTimer;
       uint32 uiResetTimer;
+      uint32 uiRage;
 
       void Reset()
       {
@@ -150,6 +160,13 @@ public:
           }
           else
               uiCrushingLeapTimer -= diff;
+          
+          // chequea si la creatura esta fuera del cuarto
+          if (uiRage <= diff)
+          {
+              if (me->GetDistance2d(me->GetHomePosition().GetPositionX(), me->GetHomePosition().GetPositionY()) > 50)
+                  DoCast(me->getVictim(), SPELL_RAGE);                  
+          } else uiRage -= diff;
           
           // Chequea si la creatura no esta al exterior del edificio (Antibugers >3)
           if (uiResetTimer < diff)
