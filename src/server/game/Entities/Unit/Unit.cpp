@@ -1989,21 +1989,6 @@ void Unit::HandleProcExtraAttackFor(Unit* victim)
     }
 }
 
-bool isInEvasiveManeuvers(const Unit* victim)
-{
-    if (victim->HasAura(50240))
-    {
-
-        if (Aura* evasiveCharges = victim->GetAura(50241))
-            if (evasiveCharges->GetStackAmount() > 1)
-                evasiveCharges->SetStackAmount(evasiveCharges->GetStackAmount() - 1);
-            else
-                evasiveCharges->Remove();
-        return true;
-    }   
-    return false;
-}
-
 MeleeHitOutcome Unit::RollMeleeOutcomeAgainst(const Unit* victim, WeaponAttackType attType) const
 {
     // This is only wrapper
@@ -2079,9 +2064,6 @@ MeleeHitOutcome Unit::RollMeleeOutcomeAgainst (const Unit* victim, WeaponAttackT
         // Modify dodge chance by attacker SPELL_AURA_MOD_COMBAT_RESULT_CHANCE
         dodge_chance+= GetTotalAuraModifierByMiscValue(SPELL_AURA_MOD_COMBAT_RESULT_CHANCE, VICTIMSTATE_DODGE) * 100;
         dodge_chance = int32 (float (dodge_chance) * GetTotalAuraMultiplier(SPELL_AURA_MOD_ENEMY_DODGE));
-
-        if (isInEvasiveManeuvers(victim))
-            return MELEE_HIT_DODGE;
 
         tmp = dodge_chance;
         if ((tmp > 0)                                        // check if unit _can_ dodge
@@ -2630,9 +2612,6 @@ SpellMissInfo Unit::SpellHitResult(Unit* victim, SpellInfo const* spell, bool Ca
     // Return evade for units in evade mode
     if (victim->GetTypeId() == TYPEID_UNIT && victim->ToCreature()->IsInEvadeMode())
         return SPELL_MISS_EVADE;
-
-    if (isInEvasiveManeuvers(victim))
-        return SPELL_MISS_RESIST;
 
     // Try victim reflect spell
     if (CanReflect)
@@ -8037,6 +8016,13 @@ bool Unit::HandleAuraProc(Unit* victim, uint32 damage, Aura* triggeredByAura, Sp
         case SPELLFAMILY_GENERIC:
             switch (dummySpell->Id)
             {
+                // Evasive Maneuvers
+                case 50240:
+                {
+                    RemoveAuraFromStack(50241);
+                    *handled = true;
+                    return !HasAura(50241); // drop in case of non-existing 50241
+                }
                 // Nevermelting Ice Crystal
                 case 71564:
                     RemoveAuraFromStack(71564);
@@ -8854,6 +8840,13 @@ bool Unit::HandleProcTriggerSpell(Unit* victim, uint32 damage, AuraEffect* trigg
         case 38164:
         {
             if (!victim || victim->GetEntry() != 19457)  // Proc only if your target is Grillok
+                return false;
+            break;
+        }
+        // Evasive Aura
+        case 50248:
+        {
+            if (HasAura(50240))
                 return false;
             break;
         }
@@ -10226,7 +10219,7 @@ Unit* Unit::SelectMagnetTarget(Unit* victim, SpellInfo const* spellInfo)
 
         Unit::AuraEffectList const& magnetAuras = victim->GetAuraEffectsByType(SPELL_AURA_SPELL_MAGNET);
         for (Unit::AuraEffectList::const_iterator itr = magnetAuras.begin(); itr != magnetAuras.end(); ++itr)
-            if (Unit* magnet = (*itr)->GetBase()->GetUnitOwner())
+            if (Unit* magnet = (*itr)->GetBase()->GetCaster())
                 if (magnet->isAlive() && IsWithinLOSInMap(magnet))
                 {
                     (*itr)->GetBase()->DropCharge(AURA_REMOVE_BY_EXPIRE);

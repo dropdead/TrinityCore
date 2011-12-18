@@ -3036,10 +3036,6 @@ void SpellMgr::LoadDbcDataCorrections()
             case 30657: // Quake
                 spellInfo->EffectTriggerSpell[0] = 30571;
                 break;
-            case 30541: // Blaze (needs conditions entry)
-                spellInfo->EffectImplicitTargetA[0] = TARGET_UNIT_TARGET_ENEMY;
-                spellInfo->EffectImplicitTargetB[0] = 0;
-                break;
             case 31447: // Mark of Kaz'rogal (needs target selection script)
             case 31298: // Sleep (needs target selection script)
             case 51904: // Summon Ghouls On Scarlet Crusade (this should use conditions table, script for this spell needs to be fixed)
@@ -3064,14 +3060,7 @@ void SpellMgr::LoadDbcDataCorrections()
             case 57992: // Envenom (Rank 3)
             case 57993: // Envenom (Rank 4)
                 spellInfo->Dispel = 0;
-                break;
-            case 49840: // Shock Lance
-            case 49592: // Temporal rift
-            case 50328: // Leeching poison
-            case 50341: // Touch the nightmare
-            case 50344: // Dream Funnel
-            case 50232: // Searing Wrath
-                spellInfo->TargetCreatureType = CREATURE_TYPE_DRAGONKIN;
+                break;            
             case 49838: // Stop Time
             case 50526: // Wandering Plague
                 spellInfo->AttributesEx3 |= SPELL_ATTR3_NO_INITIAL_AGGRO;
@@ -3080,11 +3069,23 @@ void SpellMgr::LoadDbcDataCorrections()
             case 62136: // Energize Cores
             case 54069: // Energize Cores
             case 56251: // Energize Cores
+                spellInfo->AttributesEx6 |= SPELL_ATTR6_CAN_TARGET_UNTARGETABLE;
                 spellInfo->EffectImplicitTargetA[0] = TARGET_UNIT_SRC_AREA_ENTRY;
                 break;
             case 50785: // Energize Cores
             case 59372: // Energize Cores
                 spellInfo->EffectImplicitTargetA[0] = TARGET_UNIT_SRC_AREA_ENEMY;
+                break;
+            case 49346: // Emerald Drake Saddle
+            case 49460: // Amber Drake Saddle
+            case 49464: // Ruby Drake Saddle
+                spellInfo->EffectImplicitTargetA[0] = TARGET_UNIT_TARGET_ANY;
+                spellInfo->EffectImplicitTargetA[2] = TARGET_UNIT_TARGET_ANY;
+                break;
+            case 66667: // Gear Scaling
+                spellInfo->EffectImplicitTargetA[0] = TARGET_UNIT_TARGET_ANY;
+                spellInfo->EffectImplicitTargetA[1] = TARGET_UNIT_TARGET_ANY;
+                spellInfo->EffectImplicitTargetA[2] = TARGET_UNIT_TARGET_ANY;
                 break;
             case 8494: // Mana Shield (rank 2)
                 // because of bug in dbc

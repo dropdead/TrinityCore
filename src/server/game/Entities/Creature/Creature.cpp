@@ -1542,11 +1542,11 @@ void Creature::setDeathState(DeathState s)
         SetUInt32Value(UNIT_NPC_FLAGS, cinfo->npcflag);
         ClearUnitState(uint32(UNIT_STAT_ALL_STATE));
         SetMeleeDamageSchool(SpellSchools(cinfo->dmgschool));
+        Unit::setDeathState(ALIVE);
         LoadCreaturesAddon(true);
         Motion_Initialize();
         if (GetCreatureData() && GetPhaseMask() != GetCreatureData()->phaseMask)
             SetPhaseMask(GetCreatureData()->phaseMask, false);
-        Unit::setDeathState(ALIVE);
     }
 }
 

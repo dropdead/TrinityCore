@@ -1823,7 +1823,7 @@ AuraStateType SpellInfo::GetAuraState() const
         return AURA_STATE_ENRAGE;
 
     // Bleeding aura state
-    if (GetAllEffectsMechanicMask() & 1<<MECHANIC_BLEED)
+    if (GetAllEffectsMechanicMask() & 1 << MECHANIC_BLEED)
         return AURA_STATE_BLEEDING;
 
     if (GetSchoolMask() & SPELL_SCHOOL_MASK_FROST)
@@ -1834,6 +1834,7 @@ AuraStateType SpellInfo::GetAuraState() const
 
     switch (Id)
     {
+        case 50241: // Evasive Charges
         case 71465: // Divine Surge
             return AURA_STATE_UNKNOWN22;
         default:

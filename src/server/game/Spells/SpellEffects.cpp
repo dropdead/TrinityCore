@@ -438,6 +438,12 @@ void Spell::EffectSchoolDMG(SpellEffIndex effIndex)
                         damage = unitTarget->CountPctFromMaxHealth(50);
                         break;
                     }
+                    case 50341: // Touch the Nightmare
+                    {
+                        if (effIndex == EFFECT_2)
+                            damage = unitTarget->CountPctFromMaxHealth(30);
+                        break;
+                    }
                     case 20625: // Ritual of Doom Sacrifice
                     case 29142: // Eyesore Blaster
                     case 35139: // Throw Boom's Doom
@@ -5954,6 +5960,9 @@ void Spell::EffectSummonPlayer(SpellEffIndex /*effIndex*/)
     // Evil Twin (ignore player summon, but hide this for summoner)
     if (unitTarget->HasAura(23445))
         return;
+
+    if (unitTarget->ToPlayer()->HasActiveSummonRequest())
+       return;
 
     float x, y, z;
     m_caster->GetClosePoint(x, y, z, unitTarget->GetObjectSize());
