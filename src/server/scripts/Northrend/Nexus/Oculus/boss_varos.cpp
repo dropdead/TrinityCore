@@ -21,10 +21,11 @@
 
 enum Says
 {
-    SAY_AGGRO       = 0,
-    SAY_AZURE       = 1,
-    SAY_AZURE_EMOTE = 2,
-    SAY_DEATH       = 3
+    SAY_AGGRO       = 1,
+    SAY_DEATH       = 2,
+    SAY_AIR_STRIKE  = 3,
+    SAY_KILL        = 4,
+    SAY_SPAWN       = 5
 };
 
 enum Spells
@@ -88,6 +89,8 @@ class boss_varos : public CreatureScript
                 events.ScheduleEvent(EVENT_CALL_AZURE, urand(15, 30) * IN_MILLISECONDS);
 
                 energizedCore = 0; // clockwise?
+
+                _spawntextTimer = urand (1, 60) *IN_MILLISECONDS;
             }
 
             void EnterCombat(Unit* /*who*/)
@@ -128,6 +131,17 @@ class boss_varos : public CreatureScript
 
             void UpdateAI(uint32 const diff)
             {
+                if (!me->isInCombat() && me->isAlive())
+                {
+                    if (_spawntextTimer <= diff)
+                    {
+                        Talk(SAY_SPAWN);
+                        _spawntextTimer = 60 *IN_MILLISECONDS;
+                    }
+                    else
+                        _spawntextTimer -= diff;
+                }                
+            
                 if (!UpdateVictim())
                     return;
 
@@ -154,8 +168,7 @@ class boss_varos : public CreatureScript
                             break;
                         case EVENT_CALL_AZURE:
                             DoCast(me, SPELL_CALL_AZURE_RING_CAPTAIN);
-                            Talk(SAY_AZURE);
-                            Talk(SAY_AZURE_EMOTE);
+                            Talk(SAY_AIR_STRIKE);
                             events.ScheduleEvent(EVENT_CALL_AZURE, urand(20, 25) * IN_MILLISECONDS);
                             break;
                         case EVENT_AMPLIFY_MAGIC:
@@ -174,9 +187,15 @@ class boss_varos : public CreatureScript
                 _JustDied();
                 DoCast(me, SPELL_DEATH_SPELL, true);
             }
+            
+            void KilledUnit(Unit* /*victim*/)
+            {
+                Talk(SAY_KILL);
+            }
 
         private:
             uint8 energizedCore;
+            uint32 _spawntextTimer;
         };
 
         CreatureAI* GetAI(Creature* creature) const

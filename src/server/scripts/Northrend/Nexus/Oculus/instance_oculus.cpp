@@ -165,7 +165,11 @@ public:
                     {
                         DoUpdateWorldState(WORLD_STATE_CENTRIFUGE_CONSTRUCT_SHOW, 0);
                         if (Creature* urom = instance->GetCreature(uromGUID))
+                        {
                             urom->RestoreFaction();
+                            urom->RemoveAllAuras();
+                            urom->AI()->DoCast(SPELL_EVOCATION);
+                        }
                     }
                     break;
                 case DATA_UROM_EVENT:

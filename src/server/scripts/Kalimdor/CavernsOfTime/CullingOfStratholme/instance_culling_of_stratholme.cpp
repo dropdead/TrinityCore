@@ -115,6 +115,28 @@ public:
             }
         }
 
+        // Give reward needed for Zombiefest achievement to players out of normal reward distance
+        void OnCreatureDeath(Creature* creature)
+        {
+            if (creature->GetEntry() == NPC_ZOMBIE)
+            {
+                Map::PlayerList const &PlayerList = instance->GetPlayers();
+
+                if (PlayerList.isEmpty())
+                    return;
+
+                for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
+                    if (Player* player = i->getSource())
+                    {
+                        if (player->IsAtGroupRewardDistance(creature)) // already handled
+                            continue;
+
+                        if (player->isAlive() || !player->GetCorpse())
+                            player->KilledMonsterCredit(NPC_ZOMBIE, 0);
+                    }
+            }
+        }
+
         void GiveQuestKillAllInInstance(uint32 entry)
         {
             Map::PlayerList const &PlayerList = instance->GetPlayers();

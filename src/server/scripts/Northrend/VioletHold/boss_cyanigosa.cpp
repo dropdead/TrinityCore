@@ -52,14 +52,14 @@ public:
 
     CreatureAI* GetAI(Creature* creature) const
     {
-        return new boss_cyanigosaAI (creature);
+        return new boss_cyanigosaAI(creature);
     }
 
     struct boss_cyanigosaAI : public ScriptedAI
     {
         boss_cyanigosaAI(Creature* c) : ScriptedAI(c)
         {
-            pInstance = c->GetInstanceScript();
+            instance = c->GetInstanceScript();
         }
 
         uint32 uiArcaneVacuumTimer;
@@ -68,7 +68,7 @@ public:
         uint32 uiTailSweepTimer;
         uint32 uiUncontrollableEnergyTimer;
 
-        InstanceScript* pInstance;
+        InstanceScript* instance;
 
         void Reset()
         {
@@ -77,35 +77,35 @@ public:
             uiManaDestructionTimer = 30000;
             uiTailSweepTimer = 5000;
             uiUncontrollableEnergyTimer = 25000;
-            if (pInstance)
-                pInstance->SetData(DATA_CYANIGOSA_EVENT, NOT_STARTED);
+            if (instance)
+                instance->SetData(DATA_CYANIGOSA_EVENT, NOT_STARTED);
         }
 
         void EnterCombat(Unit* /*who*/)
         {
             DoScriptText(SAY_AGGRO, me);
 
-            if (pInstance)
-                pInstance->SetData(DATA_CYANIGOSA_EVENT, IN_PROGRESS);
+            if (instance)
+                instance->SetData(DATA_CYANIGOSA_EVENT, IN_PROGRESS);
         }
 
-        void SpellHitTarget (Unit* target,const SpellInfo* spell)
+        void SpellHitTarget(Unit* target, SpellInfo const* spell)
         {
-            if(spell->Id == SPELL_ARCANE_VACUUM)
+            if (spell->Id == SPELL_ARCANE_VACUUM)
             {
-                if(target->ToPlayer())
-                    target->ToPlayer()->TeleportTo(me->GetMapId(),me->GetPositionX(),me->GetPositionY(),me->GetPositionZ(),0);
+                if (target->ToPlayer())
+                    target->ToPlayer()->TeleportTo(me->GetMapId(), me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), 0);
             }
         }
 
         void MoveInLineOfSight(Unit* /*who*/) {}
 
-        void UpdateAI(const uint32 diff)
+        void UpdateAI(uint32 const diff)
         {
-            if (pInstance && pInstance->GetData(DATA_REMOVE_NPC) == 1)
+            if (instance && instance->GetData(DATA_REMOVE_NPC) == 1)
             {
                 me->DespawnOrUnsummon();
-                pInstance->SetData(DATA_REMOVE_NPC, 0);
+                instance->SetData(DATA_REMOVE_NPC, 0);
             }
 
             //Return since we have no target
@@ -125,8 +125,8 @@ public:
             {
                 if(!me->IsNonMeleeSpellCasted(false))
                 {
-                    if (Unit *pTarget = SelectTarget(SELECT_TARGET_RANDOM, 0, 100, true))
-                        DoCast(pTarget, SPELL_BLIZZARD);
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100, true))
+                        DoCast(target, SPELL_BLIZZARD);
                     uiBlizzardTimer = 15000;
                 }
             } else uiBlizzardTimer -= diff;
@@ -135,7 +135,7 @@ public:
             {
                 if(!me->IsNonMeleeSpellCasted(false))
                 {
-                    DoCast(DUNGEON_MODE(SPELL_TAIL_SWEEP,H_SPELL_TAIL_SWEEP));
+                    DoCast(DUNGEON_MODE(SPELL_TAIL_SWEEP, H_SPELL_TAIL_SWEEP));
                     uiTailSweepTimer = 5000;
                 }
             } else uiTailSweepTimer -= diff;
@@ -152,8 +152,8 @@ public:
                 {
                     if(!me->IsNonMeleeSpellCasted(false))
                     {
-                        if (Unit* pTarget = SelectTarget(SELECT_TARGET_RANDOM, 0, 100, true))
-                            DoCast(pTarget, SPELL_MANA_DESTRUCTION);
+                        if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100, true))
+                            DoCast(target, SPELL_MANA_DESTRUCTION);
                         uiManaDestructionTimer = 30000;
                     }
                 } else uiManaDestructionTimer -= diff;
@@ -166,8 +166,8 @@ public:
         {
             DoScriptText(SAY_DEATH, me);
 
-            if (pInstance)
-                pInstance->SetData(DATA_CYANIGOSA_EVENT, DONE);
+            if (instance)
+                instance->SetData(DATA_CYANIGOSA_EVENT, DONE);
         }
 
         void KilledUnit(Unit* victim)
@@ -189,6 +189,9 @@ class achievement_defenseless : public AchievementCriteriaScript
 
         bool OnCheck(Player* /*player*/, Unit* target)
         {
+            if (!target)
+                return false;
+
             InstanceScript* instance = target->GetInstanceScript();
             if (!instance)
                 return false;

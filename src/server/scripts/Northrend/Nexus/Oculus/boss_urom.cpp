@@ -27,8 +27,6 @@ EndScriptData */
 
 enum Spells
 {
-
-    SPELL_ARCANE_SHIELD                           = 53813, //Dummy --> Channeled, shields the caster from damage.
     SPELL_EMPOWERED_ARCANE_EXPLOSION              = 51110,
     SPELL_EMPOWERED_ARCANE_EXPLOSION_H            = 59377,
     SPELL_FROSTBOMB                               = 51103, //Urom throws a bomb, hitting its target with the highest aggro which inflict directly 650 frost damage and drops a frost zone on the ground. This zone deals 650 frost damage per second and reduce the movement speed by 35%. Lasts 1 minute.
@@ -43,15 +41,13 @@ enum Spells
 
 enum Yells
 {
-    SAY_AGGRO_1                                   = -1578000,
-    SAY_AGGRO_2                                   = -1578001,
-    SAY_AGGRO_3                                   = -1578002,
-    SAY_AGGRO_4                                   = -1578003,
-    SAY_TELEPORT                                  = -1578004,
-    SAY_DEATH                                     = -1578018,
-    SAY_KILL_1                                    = -1578019,
-    SAY_KILL_2                                    = -1578020,
-    SAY_KILL_3                                    = -1578021
+    SAY_AGGRO       = 1,
+    SAY_SUMMON_1    = 2,
+    SAY_SUMMON_2    = 3,
+    SAY_SUMMON_3    = 4,
+    SAY_KILL        = 5,
+    SAY_EXPLOSION   = 6,
+    SAY_DEATH       = 7
 };
 
 enum UromCreature
@@ -88,7 +84,7 @@ static uint32 TeleportSpells[]=
 
 static int32 SayAggro[]=
 {
-    SAY_AGGRO_1, SAY_AGGRO_2, SAY_AGGRO_3, SAY_AGGRO_4
+    SAY_SUMMON_1, SAY_SUMMON_2, SAY_SUMMON_3, SAY_AGGRO
 };
 
 class boss_urom : public CreatureScript
@@ -98,13 +94,14 @@ class boss_urom : public CreatureScript
 
         struct boss_uromAI : public BossAI
         {
-            boss_uromAI(Creature* creature) : BossAI(creature, DATA_UROM_EVENT) {}
+            boss_uromAI(Creature* creature) : BossAI(creature, DATA_UROM_EVENT)
+            {
+                if (instance->GetBossState(DATA_VAROS_EVENT) != DONE)
+                    DoCast(SPELL_ARCANE_SHIELD);
+            }
 
             void Reset()
             {
-                if (instance->GetBossState(DATA_VAROS_EVENT) != DONE && instance->GetData(DATA_UROM_PLATFORM) < 3)
-                    DoCast(SPELL_ARCANE_SHIELD);
-
                 _Reset();
 
                 if (instance->GetData(DATA_UROM_PLATFORM) == 0)
@@ -141,7 +138,7 @@ class boss_urom : public CreatureScript
 
             void KilledUnit(Unit* /*victim*/)
             {
-                DoScriptText(RAND(SAY_KILL_1, SAY_KILL_2, SAY_KILL_3), me);
+                Talk(SAY_KILL);
             }
 
             void AttackStart(Unit* who)
@@ -220,7 +217,7 @@ class boss_urom : public CreatureScript
                 if (!instance || instance->GetData(DATA_UROM_PLATFORM) > 2)
                     return;
 
-                DoScriptText(SayAggro[instance->GetData(DATA_UROM_PLATFORM)], me);
+                Talk(SayAggro[instance->GetData(DATA_UROM_PLATFORM)]);
                 DoCast(TeleportSpells[instance->GetData(DATA_UROM_PLATFORM)]);
             }
 
@@ -239,7 +236,7 @@ class boss_urom : public CreatureScript
                         frostBombTimer += 8000;
                     if (timeBombTimer <= 2500)
                         timeBombTimer += 2500;
-                    DoScriptText(SAY_TELEPORT, me);
+                    Talk(SAY_EXPLOSION);
                     me->GetMotionMaster()->MoveIdle();
                     DoCast(SPELL_TELEPORT);
                     teleportTimer = urand(30000, 35000);
@@ -307,7 +304,7 @@ class boss_urom : public CreatureScript
 
             void JustDied(Unit* /*killer*/)
             {
-                DoScriptText(SAY_DEATH, me);
+                Talk(SAY_DEATH);
                 _JustDied();
                 DoCast(me, SPELL_DEATH_SPELL, true);
             }
@@ -326,10 +323,12 @@ class boss_urom : public CreatureScript
                     case SPELL_SUMMON_MENAGERIE:
                         me->SetHomePosition(968.66f, 1042.53f, 527.32f, 0.077f);
                         LeaveCombat();
+                        DoCast(SPELL_EVOCATION);
                         break;
                     case SPELL_SUMMON_MENAGERIE_2:
                         me->SetHomePosition(1164.02f, 1170.85f, 527.321f, 3.66f);
                         LeaveCombat();
+                        DoCast(SPELL_EVOCATION);
                         break;
                     case SPELL_SUMMON_MENAGERIE_3:
                         me->SetHomePosition(1118.31f, 1080.377f, 508.361f, 4.25f);

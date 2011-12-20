@@ -142,9 +142,9 @@ class mob_tribuna_controller : public CreatureScript
 public:
     mob_tribuna_controller() : CreatureScript("mob_tribuna_controller") { }
 
-    CreatureAI* GetAI(Creature* pCreature) const
+    CreatureAI* GetAI(Creature* creature) const
     {
-        return new mob_tribuna_controllerAI(pCreature);
+        return new mob_tribuna_controllerAI(creature);
     }
 
     struct mob_tribuna_controllerAI : public ScriptedAI
@@ -200,26 +200,7 @@ public:
             MarnakGUIDList.clear();
         }
 
-        void SetInCombat()
-        {
-            Map *map = me->GetMap();
-            if (!map->IsDungeon())
-                return;
-
-            Map::PlayerList const &PlayerList = map->GetPlayers();
-            for(Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
-            {
-                if (Player* i_pl = i->getSource())
-                    if (!i_pl->isGameMaster() && i_pl->isAlive() && me->GetDistance(i_pl) <= 100)
-                    {
-                        me->SetInCombatWith(i_pl);
-                        i_pl->SetInCombatWith(me);
-                        me->AddThreat(i_pl, 1.0f);
-                    }
-            }
-        }
-
-        void UpdateAI(const uint32 diff)
+        void UpdateAI(uint32 const diff)
         {
             if (bKaddrakActivated)
             {
@@ -228,10 +209,10 @@ public:
                     if (!KaddrakGUIDList.empty())
                         for (std::list<uint64>::const_iterator itr = KaddrakGUIDList.begin(); itr != KaddrakGUIDList.end(); ++itr)
                         {
-                            if (Unit* pTarget = SelectTarget(SELECT_TARGET_RANDOM, 0, 100, true))
-                                if (Creature *pKaddrak = Unit::GetCreature(*me, *itr))
-                                    if (pKaddrak->isAlive())
-                                        pKaddrak->CastSpell(pTarget, DUNGEON_MODE(SPELL_GLARE_OF_THE_TRIBUNAL, H_SPELL_GLARE_OF_THE_TRIBUNAL), true);
+                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100, true))
+                                if (Creature* kaddrak = Unit::GetCreature(*me, *itr))
+                                    if (kaddrak->isAlive())
+                                        kaddrak->CastSpell(target, DUNGEON_MODE(SPELL_GLARE_OF_THE_TRIBUNAL, H_SPELL_GLARE_OF_THE_TRIBUNAL), true);
                         }
 
                     uiKaddrakEncounterTimer = 3*IN_MILLISECONDS;
@@ -243,22 +224,19 @@ public:
                 if (uiMarnakEncounterTimer <= diff)
                 {
                     if (!MarnakGUIDList.empty())
-                        if (Creature* pSummon = me->SummonCreature(CREATURE_DARK_MATTER, 904.07f, 351.363f, 214.77f, 0, TEMPSUMMON_TIMED_DESPAWN, 20*IN_MILLISECONDS))
+                        if (Creature* matter = me->SummonCreature(CREATURE_DARK_MATTER, 904.07f, 351.363f, 214.77f, 0, TEMPSUMMON_TIMED_DESPAWN, 20*IN_MILLISECONDS))
                         {
-                            pSummon->SetDisplayId(17200);
-                            pSummon->setFaction(16);
-                            uiDarkMatterGUID = pSummon->GetGUID();
+                            matter->SetDisplayId(17200);
+                            matter->setFaction(16);
+                            uiDarkMatterGUID = matter->GetGUID();
                             
                             bLoadingDarkMatter = true;
 
                             for (std::list<uint64>::const_iterator itr = MarnakGUIDList.begin(); itr != MarnakGUIDList.end(); ++itr)
                             {
-                                if (Creature *pMarnak = Unit::GetCreature(*me, *itr))
-                                    if (pMarnak->isAlive())
-                                    {
-                                        pMarnak->AI()->AttackStart(pSummon);
-                                        pMarnak->CastSpell(pSummon, SPELL_DARK_MATTER_DUMMY, true);
-                                    }
+                                if (Creature* marnak = Unit::GetCreature(*me, *itr))
+                                    if (marnak->isAlive())
+                                        marnak->CastSpell(matter, SPELL_DARK_MATTER_DUMMY, true);
                             }
                         }
 
@@ -269,14 +247,14 @@ public:
                 {
                     if (uiLoadingTimer <= diff)
                     {
-                        if (Unit* pTarget = SelectTarget(SELECT_TARGET_RANDOM, 0, 100, true))
-                            if (Creature* pMatter = Unit::GetCreature(*me, uiDarkMatterGUID))
+                        if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100, true))
+                            if (Creature* matter = Unit::GetCreature(*me, uiDarkMatterGUID))
                             {
                                 float x, y, z;
-                                pTarget->GetPosition(x, y, z);
+                                target->GetPosition(x, y, z);
                 
                                 me->SummonCreature(CREATURE_DARK_MATTER_TARGET, x, y, z, 0, TEMPSUMMON_TIMED_DESPAWN, 20*IN_MILLISECONDS);
-                                pMatter->GetMotionMaster()->MovePoint(0, x, y, z);
+                                matter->GetMotionMaster()->MovePoint(0, x, y, z);
                             }
 
                         bLoadingDarkMatter = false;
@@ -289,21 +267,19 @@ public:
             {
                 if (uiAbedneumEncounterTimer <= diff)
                 {
-                    if (Unit* pTarget = SelectTarget(SELECT_TARGET_RANDOM, 0, 100, true))
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100, true))
                         if (!AbedneumGUIDList.empty())
-                            if (Creature* pSummon = me->SummonCreature(CREATURE_SEARING_GAZE_TARGET, pTarget->GetPositionX(), pTarget->GetPositionY(), pTarget->GetPositionZ(), 0.0f, TEMPSUMMON_TIMED_DESPAWN, 11*IN_MILLISECONDS))
+                            if (Creature* gaze = me->SummonCreature(CREATURE_SEARING_GAZE_TARGET, target->GetPositionX(), target->GetPositionY(),
+                                target->GetPositionZ(), 0.0f, TEMPSUMMON_TIMED_DESPAWN, 11*IN_MILLISECONDS))
                             {
-                                pSummon->SetDisplayId(11686);
-                                pSummon->setFaction(16);
+                                gaze->SetDisplayId(11686);
+                                gaze->setFaction(16);
 
                                 for (std::list<uint64>::const_iterator itr = AbedneumGUIDList.begin(); itr != AbedneumGUIDList.end(); ++itr)
                                 {
-                                    if (Creature *pAbedneum = Unit::GetCreature(*me, *itr))
-                                        if (pAbedneum->isAlive())
-                                        {
-                                            pAbedneum->AI()->AttackStart(pSummon);
-                                            pAbedneum->CastSpell(pSummon, SPELL_SEARING_GAZE_DUMMY, true);
-                                        }
+                                    if (Creature* abedneum = Unit::GetCreature(*me, *itr))
+                                        if (abedneum->isAlive())
+                                            abedneum->CastSpell(gaze, SPELL_SEARING_GAZE_DUMMY, true);
                                 }
                             }
 
@@ -320,14 +296,14 @@ class npc_brann_hos : public CreatureScript
 public:
     npc_brann_hos() : CreatureScript("npc_brann_hos") { }
 
-    CreatureAI* GetAI(Creature* pCreature) const
+    CreatureAI* GetAI(Creature* creature) const
     {
-        return new npc_brann_hosAI(pCreature);
+        return new npc_brann_hosAI(creature);
     }
 
     struct npc_brann_hosAI : public npc_escortAI
     {
-        npc_brann_hosAI(Creature *c) : npc_escortAI(c)
+        npc_brann_hosAI(Creature* c) : npc_escortAI(c)
         {
             pInstance = c->GetInstanceScript();
         }
@@ -370,14 +346,14 @@ public:
 
             for (std::list<uint64>::const_iterator itr = lSummonGUIDList.begin(); itr != lSummonGUIDList.end(); ++itr)
             {
-                Creature* pTemp = Unit::GetCreature(*me, *itr);
-                if (pTemp && pTemp->isAlive())
+                Creature* summon = Unit::GetCreature(*me, *itr);
+                if (summon && summon->isAlive())
                 {
-                    if (pInstance->GetData(DATA_BRANN_EVENT) == DONE && (pTemp->GetEntry() == CREATURE_KADDRAK || pTemp->GetEntry() == CREATURE_MARNAK
-                        || pTemp->GetEntry() == CREATURE_ABEDNEUM))
+                    if (pInstance->GetData(DATA_BRANN_EVENT) == DONE && (summon->GetEntry() == CREATURE_KADDRAK || summon->GetEntry() == CREATURE_MARNAK
+                        || summon->GetEntry() == CREATURE_ABEDNEUM))
                         continue;
 
-                    pTemp->DespawnOrUnsummon();
+                    summon->DespawnOrUnsummon();
                 }
             }
             lSummonGUIDList.clear();
@@ -431,101 +407,101 @@ public:
                     me->SummonCreature(CREATURE_IRON_GOLEM_CUSTODIAN, SpawnLocations[rnd], TEMPSUMMON_CORPSE_TIMED_DESPAWN, 30000);
                     break;
                 case 4:
-                    if (Creature* pCreature = me->SummonCreature(CREATURE_TRIBUNAL_OF_THE_AGES, 910.126f, 345.795f, 237.928f, 0, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 30000))
+                    if (Creature* creature = me->SummonCreature(CREATURE_TRIBUNAL_OF_THE_AGES, 910.126f, 345.795f, 237.928f, 0, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 30000))
                     {
-                        uiControllerGUID = pCreature->GetGUID();
-                        pCreature->SetVisible(false);
+                        uiControllerGUID = creature->GetGUID();
+                        creature->SetVisible(false);
                     }
                     break;
                 case 5:
                 {
-                    if (Creature* pTemp = Unit::GetCreature(*me, uiControllerGUID))
+                    if (Creature* controller = Unit::GetCreature(*me, uiControllerGUID))
                     {
                         uint32 uiPositionCounter = 0;
                         for (uint8 i = 0; i < 2; ++i)
                         {
-                            Creature* pKaddrak = 0;
+                            Creature* kaddrak = 0;
 
                             if (uiPositionCounter == 0)
-                                pKaddrak = me->SummonCreature(CREATURE_KADDRAK, 927.265f, 333.200f, 218.780f, 0, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 30000);
+                                kaddrak = me->SummonCreature(CREATURE_KADDRAK, 927.265f, 333.200f, 218.780f, 0, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 30000);
                             else
-                                pKaddrak = me->SummonCreature(CREATURE_KADDRAK, 921.745f, 328.076f, 218.780f, 0, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 30000);
+                                kaddrak = me->SummonCreature(CREATURE_KADDRAK, 921.745f, 328.076f, 218.780f, 0, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 30000);
                             
-                            if (pKaddrak)
-                                CAST_AI(mob_tribuna_controller::mob_tribuna_controllerAI, pTemp->AI())->KaddrakGUIDList.push_back(pKaddrak->GetGUID());
+                            if (kaddrak)
+                                CAST_AI(mob_tribuna_controller::mob_tribuna_controllerAI, controller->AI())->KaddrakGUIDList.push_back(kaddrak->GetGUID());
 
                             ++uiPositionCounter;
                         }
                         
-                        CAST_AI(mob_tribuna_controller::mob_tribuna_controllerAI, pTemp->AI())->SetInCombat();
-                        CAST_AI(mob_tribuna_controller::mob_tribuna_controllerAI, pTemp->AI())->bKaddrakActivated = true;
+                        controller->AI()->DoZoneInCombat(controller, 100.0f);
+                        CAST_AI(mob_tribuna_controller::mob_tribuna_controllerAI, controller->AI())->bKaddrakActivated = true;
                     }
                     break;
                 }
                 case 6:
                 {
-                    if (Creature* pTemp = Unit::GetCreature(*me, uiControllerGUID))
+                    if (Creature* controller = Unit::GetCreature(*me, uiControllerGUID))
                     {
                         uint32 uiPositionCounter = 0;
                         for (uint8 i = 0; i < 2; ++i)
                         {
-                            Creature* pMarnak = 0;
+                            Creature* marnak = 0;
 
                             if (uiPositionCounter == 0)
-                                pMarnak = me->SummonCreature(CREATURE_MARNAK, 891.309f, 359.382f, 217.422f, 0, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 30000);
+                                marnak = me->SummonCreature(CREATURE_MARNAK, 891.309f, 359.382f, 217.422f, 0, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 30000);
                             else
-                                pMarnak = me->SummonCreature(CREATURE_MARNAK, 895.834f, 363.436f, 217.422f, 0, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 30000);
+                                marnak = me->SummonCreature(CREATURE_MARNAK, 895.834f, 363.436f, 217.422f, 0, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 30000);
                             
-                            if (pMarnak)
-                                CAST_AI(mob_tribuna_controller::mob_tribuna_controllerAI, pTemp->AI())->MarnakGUIDList.push_back(pMarnak->GetGUID());
+                            if (marnak)
+                                CAST_AI(mob_tribuna_controller::mob_tribuna_controllerAI, controller->AI())->MarnakGUIDList.push_back(marnak->GetGUID());
 
                             ++uiPositionCounter;
                         }
                         
-                        CAST_AI(mob_tribuna_controller::mob_tribuna_controllerAI, pTemp->AI())->SetInCombat();
-                        CAST_AI(mob_tribuna_controller::mob_tribuna_controllerAI, pTemp->AI())->bMarnakActivated = true;
+                        controller->AI()->DoZoneInCombat(controller, 100.0f);
+                        CAST_AI(mob_tribuna_controller::mob_tribuna_controllerAI, controller->AI())->bMarnakActivated = true;
                     }
                     break;
                 }
                 case 7:
                 {
-                    if (Creature* pTemp = Unit::GetCreature(*me, uiControllerGUID))
+                    if (Creature* controller = Unit::GetCreature(*me, uiControllerGUID))
                     {
                         uint32 uiPositionCounter = 0;
                         for (uint8 i = 0; i < 2; ++i)
                         {
-                            Creature* pAbedneum = 0;
+                            Creature* abedneum = 0;
 
                             if (uiPositionCounter == 0)
-                                pAbedneum = me->SummonCreature(CREATURE_ABEDNEUM, 897.865f, 328.341f, 223.84f, 0, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 30000);
+                                abedneum = me->SummonCreature(CREATURE_ABEDNEUM, 897.865f, 328.341f, 223.84f, 0, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 30000);
                             else
-                                pAbedneum = me->SummonCreature(CREATURE_ABEDNEUM, 893.012f, 332.804f, 223.545f, 0, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 30000);
+                                abedneum = me->SummonCreature(CREATURE_ABEDNEUM, 893.012f, 332.804f, 223.545f, 0, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 30000);
                             
-                            if (pAbedneum)
-                                CAST_AI(mob_tribuna_controller::mob_tribuna_controllerAI, pTemp->AI())->AbedneumGUIDList.push_back(pAbedneum->GetGUID());
+                            if (abedneum)
+                                CAST_AI(mob_tribuna_controller::mob_tribuna_controllerAI, controller->AI())->AbedneumGUIDList.push_back(abedneum->GetGUID());
 
                             ++uiPositionCounter;
                         }
                         
-                        CAST_AI(mob_tribuna_controller::mob_tribuna_controllerAI, pTemp->AI())->SetInCombat();
-                        CAST_AI(mob_tribuna_controller::mob_tribuna_controllerAI, pTemp->AI())->bAbedneumActivated = true;
+                        controller->AI()->DoZoneInCombat(controller, 100.0f);
+                        CAST_AI(mob_tribuna_controller::mob_tribuna_controllerAI, controller->AI())->bAbedneumActivated = true;
                     }
                     break;
                 }
             }
         }
 
-        void JustSummoned(Creature* pSummoned)
+        void JustSummoned(Creature* summoned)
         {
-            lSummonGUIDList.push_back(pSummoned->GetGUID());
+            lSummonGUIDList.push_back(summoned->GetGUID());
 
-            switch (pSummoned->GetEntry())
+            switch (summoned->GetEntry())
             {
                 case CREATURE_DARK_RUNE_PROTECTOR:
                 case CREATURE_DARK_RUNE_STORMCALLER:
                 case CREATURE_IRON_GOLEM_CUSTODIAN:
-                    pSummoned->AddThreat(me, 1.0f);
-                    pSummoned->AI()->AttackStart(me);
+                    summoned->AddThreat(me, 1.0f);
+                    summoned->AI()->AttackStart(me);
                     break;
             }
         }

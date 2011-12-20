@@ -26,14 +26,14 @@ enum Events
     EVENT_SUMMON_LEY_WHELP
 };
 
-enum Says
+enum Texts
 {
-    SAY_AGGRO     =  0,
-    SAY_ENRAGE    =  1,
-    SAY_DEATH     =  2,
-    SAY_KILL_1    = -1578022,
-    SAY_KILL_2    = -1578023,
-    SAY_KILL_3    = -1578024
+    SAY_AGGRO           = 1,
+    SAY_SPAWN           = 2,
+    SAY_FRENZY          = 3,
+    SAY_KILL            = 4,
+    SAY_DEATH           = 5,
+    EMOTE_ASTRAL_PLANE  = 6
 };
 
 enum Spells
@@ -93,11 +93,13 @@ class boss_eregos : public CreatureScript
 
                 _phase = PHASE_NORMAL;
                 DoAction(ACTION_SET_NORMAL_EVENTS);
+
+                _spawntextTimer = urand (1, 60) *IN_MILLISECONDS;
             }
 
             void KilledUnit(Unit* /*victim*/)
             {
-                DoScriptText(RAND(SAY_KILL_1, SAY_KILL_2, SAY_KILL_3), me);
+                Talk(SAY_KILL);
             }
 
             void CheckVoids()
@@ -173,11 +175,23 @@ class boss_eregos : public CreatureScript
 
                     DoCast(me, SPELL_PLANAR_ANOMALIES, true);
                     DoCast(me, SPELL_PLANAR_SHIFT, true);
+                    Talk(EMOTE_ASTRAL_PLANE);
                 }
             }
 
             void UpdateAI(uint32 const diff)
             {
+                if (!me->isInCombat() && me->isAlive())
+                {
+                    if (_spawntextTimer <= diff)
+                    {
+                        Talk(SAY_SPAWN);
+                        _spawntextTimer = 60 *IN_MILLISECONDS;
+                    }
+                    else
+                        _spawntextTimer -= diff;
+                }                
+            
                 if (!UpdateVictim())
                     return;
 
@@ -200,7 +214,7 @@ class boss_eregos : public CreatureScript
                             events.ScheduleEvent(EVENT_ARCANE_VOLLEY, urand(10, 25) * IN_MILLISECONDS, 0, PHASE_NORMAL);
                             break;
                         case EVENT_ENRAGED_ASSAULT:
-                            Talk(SAY_ENRAGE);
+                            Talk(SAY_FRENZY);
                             DoCast(SPELL_ENRAGED_ASSAULT);
                             events.ScheduleEvent(EVENT_ENRAGED_ASSAULT, urand(35, 50) * IN_MILLISECONDS, 0, PHASE_NORMAL);
                             break;
@@ -226,6 +240,7 @@ class boss_eregos : public CreatureScript
             bool _rubyVoid;
             bool _emeraldVoid;
             bool _amberVoid;
+            uint32 _spawntextTimer;
         };
 
         CreatureAI* GetAI(Creature* creature) const

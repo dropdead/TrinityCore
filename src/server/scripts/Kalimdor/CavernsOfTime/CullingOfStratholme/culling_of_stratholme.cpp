@@ -460,11 +460,13 @@ public:
                     SetRun(true);
                     //SetDespawnAtFar(false);
                     uiGossipStep = 4;
+                    me->SetReactState(REACT_DEFENSIVE);
                     me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
                     SetHoldState(true);
                     break;
                 case 47:
                     SetRun(false);
+                    me->SetReactState(REACT_AGGRESSIVE);
                     DoScriptText(SAY_PHASE405,me);
                     break;
                 case 48:
@@ -732,6 +734,7 @@ public:
                                 uiStalkerGUID = pStalkerM->GetGUID();
                                 me->SetTarget(uiStalkerGUID);
                             }
+                            me->SetReactState(REACT_DEFENSIVE);
                             JumpToNextStep(1000);
                             break;
                         case 36:
@@ -767,16 +770,16 @@ public:
                             }
                             else
                                 uiStep++;
-                            uiPhaseTimer = 500;
+                            uiPhaseTimer = 250;
                             break;
                         case 38:
-                            if (Creature* pMalganis = Unit::GetCreature(*me, uiMalganisGUID))
-                                DoScriptText(SAY_PHASE207, pMalganis);
+                            if (Creature* Malganis = Unit::GetCreature(*me, uiMalganisGUID))
+                                DoScriptText(SAY_PHASE207, Malganis);
                             JumpToNextStep(17000);
                             break;
                         case 39:
-                            if (Creature* pMalganis = Unit::GetCreature(*me, uiMalganisGUID))
-                                pMalganis->SetVisible(false);
+                            if (Creature* Malganis = Unit::GetCreature(*me, uiMalganisGUID))
+                                Malganis->SetVisible(false);
                             DoScriptText(SAY_PHASE208, me);
                             JumpToNextStep(7000);
                             break;
@@ -793,7 +796,6 @@ public:
                             if (pInstance->GetData(DATA_INFINITE_EVENT) != DONE && IsHeroic())   //if not killed already
                                 pInstance->SetData(DATA_INFINITE_EVENT, SPECIAL);                //start countdown
 
-                            me->SetReactState(REACT_DEFENSIVE);
                             //SetDespawnAtFar(false);
                             JumpToNextStep(5000);
                             break;

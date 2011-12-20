@@ -33,7 +33,8 @@ enum Creatures
     CREATURE_CYANIGOSA                              = 31134,
     CREATURE_SINCLARI                               = 30658,
     CREATURE_SABOTEOUR                              = 31079,
-    NPC_VIOLET_HOLD_GUARD                           = 30659
+    NPC_VIOLET_HOLD_GUARD                           = 30659,
+    NPC_DEFENSE_SYSTEM                              = 30837
 };
 
 enum Data
@@ -51,9 +52,9 @@ enum Data
     DATA_START_BOSS_ENCOUNTER,
     DATA_FIRST_BOSS,
     DATA_SECOND_BOSS,
-    DATA_ACTIVATE_CRYSTAL,
+    // DATA_ACTIVATE_CRYSTAL,
     DATA_MAIN_EVENT_PHASE,
-    DATA_DEFENSELESS,
+    DATA_DEFENSELESS
 };
 
 enum Data64
@@ -79,8 +80,6 @@ enum Data64
     DATA_SINCLARI,
     DATA_TELEPORTATION_PORTAL,
     DATA_SABOTEUR_PORTAL,
-    DATA_ADD_TRASH_MOB,
-    DATA_DEL_TRASH_MOB
 };
 
 enum Bosses

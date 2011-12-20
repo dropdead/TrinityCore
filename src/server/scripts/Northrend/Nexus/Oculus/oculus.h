@@ -48,8 +48,7 @@ enum Creatures
     NPC_AMBER_DRAKE             = 27755,
     NPC_RUBY_DRAKE              = 27756,
 
-    NPC_CENTRIFUGE_CORE         = 28183,
-    NPC_IMAGE_OF_BELGARISTRASZ  = 28012
+    NPC_CENTRIFUGE_CORE         = 28183
 };
 
 enum GameObjects
@@ -78,6 +77,8 @@ enum OculusWorldStates
 enum OculusSpells
 {
     SPELL_CENTRIFUGE_SHIELD = 50053,
+    SPELL_ARCANE_SHIELD     = 53813,
+    SPELL_EVOCATION         = 51602,
     SPELL_DEATH_SPELL       = 50415
 };
 #endif
