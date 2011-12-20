@@ -5294,7 +5294,10 @@ SpellCastResult Spell::CheckCast(bool strict)
                             if (m_caster->GetGuardianPet()->isAlive())
                                 return SPELL_FAILED_ALREADY_HAVE_SUMMON;
                             else
+                            {
                                 m_caster->GetGuardianPet()->DespawnOrUnsummon();
+                                break;
+                            }
                     case SUMMON_CATEGORY_PUPPET:
                         if (m_caster->GetCharmGUID())
                             return SPELL_FAILED_ALREADY_HAVE_CHARM;
