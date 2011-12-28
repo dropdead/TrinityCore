@@ -2572,14 +2572,18 @@ SpellMissInfo Unit::MagicSpellHitResult(Unit* victim, SpellInfo const* spell)
     if (rand < tmp)
         return SPELL_MISS_RESIST;
     
-    // cast by caster in front of victim
-    if (victim->HasInArc(M_PI, this) || victim->HasAuraType(SPELL_AURA_IGNORE_HIT_DIRECTION))
+    // si no esta en stun
+    if (!victim->HasAuraType(SPELL_AURA_MOD_STUN))
     {
-        int32 deflect_chance = victim->GetTotalAuraModifier(SPELL_AURA_DEFLECT_SPELLS) * 100;
-        tmp += deflect_chance;
-        if (rand < tmp)
-            return SPELL_MISS_DEFLECT;
-    }  
+        // cast by caster in front of victim
+        if (victim->HasInArc(M_PI, this) || victim->HasAuraType(SPELL_AURA_IGNORE_HIT_DIRECTION))
+        {
+            int32 deflect_chance = victim->GetTotalAuraModifier(SPELL_AURA_DEFLECT_SPELLS) * 100;
+            tmp += deflect_chance;
+            if (rand < tmp)
+                return SPELL_MISS_DEFLECT;
+        }  
+    }
     return SPELL_MISS_NONE;
 }
 
@@ -5876,7 +5880,8 @@ bool Unit::HandleDummyAuraProc(Unit* victim, uint32 damage, AuraEffect* triggere
                 if (!HasInArc(static_cast<float>(M_PI),victim))
                     return false;
 
-                if (HasUnitState(UNIT_STAT_STUNNED))  //Si el warro esta en stun no se procea el retaliation, sin importar el angulo.
+                // Si el warro esta en stun no procea el retaliation, sin importar el angulo.
+                if (HasUnitState(UNIT_STAT_STUNNED))
                     return false;
 
                 triggered_spell_id = 22858;
@@ -8131,7 +8136,6 @@ bool Unit::HandleAuraProc(Unit* victim, uint32 damage, Aura* triggeredByAura, Sp
         }
         case SPELLFAMILY_MAGE:
         {
-           
             switch (dummySpell->Id)
             {
                 case 44549: // Brain freeze
