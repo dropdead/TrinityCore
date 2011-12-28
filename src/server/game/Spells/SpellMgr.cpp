@@ -2997,6 +2997,10 @@ void SpellMgr::LoadDbcDataCorrections()
             case 56651: //Removida imunidad a stun de master's call - [Hunter]
                 spellInfo->EffectMiscValue[0] = 11;
                 break;
+            case 5171: // Slice and Dice rank 1 - [Rogue]
+            case 6774: // Slice and Dice rank 2 - [Rogue]
+                spellInfo->AttributesEx3 |= SPELL_ATTR3_NO_INITIAL_AGGRO;
+                break;
             case 48020: // Demonic circle sacaba roots - [Warlock]
                 spellInfo->EffectMiscValue[0] = 1;
                 break;
@@ -3230,6 +3234,8 @@ void SpellMgr::LoadDbcDataCorrections()
                 spellInfo->Stances = 1 << (FORM_TREE - 1);
                 break;
             case 61607: // Mark of Blood
+            case 53651: // Beacon of Light (buff) - [Paladin]
+            case 53563: // Beacon of Light - [Paladin]
                 spellInfo->AttributesEx |= SPELL_ATTR1_NO_THREAT;
                 break;
             case 51466: // Elemental Oath (Rank 1)
@@ -3256,7 +3262,7 @@ void SpellMgr::LoadDbcDataCorrections()
             case 51735: // Ebon Plague
             case 51734:
             case 51726:
-                spellInfo->AttributesEx3 |= SPELL_ATTR3_STACK_FOR_DIFF_CASTERS;
+               // spellInfo->AttributesEx3 |= SPELL_ATTR3_STACK_FOR_DIFF_CASTERS;
                 spellInfo->SpellFamilyFlags[2] = 0x10;
                 spellInfo->EffectApplyAuraName[1] = SPELL_AURA_MOD_DAMAGE_PERCENT_TAKEN;
                 break;
