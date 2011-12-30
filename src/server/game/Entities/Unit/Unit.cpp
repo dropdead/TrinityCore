@@ -9188,6 +9188,15 @@ bool Unit::HandleProcTriggerSpell(Unit* victim, uint32 damage, AuraEffect* trigg
                 return false;
             break;
         }
+        // Scent of Blood
+        case 49004:
+        case 49508:
+        case 49509:
+        {
+            if (procEx & PROC_EX_ONLY_ACTIVE_SPELL & PROC_EX_PARRY & PROC_EX_DODGE)
+                return true;
+            break;
+        }
         // Shadow's Fate (Shadowmourne questline)
         case 71169:
         {
