@@ -1249,7 +1249,7 @@ void Aura::HandleAuraSpecificMods(AuraApplication const* aurApp, Unit* caster, b
                             if (GameObject* obj = target->GetGameObject(48018))
                             {
                                 target->NearTeleportTo(obj->GetPositionX(), obj->GetPositionY(), obj->GetPositionZ(), obj->GetOrientation());
-                                target->RemoveMovementImpairingAuras();
+                            //    target->RemoveMovementImpairingAuras();
                             }
                         break;
                     case 6358: // Seduction
