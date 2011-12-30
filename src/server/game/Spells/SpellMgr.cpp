@@ -2997,12 +2997,13 @@ void SpellMgr::LoadDbcDataCorrections()
             case 56651: //Removida imunidad a stun de master's call - [Hunter]
                 spellInfo->EffectMiscValue[0] = 11;
                 break;
+            case 63311: // Glyph of Shadowflame - [Warlock]
+                spellInfo->EffectImplicitTargetA[0] = TARGET_UNIT_CONE_ENEMY_104;
+                spellInfo->EffectRadiusIndex[0] = EFFECT_RADIUS_10_YARDS;
+                break; 
             case 5171: // Slice and Dice rank 1 - [Rogue]
             case 6774: // Slice and Dice rank 2 - [Rogue]
                 spellInfo->AttributesEx3 |= SPELL_ATTR3_NO_INITIAL_AGGRO;
-                break;
-            case 48020: // Demonic circle sacaba roots - [Warlock]
-                spellInfo->EffectMiscValue[0] = 1;
                 break;
             case 67188: //Tier 9 bono 2 piezas dps - [Paladin]
             case 67118: //Tier 9 bono 4 piezas dps - [Death Knight]
