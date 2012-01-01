@@ -2994,6 +2994,9 @@ void SpellMgr::LoadDbcDataCorrections()
             // ###############################
             // FINAL CAMBIOS POR DELAY MAGICO
             // ###############################
+            case 8178: // Grounding Totem - [Shaman]
+                spellInfo->procFlags = 0;
+                break;
             case 56651: //Removida imunidad a stun de master's call - [Hunter]
                 spellInfo->EffectMiscValue[0] = 11;
                 break;

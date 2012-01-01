@@ -10223,17 +10223,17 @@ Unit* Unit::SelectMagnetTarget(Unit* victim, SpellInfo const* spellInfo)
     // Magic case
     if (spellInfo && (spellInfo->DmgClass == SPELL_DAMAGE_CLASS_NONE || spellInfo->DmgClass == SPELL_DAMAGE_CLASS_MAGIC))
     {
-        // Patch 1.2 notes: Spell Reflection no longer reflects abilities
-        if (spellInfo->Attributes & SPELL_ATTR0_ABILITY || spellInfo->AttributesEx & SPELL_ATTR1_CANT_BE_REDIRECTED || spellInfo->Attributes & SPELL_ATTR0_UNAFFECTED_BY_INVULNERABILITY)
+        // Estos spells no pueden redirigirse al magneto
+        if (spellInfo->AttributesEx & SPELL_ATTR1_CANT_BE_REDIRECTED && spellInfo->Attributes & SPELL_ATTR0_ABILITY && spellInfo->Attributes & SPELL_ATTR0_UNAFFECTED_BY_INVULNERABILITY)
             return victim;
-        // I am not sure if this should be redirected.
+        // I am not sure if this should be redirected. (como warrior charge)
         if (spellInfo->DmgClass == SPELL_DAMAGE_CLASS_NONE)
             return victim;
 
         Unit::AuraEffectList const& magnetAuras = victim->GetAuraEffectsByType(SPELL_AURA_SPELL_MAGNET);
         for (Unit::AuraEffectList::const_iterator itr = magnetAuras.begin(); itr != magnetAuras.end(); ++itr)
-            if (Unit* magnet = (*itr)->GetBase()->GetCaster())
-                if (magnet->isAlive() && IsWithinLOSInMap(magnet))
+            if (Unit* magnet = (*itr)->GetBase()->GetUnitOwner())
+                if (IsWithinLOSInMap(magnet))
                 {
                     (*itr)->GetBase()->DropCharge(AURA_REMOVE_BY_EXPIRE);
                     return magnet;
@@ -10241,10 +10241,10 @@ Unit* Unit::SelectMagnetTarget(Unit* victim, SpellInfo const* spellInfo)
     }
     // Melee && ranged case
     else
-    {
+    { 
         AuraEffectList const& hitTriggerAuras = victim->GetAuraEffectsByType(SPELL_AURA_ADD_CASTER_HIT_TRIGGER);
         for (AuraEffectList::const_iterator i = hitTriggerAuras.begin(); i != hitTriggerAuras.end(); ++i)
-            if (Unit* magnet = (*i)->GetBase()->GetCaster())
+            if (Unit* magnet = (*i)->GetBase()->GetUnitOwner())
                 if (magnet->isAlive() && magnet->IsWithinLOSInMap(this))
                     if (roll_chance_i((*i)->GetAmount()))
                     {

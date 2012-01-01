@@ -191,7 +191,7 @@ enum ProcFlags
 
 enum ProcFlagsExLegacy
 {
-    PROC_EX_NONE                = 0x0000000,                 // If none can tigger on Hit/Crit only (passive spells MUST defined by SpellFamily flag)
+    PROC_EX_NONE                = 0x0000000,                 // If none can trigger on Hit/Crit only (passive spells MUST defined by SpellFamily flag)
     PROC_EX_NORMAL_HIT          = 0x0000001,                 // If set only from normal hit (only damage spells)
     PROC_EX_CRITICAL_HIT        = 0x0000002,
     PROC_EX_MISS                = 0x0000004,
