@@ -10224,7 +10224,7 @@ Unit* Unit::SelectMagnetTarget(Unit* victim, SpellInfo const* spellInfo)
     if (spellInfo && (spellInfo->DmgClass == SPELL_DAMAGE_CLASS_NONE || spellInfo->DmgClass == SPELL_DAMAGE_CLASS_MAGIC))
     {
         // Estos spells no pueden redirigirse al magneto
-        if (spellInfo->AttributesEx & SPELL_ATTR1_CANT_BE_REDIRECTED && spellInfo->Attributes & SPELL_ATTR0_ABILITY && spellInfo->Attributes & SPELL_ATTR0_UNAFFECTED_BY_INVULNERABILITY)
+        if (spellInfo->AttributesEx & SPELL_ATTR1_CANT_BE_REDIRECTED || spellInfo->Attributes & SPELL_ATTR0_ABILITY || spellInfo->Attributes & SPELL_ATTR0_UNAFFECTED_BY_INVULNERABILITY)
             return victim;
         // I am not sure if this should be redirected. (como warrior charge)
         if (spellInfo->DmgClass == SPELL_DAMAGE_CLASS_NONE)
@@ -10233,7 +10233,7 @@ Unit* Unit::SelectMagnetTarget(Unit* victim, SpellInfo const* spellInfo)
         Unit::AuraEffectList const& magnetAuras = victim->GetAuraEffectsByType(SPELL_AURA_SPELL_MAGNET);
         for (Unit::AuraEffectList::const_iterator itr = magnetAuras.begin(); itr != magnetAuras.end(); ++itr)
             if (Unit* magnet = (*itr)->GetBase()->GetUnitOwner())
-                if (magnet->isAlive() && IsWithinLOSInMap(magnet))
+                if (magnet->isAlive())
                 {
                     (*itr)->GetBase()->DropCharge(AURA_REMOVE_BY_EXPIRE);
                     return magnet;
