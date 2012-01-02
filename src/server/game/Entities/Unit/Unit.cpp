@@ -2526,7 +2526,13 @@ SpellMissInfo Unit::MagicSpellHitResult(Unit* victim, SpellInfo const* spell)
     int32 rand = irand(0, 10000);
 
     if (rand < tmp)
+    {
+        // Cloak of shadow de rogue, el miss deberia ser resist.
+        if (victim->HasAura(31224))
+        return SPELL_MISS_RESIST;
+        else
         return SPELL_MISS_MISS;
+    }
 
     // Spells with SPELL_ATTR3_IGNORE_HIT_RESULT will additionally fully ignore
     // resist and deflect chances
