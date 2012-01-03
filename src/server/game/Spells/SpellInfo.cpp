@@ -1241,7 +1241,7 @@ bool SpellInfo::CanPierceImmuneAura(SpellInfo const* aura) const
         return true;
 
     // these spells (Cyclone for example) can pierce all... impedir que faerie fire traspase immuneauras
-    if ((AttributesEx & SPELL_ATTR1_UNAFFECTED_BY_SCHOOL_IMMUNE && !(SpellIconID == 109))
+    if ((AttributesEx & SPELL_ATTR1_UNAFFECTED_BY_SCHOOL_IMMUNE && SpellIconID != 109)
         // ...but not these (Divine shield for example)
         && !(aura && (aura->Mechanic == MECHANIC_IMMUNE_SHIELD || aura->Mechanic == MECHANIC_INVULNERABILITY)))
         return true;
@@ -1576,7 +1576,7 @@ SpellCastResult SpellInfo::CheckTarget(Unit const* caster, Unit const* target, b
        return SPELL_FAILED_BAD_TARGETS;
 
     // check visibility - ignore stealth for implicit (area) targets
-    if (!(AttributesEx6 & SPELL_ATTR6_CAN_TARGET_INVISIBLE) && !caster->canSeeOrDetect(target, implicit))
+    if (!(AttributesEx6 & SPELL_ATTR6_CAN_TARGET_INVISIBLE) && !caster->canSeeOrDetect(target, true)) // !caster->canSeeOrDetect(target, implicit))
         return SPELL_FAILED_BAD_TARGETS;
 
     // checked in Unit::IsValidAttack/AssistTarget, shouldn't be checked for ENTRY targets
