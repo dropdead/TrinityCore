@@ -243,6 +243,10 @@ public:
                 // give achievement credit to players. criteria use spell 58630 which doesn't exist.
                 if (instance)
                     instance->DoUpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_BE_SPELL_TARGET, 58630);
+
+                float x, y, z;
+                me->GetPosition(x, y, z);
+                me->SummonCreature(30997, x, y, z, 0, TEMPSUMMON_CORPSE_DESPAWN, 0);// Summon Npc Chromie
             }
         }
 
