@@ -159,8 +159,62 @@ public:
     }
 };
 
+/*######
+## npc_archmage_vargoth http://www.wowhead.com/item=44738
+
+######*/
+
+enum eArchmageVargoth
+{
+    ZONE_DALARAN                                = 4395,
+    ITEM_ACANE_MAGIC_MASTERY                    = 43824,
+    SPELL_CREATE_FAMILAR                        = 61457,
+    SPELL_FAMILAR_PET                           = 61472,
+    ITEM_FAMILAR_PET                            = 44738
+};
+
+#define GOSSIP_TEXT_FAMILIAR_WELCOME "I have a book that might interest you. Would you like to take a look?"
+#define GOSSIP_TEXT_FAMILIAR_THANKS  "Thank you! I will be sure to notify you if I find anything else."
+
+class npc_archmage_vargoth : public CreatureScript
+{
+public:
+    npc_archmage_vargoth() : CreatureScript("npc_archmage_vargoth") { }
+
+    bool OnGossipHello (Player* player, Creature* creature)
+    {
+        if (creature->isQuestGiver() && creature->GetZoneId() != ZONE_DALARAN)
+            player->PrepareQuestMenu(creature->GetGUID());
+
+        if (player->HasItemCount(ITEM_ACANE_MAGIC_MASTERY,1,false))
+        {
+            if (!player->HasSpell(SPELL_FAMILAR_PET) && !player->HasItemCount(ITEM_FAMILAR_PET,1,true))
+                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_TEXT_FAMILIAR_WELCOME, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+        }
+        player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+        return true;
+    }
+
+    bool OnGossipSelect (Player* player, Creature* creature, uint32 /*uiSender*/, uint32 uiAction)
+    {
+        switch (uiAction)
+        {
+            case GOSSIP_ACTION_INFO_DEF+1:
+                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_TEXT_FAMILIAR_THANKS, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+2);
+                player->SEND_GOSSIP_MENU(40000, creature->GetGUID());
+                break;
+            case GOSSIP_ACTION_INFO_DEF+2:
+                creature->CastSpell(player,SPELL_CREATE_FAMILAR,false);
+                player->CLOSE_GOSSIP_MENU();
+                break;
+        }
+        return true;
+    }
+};
+
 void AddSC_dalaran()
 {
     new npc_mageguard_dalaran;
     new npc_hira_snowdawn;
+    new npc_archmage_vargoth;
 }
