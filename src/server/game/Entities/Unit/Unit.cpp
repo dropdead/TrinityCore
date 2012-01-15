@@ -1108,6 +1108,8 @@ void Unit::CalculateSpellDamageTaken(SpellNonMeleeDamage* damageInfo, int32 dama
                 damage = SpellCriticalDamageBonus(spellInfo, damage, victim);
             }
 
+            //Unstable affliction dispel ignora resiliance. TODO: renombrar el valor byte.
+            if (!(spellInfo->AttributesEx4 & SPELL_ATTR4_UNK8))
             ApplyResilience(victim, NULL, &damage, crit, CR_CRIT_TAKEN_SPELL);
             break;
         }
