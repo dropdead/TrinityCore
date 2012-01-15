@@ -3006,6 +3006,7 @@ void SpellMgr::LoadDbcDataCorrections()
                 break; 
             case 5171: // Slice and Dice rank 1 - [Rogue]
             case 6774: // Slice and Dice rank 2 - [Rogue]
+            case 57934: // Tricks of the Trade - [Rogue]
                 spellInfo->AttributesEx3 |= SPELL_ATTR3_NO_INITIAL_AGGRO;
                 break;
             case 67188: //Tier 9 bono 2 piezas dps - [Paladin]
